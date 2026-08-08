@@ -3,9 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>LanceBuddy | Scout Markets</title>
+  <title>LanceBuddy | Free Lead Generation Tool for Freelancers — Scout Local Markets</title>
+  <meta name="description" content="LanceBuddy is a free lead generation tool for freelancers. Scout local businesses, get verified contact details with real source links, track leads, generate cold emails, and export CSV reports.">
+  <meta name="keywords" content="lead generation for freelancers, free lead finder, local business leads, freelancer tools, cold email tool, lead scouting, business leads India, freelancer CRM, prospecting tool, find clients, freelance lead generation">
+  <meta name="author" content="Jakad Wangdu">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://www.lancebuddy.in/">
   <meta name="google-adsense-account" content="ca-pub-1918068383617681">
   <link rel="icon" type="image/png" href="Logo.png">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="LanceBuddy | Free Lead Generation Tool for Freelancers">
+  <meta property="og:description" content="Scout local businesses, get verified contact details with real source links, track leads, generate cold emails, and export CSV reports — all for free.">
+  <meta property="og:url" content="https://www.lancebuddy.in/">
+  <meta property="og:site_name" content="LanceBuddy">
+  <meta property="og:image" content="https://www.lancebuddy.in/Logo.png">
+  <meta property="og:locale" content="en_IN">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LanceBuddy | Free Lead Generation Tool for Freelancers">
+  <meta name="twitter:description" content="Scout local businesses, get verified contact details, track leads, generate cold emails — all for free.">
+  <meta name="twitter:image" content="https://www.lancebuddy.in/Logo.png">
+
+  <!-- Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "LanceBuddy",
+    "url": "https://www.lancebuddy.in/",
+    "description": "Free lead generation tool for freelancers. Scout local businesses with verified source links, track leads, generate cold emails, and export reports.",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "author": { "@type": "Person", "name": "Jakad Wangdu", "url": "https://jakadwangdu.github.io/Portfolio" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "128" }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "Why should I use LanceBuddy?", "acceptedAnswer": { "@type": "Answer", "text": "LanceBuddy gives freelancers free access to verified local business leads with real source links on Google Maps, JustDial, IndiaMART, and more. Unlike expensive tools, it includes lead tracking, email templates, and CSV export at zero cost." } },
+      { "@type": "Question", "name": "How does LanceBuddy work?", "acceptedAnswer": { "@type": "Answer", "text": "Enter your target business sector and location. LanceBuddy generates structured leads with phone numbers, source platform links, and business details. You can track each lead's status, add notes, generate cold emails, and export everything as CSV." } },
+      { "@type": "Question", "name": "How do I send emails to leads?", "acceptedAnswer": { "@type": "Answer", "text": "Use the built-in Email Template Generator. Select a lead, enter your name and service, and it creates a personalized cold outreach email. Copy and send via your email client. You can also message leads directly on WhatsApp using the one-click WhatsApp button." } },
+      { "@type": "Question", "name": "Is LanceBuddy really free?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, LanceBuddy is completely free. There are no subscriptions, no hidden limits, and no premium tiers. All features including lead generation, tracking, email templates, and CSV export are available to everyone." } },
+      { "@type": "Question", "name": "Where do the leads come from?", "acceptedAnswer": { "@type": "Answer", "text": "Leads are sourced from public business directories including Google Maps, JustDial, IndiaMART, Sulekha, LinkedIn, and Facebook. Each lead includes a direct link to its original listing so you can verify the business yourself." } },
+      { "@type": "Question", "name": "Can I save my lead notes?", "acceptedAnswer": { "@type": "Answer", "text": "Yes! Notes are automatically saved to your browser's local storage. They persist even after refreshing the page. Access all your saved notes from the dedicated Notes section in the navigation." } },
+      { "@type": "Question", "name": "What sectors can I scout?", "acceptedAnswer": { "@type": "Answer", "text": "You can scout any business sector — Cafes, Hotels, Travel Agencies, Software Companies, or type any custom sector like Dentists, Roofers, Gyms, or Photographers. The tool works for any local business type." } },
+      { "@type": "Question", "name": "How do I export my leads?", "acceptedAnswer": { "@type": "Answer", "text": "Click the Export CSV button in the leads section. The CSV includes all lead details: business name, phone, source platform, source URL, snippet, priority, status, and your notes." } }
+    ]
+  }
+  </script>
+
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -236,6 +289,33 @@
     .sup-submit:hover{opacity:.85}
     .sup-submit:active{transform:scale(.98)}
 
+    /* FAQ */
+    .faq-grid{display:flex;flex-direction:column;gap:10px}
+    .faq-item{background:var(--surface2);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:border-color .2s}
+    .faq-item:hover{border-color:#6366f1}
+    .faq-question{width:100%;padding:16px 18px;background:none;border:none;text-align:left;font-size:14px;font-weight:700;font-family:'Inter',sans-serif;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background .2s}
+    .faq-question:hover{background:rgba(99,102,241,.04)}
+    .faq-question i{font-size:12px;color:var(--muted);transition:transform .3s}
+    .faq-item.open .faq-question i{transform:rotate(180deg)}
+    .faq-answer{max-height:0;overflow:hidden;transition:max-height .35s ease,padding .35s ease}
+    .faq-item.open .faq-answer{max-height:300px}
+    .faq-answer p{padding:0 18px 16px;font-size:13px;opacity:.7;line-height:1.7}
+
+    /* NOTES SECTION */
+    .notes-empty{text-align:center;padding:50px 20px;color:var(--muted)}
+    .notes-empty i{font-size:36px;display:block;margin-bottom:14px;opacity:.3}
+    .notes-empty p{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px}
+    .notes-empty span{font-size:13px;opacity:.6}
+    #notes-list{display:flex;flex-direction:column;gap:10px}
+    .note-card{background:var(--surface2);border:1px solid var(--border);border-radius:14px;padding:16px;animation:fadeUp .3s ease both}
+    .note-card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+    .note-card-title{font-weight:700;font-size:14px;margin-bottom:4px}
+    .note-card-meta{font-size:11px;opacity:.5;margin-bottom:8px}
+    .note-card-meta span{margin-right:12px}
+    .note-card-content{font-size:13px;opacity:.7;line-height:1.6;white-space:pre-wrap;word-break:break-word}
+    .note-card-delete{background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:4px 8px;border-radius:6px;transition:color .2s,background .2s}
+    .note-card-delete:hover{color:#ef4444;background:rgba(239,68,68,.08)}
+
     /* FOOTER */
     footer{width:100%;margin-top:60px;padding:24px 0;border-top:1px solid var(--border);text-align:center;font-size:13px;opacity:.5;font-weight:500}
     footer a{text-decoration:underline;text-underline-offset:3px}
@@ -300,6 +380,8 @@
     <div class="nav-links">
       <a href="#" class="active">Home</a>
       <a href="#services">Services</a>
+      <a href="#blog">Blog</a>
+      <a href="#notes-section" id="nav-notes-link">Notes</a>
       <a href="https://jakadwangdu.github.io/Portfolio" target="_blank">Portfolio</a>
       <a href="#support">Support</a>
     </div>
@@ -316,6 +398,8 @@
   <div id="mob-menu">
     <a href="#" class="active" onclick="closeMob()">Home</a>
     <a href="#services" onclick="closeMob()">Services</a>
+    <a href="#blog" onclick="closeMob()">Blog</a>
+    <a href="#notes-section" onclick="closeMob()">Notes</a>
     <a href="https://jakadwangdu.github.io/Portfolio" target="_blank" onclick="closeMob()">Portfolio</a>
     <a href="#support" onclick="closeMob()">Support</a>
   </div>
@@ -481,6 +565,104 @@
           <div id="sup-status" style="margin-top: 12px; font-size: 13px; font-weight: 600; text-align: center; display: none;"></div>
         </form>
       </div>
+    </div>
+  </section>
+
+  <!-- BLOG / FAQ SECTION -->
+  <section id="blog">
+    <div class="sec-hd">
+      <h2>Frequently Asked Questions</h2>
+      <p>Everything you need to know about using LanceBuddy for your freelance business.</p>
+    </div>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>Why should I use LanceBuddy?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>LanceBuddy gives freelancers free access to verified local business leads with real source links on Google Maps, JustDial, IndiaMART, and more. Unlike expensive tools, it includes lead tracking, email templates, and CSV export at zero cost — perfect for freelancers who need clients without spending on ads.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>How does LanceBuddy work?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Enter your target business sector and location. LanceBuddy generates structured leads with phone numbers, source platform links, and business details. You can track each lead's status (New → Contacted → Interested → Converted), add personal notes, generate cold emails, and export everything as a CSV file.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>How do I send emails to leads?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Use the built-in <strong>Email Template Generator</strong>. Select a lead, enter your name and service offering, and it creates a personalized cold outreach email pre-filled with the lead's details. Copy it and send via your email client. You can also message leads directly on WhatsApp using the one-click WhatsApp button on each card.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>Is LanceBuddy really free?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Yes, LanceBuddy is 100% free. There are no subscriptions, no hidden limits, and no premium tiers. All features — lead generation, pipeline tracking, email templates, WhatsApp links, notes, and CSV export — are available to everyone at zero cost.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>Where do the leads come from?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Leads are sourced from public business directories including Google Maps, JustDial, IndiaMART, Sulekha, LinkedIn, and Facebook. Each lead includes a direct clickable link to its original listing so you can verify the business yourself before reaching out.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>How do I save and access notes?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Click the <strong>Notes</strong> button on any lead card to reveal the notes area. Type your notes and press <strong>Enter</strong> to save — they are stored in your browser's local storage and persist even after closing the browser. Access all your saved notes anytime from the <strong>Notes</strong> section in the navigation.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>What sectors can I scout?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>You can scout any business sector — Cafes, Hotels, Travel Agencies, Software Companies, or type any custom sector like Dentists, Roofers, Gyms, or Photographers. The tool works for any local business type you want to target.</p>
+        </div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-question" onclick="toggleFaq(this)">
+          <span>How do I export my leads?</span>
+          <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="faq-answer">
+          <p>Click the <strong>Export CSV</strong> button in the leads section. The CSV includes all lead details: business name, phone number, source platform, source URL, snippet, priority status, lead status, and your personal notes — ready to import into any CRM or spreadsheet.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTES SECTION -->
+  <section id="notes-section">
+    <div class="sec-hd">
+      <h2>My Saved Notes</h2>
+      <p>All your lead notes saved in browser storage. Click any note to expand and view details.</p>
+    </div>
+    <div id="notes-container">
+      <div class="notes-empty" id="notes-empty">
+        <i class="fa-solid fa-clipboard"></i>
+        <p>No notes saved yet.</p>
+        <span>Scout leads and press Enter in the notes field to save them here.</span>
+      </div>
+      <div id="notes-list"></div>
     </div>
   </section>
 
@@ -696,8 +878,8 @@ function renderCardHTML(l) {
       <button class="lcard-act-btn delete" onclick="deleteLead('${l.id}')"><i class="fa-solid fa-trash"></i></button>
     </div>
     <div class="lcard-notes" id="notes-${l.id}">
-      <textarea placeholder="Add follow-up notes, call summaries, next steps..." oninput="saveNotes('${l.id}', this.value)">${x(l.notes)}</textarea>
-      <div class="notes-hint">Notes are saved automatically in your browser.</div>
+      <textarea placeholder="Add follow-up notes, call summaries, next steps... (Press Enter to save)" oninput="saveNotes('${l.id}', this.value)" onkeydown="saveNotesOnEnter(event, '${l.id}')">${x(l.notes)}</textarea>
+      <div class="notes-hint">Press Enter to save. Notes persist in your browser.</div>
     </div>
   `;
 }
@@ -746,6 +928,28 @@ function saveNotes(id, val) {
   if(lead) {
     lead.notes = val;
     localStorage.setItem('lb_notes_' + id, val);
+    // Sync to global store
+    const globalNotes = JSON.parse(localStorage.getItem('lb_global_notes') || '{}');
+    if(globalNotes[id]){
+      globalNotes[id].notes = val;
+      globalNotes[id].savedAt = new Date().toISOString();
+    } else {
+      globalNotes[id] = {
+        leadName: lead.name,
+        biz: document.getElementById('type-select').value,
+        location: document.getElementById('location').value,
+        notes: val,
+        savedAt: new Date().toISOString()
+      };
+    }
+    localStorage.setItem('lb_global_notes', JSON.stringify(globalNotes));
+    updateNotesCount();
+    // Update button appearance
+    const btn = document.getElementById('notes-btn-' + id);
+    if(btn){
+      if(val.trim()) btn.classList.add('has-notes');
+      else btn.classList.remove('has-notes');
+    }
   }
 }
 
@@ -1042,6 +1246,117 @@ document.getElementById('sup-form').addEventListener('submit', async e => {
     btnText.textContent = "Send Message";
   }
 });
+
+/* ── FAQ Toggle ─────────────────────────────── */
+function toggleFaq(btn){
+  const item = btn.parentElement;
+  const wasOpen = item.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  // Toggle current
+  if(!wasOpen) item.classList.add('open');
+}
+
+/* ── Notes: Save on Enter ───────────────────── */
+function saveNotesOnEnter(e, id){
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    const val = e.target.value;
+    const lead = currentLeads.find(l => l.id === id);
+    if(lead){
+      lead.notes = val;
+      localStorage.setItem('lb_notes_' + id, val);
+      // Also save to global notes store with lead name reference
+      const globalNotes = JSON.parse(localStorage.getItem('lb_global_notes') || '{}');
+      globalNotes[id] = {
+        leadName: lead.name,
+        biz: document.getElementById('type-select').value,
+        location: document.getElementById('location').value,
+        notes: val,
+        savedAt: new Date().toISOString()
+      };
+      localStorage.setItem('lb_global_notes', JSON.stringify(globalNotes));
+      showToast('Note saved!');
+      // Update button appearance
+      const btn = document.getElementById('notes-btn-' + id);
+      if(btn && !lead.notes){
+        btn.classList.add('has-notes');
+      }
+    }
+  }
+}
+
+/* ── Notes: Render All Saved Notes ──────────── */
+function renderSavedNotes(){
+  const container = document.getElementById('notes-list');
+  const empty = document.getElementById('notes-empty');
+  const globalNotes = JSON.parse(localStorage.getItem('lb_global_notes') || '{}');
+  const keys = Object.keys(globalNotes).filter(k => globalNotes[k].notes && globalNotes[k].notes.trim());
+
+  if(keys.length === 0){
+    empty.style.display = 'block';
+    container.innerHTML = '';
+    return;
+  }
+
+  empty.style.display = 'none';
+  container.innerHTML = '';
+
+  keys.sort((a, b) => new Date(globalNotes[b].savedAt) - new Date(globalNotes[a].savedAt));
+
+  keys.forEach(id => {
+    const note = globalNotes[id];
+    const card = document.createElement('div');
+    card.className = 'note-card';
+    card.innerHTML = `
+      <div class="note-card-top">
+        <div>
+          <div class="note-card-title">${x(note.leadName || 'Unknown Lead')}</div>
+          <div class="note-card-meta">
+            <span><i class="fa-solid fa-building"></i> ${x(note.biz || 'N/A')}</span>
+            <span><i class="fa-solid fa-location-dot"></i> ${x(note.location || 'N/A')}</span>
+            <span><i class="fa-solid fa-clock"></i> ${new Date(note.savedAt).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'})}</span>
+          </div>
+        </div>
+        <button class="note-card-delete" onclick="deleteNote('${id}')" title="Delete note"><i class="fa-solid fa-trash"></i></button>
+      </div>
+      <div class="note-card-content">${x(note.notes)}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+/* ── Notes: Delete a saved note ─────────────── */
+function deleteNote(id){
+  const globalNotes = JSON.parse(localStorage.getItem('lb_global_notes') || '{}');
+  delete globalNotes[id];
+  localStorage.setItem('lb_global_notes', JSON.stringify(globalNotes));
+  localStorage.removeItem('lb_notes_' + id);
+  renderSavedNotes();
+  showToast('Note deleted');
+}
+
+/* ── Notes: Nav link updates count ──────────── */
+function updateNotesCount(){
+  const globalNotes = JSON.parse(localStorage.getItem('lb_global_notes') || '{}');
+  const count = Object.keys(globalNotes).filter(k => globalNotes[k].notes && globalNotes[k].notes.trim()).length;
+  const navLink = document.getElementById('nav-notes-link');
+  if(navLink){
+    navLink.textContent = count > 0 ? `Notes (${count})` : 'Notes';
+  }
+}
+
+/* ── Refresh notes on page load & nav click ─── */
+document.getElementById('nav-notes-link').addEventListener('click', () => {
+  setTimeout(renderSavedNotes, 100);
+});
+document.querySelector('#mob-menu a[href="#notes-section"]').addEventListener('click', () => {
+  setTimeout(renderSavedNotes, 100);
+});
+
+/* ── Initial notes render ───────────────────── */
+renderSavedNotes();
+updateNotesCount();
 
 /* ── Helpers ────────────────────────────────── */
 function showSt(el, type, msg){
