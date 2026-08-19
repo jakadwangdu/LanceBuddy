@@ -39,7 +39,18 @@
     "operatingSystem": "Web",
     "author": { "@type": "Person", "name": "Jakad Wangdu", "url": "https://jakadwangdu.github.io/Portfolio" },
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
-    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.8", "reviewCount": "128" }
+    "featureList": "Lead scouting by sector and location, verified source links, lead pipeline tracking, notes, email template generator, WhatsApp contact, CSV export"
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "LanceBuddy",
+    "url": "https://www.lancebuddy.in/",
+    "description": "Free lead generation tool for freelancers. Scout local business leads, track prospects, generate cold emails, and export CSV reports.",
+    "author": { "@type": "Person", "name": "Jakad Wangdu" },
+    "publisher": { "@type": "Person", "name": "Jakad Wangdu" }
   }
   </script>
   <script type="application/ld+json">
@@ -333,6 +344,17 @@
     /* TOAST */
     .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;background:var(--text);color:var(--bg);z-index:999;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;opacity:0;pointer-events:none}
     .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+    /* COOKIE CONSENT */
+    .cookie-banner{position:fixed;bottom:0;left:0;right:0;z-index:900;background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -8px 32px rgba(15,23,42,0.12);padding:16px 20px;display:flex;flex-direction:column;gap:12px;align-items:flex-start;backdrop-filter:blur(16px)}
+    @media(min-width:640px){.cookie-banner{flex-direction:row;align-items:center;justify-content:space-between;padding:14px 28px}}
+    .cookie-banner p{font-size:13px;opacity:.85;line-height:1.6;max-width:720px}
+    .cookie-banner a{color:#6366f1;text-decoration:underline;text-underline-offset:2px}
+    .cookie-actions{display:flex;gap:10px;flex-shrink:0}
+    .cookie-btn{padding:9px 18px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);font-size:13px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all .2s}
+    .cookie-btn:hover{border-color:#6366f1;color:#6366f1}
+    .cookie-btn-primary{background:var(--btn);color:var(--btn-text);border-color:var(--btn)}
+    .cookie-btn-primary:hover{opacity:.85;color:var(--btn-text)}
   </style>
 </head>
 <body>
@@ -346,6 +368,15 @@
 
 <!-- TOAST -->
 <div id="toast" class="toast"></div>
+
+<!-- COOKIE CONSENT -->
+<div id="cookie-banner" class="cookie-banner" style="display:none">
+  <p>We use cookies to personalize ads and analyze traffic. By continuing to use LanceBuddy, you consent to our use of cookies. Learn more in our <a href="privacy-policy.html">Privacy Policy</a> and <a href="https://policies.google.com/technologies/ads" target="_blank" rel="noopener">Google's ad policies</a>.</p>
+  <div class="cookie-actions">
+    <button id="cookie-accept" class="cookie-btn cookie-btn-primary">Accept</button>
+    <button id="cookie-decline" class="cookie-btn">Decline</button>
+  </div>
+</div>
 
 <!-- EMAIL TEMPLATE MODAL -->
 <div id="template-modal" class="modal-overlay">
@@ -385,7 +416,7 @@
     <div class="nav-links">
       <a href="#" class="active">Home</a>
       <a href="#services">Services</a>
-      <a href="#blog">Blog</a>
+      <a href="blog.html">Blog</a>
       <a href="#notes-section" id="nav-notes-link">Notes</a>
       <a href="https://jakadwangdu.github.io/Portfolio" target="_blank">Portfolio</a>
       <a href="#support">Support</a>
@@ -403,7 +434,7 @@
   <div id="mob-menu">
     <a href="#" class="active" onclick="closeMob()">Home</a>
     <a href="#services" onclick="closeMob()">Services</a>
-    <a href="#blog" onclick="closeMob()">Blog</a>
+    <a href="blog.html" onclick="closeMob()">Blog</a>
     <a href="#notes-section" onclick="closeMob()">Notes</a>
     <a href="https://jakadwangdu.github.io/Portfolio" target="_blank" onclick="closeMob()">Portfolio</a>
     <a href="#support" onclick="closeMob()">Support</a>
@@ -673,7 +704,12 @@
 
   <footer>
     &copy; 2026 LanceBuddy &middot; Built by Jakad Wangdu &middot;
-    <a href="https://jakadwangdu.github.io/Portfolio" target="_blank">Portfolio</a>
+    <a href="https://jakadwangdu.github.io/Portfolio" target="_blank">Portfolio</a> &middot;
+    <a href="about.html">About</a> &middot;
+    <a href="contact.html">Contact</a> &middot;
+    <a href="blog.html">Blog</a> &middot;
+    <a href="privacy-policy.html">Privacy Policy</a> &middot;
+    <a href="terms-of-service.html">Terms of Service</a>
   </footer>
 </main>
 
@@ -684,6 +720,10 @@
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
+  gtag('consent', 'default', {
+    'ad_storage': 'denied',
+    'analytics_storage': 'granted'
+  });
 
   gtag('config', 'G-YFCMNCGTC7');
 
@@ -706,6 +746,24 @@ window.addEventListener('DOMContentLoaded',()=>{
 });
 
 /* ── UI Logic ───────────────────────────────── */
+(function(){
+  var banner = document.getElementById('cookie-banner');
+  var consent = localStorage.getItem('lb_consent');
+  if(banner){
+    if(consent === null){ banner.style.display = 'flex'; }
+    document.getElementById('cookie-accept').addEventListener('click', function(){
+      localStorage.setItem('lb_consent','accepted');
+      banner.style.display = 'none';
+      if(typeof gtag === 'function'){ gtag('consent','default',{ad_storage:'granted',analytics_storage:'granted'}); }
+    });
+    document.getElementById('cookie-decline').addEventListener('click', function(){
+      localStorage.setItem('lb_consent','declined');
+      banner.style.display = 'none';
+      if(typeof gtag === 'function'){ gtag('consent','default',{ad_storage:'denied',analytics_storage:'denied'}); }
+    });
+  }
+})();
+
 document.getElementById('theme-btn').addEventListener('click',()=>{
   document.documentElement.classList.toggle('dark');
   localStorage.theme=document.documentElement.classList.contains('dark')?'dark':'light';
