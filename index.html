@@ -75,15 +75,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    :root{
+:root{
       --bg:#f8fafc; --surface:rgba(255,255,255,0.88); --surface2:rgba(255,255,255,0.72);
       --nav-bg:rgba(248,250,252,0.85); --border:#e2e8f0; --border-soft:rgba(226,232,240,0.55);
       --text:#0f172a; --muted:#64748b; --btn:#0f172a; --btn-text:#fff;
       --orb1:rgba(129,140,248,0.28); --orb2:rgba(192,132,252,0.22);
       --grid:rgba(15,23,42,0.045); --input-bg:rgba(241,245,249,0.9);
       --shadow:0 8px 32px rgba(15,23,42,0.10); --shadow-sm:0 2px 10px rgba(15,23,42,0.07);
-      --hot:#ef4444; --warm:#f59e0b; --cold:#3b82f6;
-      --status-new:#6366f1; --status-contacted:#f59e0b; --status-interested:#10b981; --status-converted:#22c55e; --status-lost:#ef4444;
+      --skeleton-bg:#f0f2f5; --skeleton-border:#e2e8f0;
     }
     html.dark{
       --bg:#060606; --surface:rgba(13,13,13,0.96); --surface2:rgba(11,11,11,0.9);
@@ -341,6 +340,13 @@
     ::-webkit-scrollbar-track{background:transparent}
     ::-webkit-scrollbar-thumb{background:rgba(100,116,139,.25);border-radius:6px}
 
+    /* SKELETON LOADING */
+    .skeleton{background:var(--skeleton-bg);border-radius:12px;background:linear-gradient(90deg,var(--skeleton-bg) 25%,var(--skeleton-border) 50%,var(--skeleton-bg) 75%);background-size:200% 100%;animation:skeletonLoading 1.5s infinite ease-in-out}
+    @keyframes skeletonLoading{0%{background-position:200% 0%;}100%{background-position:-100% 0%;}}
+    .skeleton-text{width:80%;height:14px;margin:8px 0;border-radius:7px}
+    .skeleton-wide{width:100%;height:18px;margin:10px 0;border-radius:9px}
+    .skeleton-small{width:50%;height:12px;margin:4px 0;border-radius:6px}
+
     /* TOAST */
     .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;background:var(--text);color:var(--bg);z-index:999;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s;opacity:0;pointer-events:none}
     .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
@@ -414,12 +420,11 @@
       <span class="nav-name">LanceBuddy</span>
     </div>
     <div class="nav-links">
-      <a href="#" class="active">Home</a>
-      <a href="#services">Services</a>
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
       <a href="blog.html">Blog</a>
-      <a href="#notes-section" id="nav-notes-link">Notes</a>
-      <a href="https://jakadwangdu.github.io/Portfolio" target="_blank">Portfolio</a>
-      <a href="#support">Support</a>
+      <a href="scout.html">Scout Tool</a>
     </div>
     <div class="nav-right">
       <button id="theme-btn" aria-label="Toggle theme">
@@ -432,12 +437,11 @@
     </div>
   </nav>
   <div id="mob-menu">
-    <a href="#" class="active" onclick="closeMob()">Home</a>
-    <a href="#services" onclick="closeMob()">Services</a>
-    <a href="blog.html" onclick="closeMob()">Blog</a>
-    <a href="#notes-section" onclick="closeMob()">Notes</a>
-    <a href="https://jakadwangdu.github.io/Portfolio" target="_blank" onclick="closeMob()">Portfolio</a>
-    <a href="#support" onclick="closeMob()">Support</a>
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="blog.html">Blog</a>
+    <a href="scout.html">Scout Tool</a>
   </div>
 </div>
 
@@ -446,18 +450,19 @@
 
   <!-- Hero -->
   <div class="hero">
-    <h1>Scout Local Markets.</h1>
-    <p>Enter your target industry. We extract structured public leads with real source links and give you tools to manage, track, and convert them.</p>
+    <div class="skeleton skeleton-wide"></div>
+    <div class="skeleton skeleton-wide" style="margin:12px 0"></div>
+    <div class="skeleton skeleton-wide" style="width:50%;margin:8px 0"></div>
   </div>
 
   <!-- Scout Card -->
   <div id="scout-card">
     <form id="scout-form">
       <div class="f-row">
-        <input type="email" id="email" required placeholder="&#9993;  Delivery Email (Hit Enter to Scout)">
+        <input type="email" id="email" required placeholder="&#9993;  Delivery Email (Hit Enter to Scout)" class="skeleton" style="height:50px;border-radius:11px;">
       </div>
       <div class="f-row" style="position:relative">
-        <select id="type-select">
+        <select id="type-select" class="skeleton" style="height:50px;border-radius:11px;">
           <option value="Cafe">&#9749; Cafe &amp; Coffee</option>
           <option value="Hotel">&#127976; Hotels &amp; Motels</option>
           <option value="Travel Agency" selected>&#9992; Travel Agency</option>
@@ -465,17 +470,17 @@
           <option value="Custom" style="font-weight:700">&#10024; Type Custom Sector&hellip;</option>
         </select>
         <div id="custom-box">
-          <input type="text" id="type-custom" placeholder="e.g. Roofers, Dentists&hellip;">
-          <button type="button" id="revert-btn"><i class="fa-solid fa-xmark"></i></button>
+          <input type="text" id="type-custom" class="skeleton" style="height:30px;padding:0 15px;">
+          <button type="button" id="revert-btn" class="skeleton" style="height:30px;padding:8px;"></button>
         </div>
       </div>
       <div class="f-row last">
-        <input type="text" id="location" required placeholder="&#128205;  Location (e.g. Mumbai, Goa)">
+        <input type="text" id="location" required placeholder="&#128205;  Location (e.g. Mumbai, Goa)" class="skeleton" style="height:50px;border-radius:11px;">
       </div>
-      <button type="submit" id="scout-submit">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <span id="scout-label">Scout Leads</span>
-        <i id="scout-spin" class="fa-solid fa-circle-notch fa-spin hidden"></i>
+      <button type="submit" id="scout-submit" class="skeleton" style="height:56px;border-radius:16px;">
+        <i class="fa-solid fa-magnifying-glass skeleton-small"></i>
+        <span id="scout-label" class="skeleton-small"></span>
+        <i id="scout-spin" class="fa-solid fa-circle-notch fa-spin hidden skeleton-small"></i>
       </button>
     </form>
   </div>
