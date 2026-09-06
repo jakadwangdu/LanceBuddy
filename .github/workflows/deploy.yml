@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -40,8 +40,11 @@ jobs:
       - name: Build React Application
         run: npm run build
 
-      - name: Verify CNAME, Ads.txt, Robots, and Sitemap in dist
+      - name: Verify CNAME, Ads.txt, Robots, Sitemap, and 404.html
         run: |
+          # Copy 404.html fallback for SPA routing
+          cp dist/index.html dist/404.html
+
           # Ensure CNAME exists in dist
           if [ -f "CNAME" ] && [ ! -f "dist/CNAME" ]; then
             cp CNAME dist/CNAME
@@ -61,6 +64,13 @@ jobs:
           echo "Build output contents:"
           ls -la dist
 
+      - name: Deploy to gh-pages branch (Fallback)
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
+          clean: true
+
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 
@@ -79,4 +89,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
 
