@@ -1,0 +1,39 @@
+name: Repository Cleanup
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "DELETE" to confirm repository cleanup'
+        required: true
+        default: ''
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'DELETE'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git User
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Clean repository files
+        run: |
+          # Remove tracked files
+          git rm -rf .
+          # Keep github workflows intact
+          git checkout HEAD -- .github/ || true
+          git commit -m "chore: wipe repository files via GitHub Action" || echo "No changes"
+
+      - name: Push changes to repository
+        run: |
+          git push origin main
