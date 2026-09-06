@@ -1,0 +1,30 @@
+﻿{
+  "name": "LanceBuddy — Local Lead Finder & CRM",
+  "short_name": "LanceBuddy",
+  "description": "Find verified local business leads with contact details, Google Maps verification, cold email templates, and in-browser CRM pipeline.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#09090b",
+  "theme_color": "#09090b",
+  "categories": [
+    "business",
+    "productivity",
+    "utilities"
+  ],
+  "icons": [
+    {
+      "src": "/Logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/Logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
