@@ -1,4 +1,4 @@
-name: Deploy React Web to GitHub Pages
+name: Deploy React App to GitHub Pages
 
 on:
   push:
@@ -6,13 +6,11 @@ on:
       - main
   workflow_dispatch:
 
-# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
 concurrency:
   group: "pages"
   cancel-in-progress: false
@@ -29,10 +27,9 @@ jobs:
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: react-web/package-lock.json
+          cache-dependency-path: package-lock.json
 
       - name: Install dependencies
-        working-directory: react-web
         run: |
           if [ -f package-lock.json ]; then
             npm ci || npm install
@@ -41,29 +38,28 @@ jobs:
           fi
 
       - name: Build React Application
-        working-directory: react-web
         run: npm run build
 
-      - name: Verify CNAME, Ads.txt, Robots, and Sitemap
+      - name: Verify CNAME, Ads.txt, Robots, and Sitemap in dist
         run: |
-          # Copy CNAME if in root or public
-          if [ -f "CNAME" ] && [ ! -f "react-web/dist/CNAME" ]; then
-            cp CNAME react-web/dist/CNAME
+          # Ensure CNAME exists in dist
+          if [ -f "CNAME" ] && [ ! -f "dist/CNAME" ]; then
+            cp CNAME dist/CNAME
           fi
-          # Copy ads.txt if in root or public
-          if [ -f "ads.txt" ] && [ ! -f "react-web/dist/ads.txt" ]; then
-            cp ads.txt react-web/dist/ads.txt
+          # Ensure ads.txt exists in dist
+          if [ -f "ads.txt" ] && [ ! -f "dist/ads.txt" ]; then
+            cp ads.txt dist/ads.txt
           fi
-          # Copy robots.txt if in root or public
-          if [ -f "robots.txt" ] && [ ! -f "react-web/dist/robots.txt" ]; then
-            cp robots.txt react-web/dist/robots.txt
+          # Ensure robots.txt exists in dist
+          if [ -f "public/robots.txt" ] && [ ! -f "dist/robots.txt" ]; then
+            cp public/robots.txt dist/robots.txt
           fi
-          # Copy sitemap.xml if in root or public
-          if [ -f "sitemap.xml" ] && [ ! -f "react-web/dist/sitemap.xml" ]; then
-            cp sitemap.xml react-web/dist/sitemap.xml
+          # Ensure sitemap.xml exists in dist
+          if [ -f "public/sitemap.xml" ] && [ ! -f "dist/sitemap.xml" ]; then
+            cp public/sitemap.xml dist/sitemap.xml
           fi
           echo "Build output contents:"
-          ls -la react-web/dist
+          ls -la dist
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
@@ -71,7 +67,7 @@ jobs:
       - name: Upload GitHub Pages Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: react-web/dist
+          path: dist
 
   deploy:
     environment:
@@ -83,3 +79,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
