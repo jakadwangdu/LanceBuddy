@@ -1,0 +1,40 @@
+name = "lancebuddy-upi-api"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "lancebuddy-payments"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[vars]
+ALLOWED_ORIGINS = "https://www.lancebuddy.in,https://lancebuddy.in,http://localhost:8788,http://127.0.0.1:8788"
+PUBLIC_BASE_URL = "https://www.lancebuddy.in/payment"
+API_BASE_URL = "https://lancebuddy-upi-api.workers.dev"
+UTR_RETENTION_DAYS = "90"
+RESEND_FROM = "LanceBuddy Payments <payments@lancebuddy.in>"
+
+# ── Simplified Configuration ───────────────────────────────────────────────
+# Instead of creating a merchant via API, you can set these below and the
+# system will auto-create your merchant on first checkout.
+#
+# Quickest setup: just set DEFAULT_UPI_ID (your UPI ID like name@paytm)
+# and the system handles the rest automatically.
+
+# REQUIRED: Your UPI ID for receiving payments (e.g. "yourname@paytm")
+DEFAULT_UPI_ID = ""
+
+# OPTIONAL: Display name shown on the payment page
+DEFAULT_DISPLAY_NAME = "LanceBuddy"
+
+# OPTIONAL: Email to receive payment notifications
+DEFAULT_NOTIFICATION_EMAIL = ""
+
+# ADVANCED: If you created a merchant via the dashboard/API, set this instead.
+# When CHECKOUT_MERCHANT_ID is set, DEFAULT_UPI_ID is ignored.
+CHECKOUT_MERCHANT_ID = ""
+
+# Secrets (set with: wrangler secret put <NAME>)
+#   SIGNING_SECRET  - HMAC-SHA256 key for signed payment links
+#   RESEND_API_KEY  - Resend transactional email key (optional)
+#   ADMIN_TOKEN     - bootstrap token used to create the first merchant

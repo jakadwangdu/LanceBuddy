@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Pay via UPI | LanceBuddy Payments</title>
+  <meta name="description" content="Secure UPI payment page. Scan the QR with any UPI app, pay, and submit your transaction reference for confirmation.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../Logo.png">
+
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    :root{
+  --bg:#ffffff; --surface:#ffffff; --surface2:#f4f4f5;
+  --nav-bg:rgba(255,255,255,0.9); --border:#000000; --border-soft:rgba(0,0,0,0.15);
+  --text:#000000; --muted:#52525b; --btn:#000000; --btn-text:#ffffff;
+  --orb1:rgba(0,0,0,0.03); --orb2:rgba(0,0,0,0.03);
+  --grid:rgba(0,0,0,0.05); --input-bg:#ffffff;
+  --shadow:4px 4px 0px #000000; --shadow-sm:2px 2px 0px #000000;
+  --hot:#ef4444; --warm:#f59e0b; --cold:#3b82f6;
+  --status-new:#000000; --status-contacted:#f59e0b; --status-interested:#10b981; --status-converted:#22c55e; --status-lost:#ef4444;
+  --skeleton-bg:#f4f4f5; --skeleton-border:#000000;
+}
+    html.dark{
+  --bg:#09090b; --input-bg:#09090b; --surface:#09090b; --surface2:#18181b;
+  --nav-bg:rgba(9,9,11,0.9); --border:#ffffff; --border-soft:rgba(255,255,255,0.15);
+  --text:#ffffff; --muted:#a1a1aa; --btn:#ffffff; --btn-text:#000000;
+  --orb1:rgba(255,255,255,0.02); --orb2:rgba(255,255,255,0.02);
+  --grid:rgba(255,255,255,0.04); --input-bg:#09090b;
+  --shadow:4px 4px 0px #ffffff; --shadow-sm:2px 2px 0px #ffffff;
+}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;transition:background .4s,color .4s}
+    a{text-decoration:none;color:inherit}
+    ::selection{background:var(--btn);color:var(--btn-text)}
+
+    /* Ambient */
+    #ambient{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+    #grid-bg{position:absolute;inset:0;background-image:linear-gradient(to right,var(--grid) 1px,transparent 1px),linear-gradient(to bottom,var(--grid) 1px,transparent 1px);background-size:24px 24px}
+    .orb{position:absolute;border-radius:50%;filter:blur(90px)}
+    .orb1{top:-12%;left:-12%;width:58vw;height:58vw;background:var(--orb1)}
+    .orb2{bottom:-12%;right:-12%;width:68vw;height:68vw;background:var(--orb2)}
+
+    /* NAV */
+    .nav-shell{position:sticky;top:0;z-index:200;background:var(--nav-bg);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);border-bottom:1px solid var(--border);box-shadow:var(--shadow-sm)}
+    nav{max-width:620px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between}
+    .nav-brand{display:flex;align-items:center;gap:11px;min-width:0}
+    .nav-logo{width:38px;height:38px;border-radius:11px;background:var(--btn);color:var(--btn-text);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;letter-spacing:-.5px;box-shadow:0 3px 12px rgba(0,0,0,0.22);flex-shrink:0;overflow:hidden}
+    .nav-logo img{width:100%;height:100%;object-fit:cover}
+    .nav-name{font-weight:800;font-size:17px;letter-spacing:-.6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .nav-right{display:flex;align-items:center;gap:6px}
+    #theme-btn{width:36px;height:36px;border-radius:50%;border:none;background:none;cursor:pointer;color:var(--text);font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .2s,transform .15s}
+    #theme-btn:hover{background:rgba(100,116,139,.12)}
+    #theme-btn:active{transform:scale(.88)}
+    #theme-btn .ri-sun-line{display:none}
+    html.dark #theme-btn .ri-sun-line{display:inline}
+    html.dark #theme-btn .ri-moon-line{display:none}
+    .secure-chip{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--muted);padding:6px 10px;border-radius:8px;background:rgba(100,116,139,.1)}
+
+    /* MAIN */
+    main{position:relative;z-index:10;max-width:620px;margin:0 auto;padding:28px 15px 70px;display:flex;flex-direction:column;gap:16px}
+    @media(min-width:600px){main{padding:44px 20px 90px}}
+
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:22px;box-shadow:var(--shadow);transition:background .4s,border-color .4s;overflow:hidden}
+    .card-pad{padding:22px 20px}
+    @media(min-width:600px){.card{border-radius:26px}.card-pad{padding:26px 24px}}
+
+    /* Amount block */
+    .amount-block{text-align:center}
+    .amount-label{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+    .amount-value{font-size:clamp(38px,10vw,54px);font-weight:800;letter-spacing:-2px;line-height:1.1;margin:6px 0 4px}
+    .amount-note{font-size:14px;font-weight:500;color:var(--muted);line-height:1.5}
+    .order-pill{display:inline-flex;align-items:center;gap:6px;margin-top:12px;font-size:11px;font-weight:700;letter-spacing:.04em;padding:6px 12px;border-radius:8px;background:rgba(100,116,139,.1);color:var(--muted);font-variant-numeric:tabular-nums}
+
+    /* QR */
+    .qr-wrap{display:flex;flex-direction:column;align-items:center;gap:14px}
+    .qr-frame{position:relative;width:min(300px,72vw);aspect-ratio:1;background:#fff;border-radius:20px;padding:14px;box-shadow:var(--shadow-sm);border:1px solid var(--border);display:flex;align-items:center;justify-content:center}
+    .qr-frame canvas,.qr-frame img{width:100%!important;height:100%!important;display:block;border-radius:8px}
+    .qr-skeleton{position:absolute;inset:14px;border-radius:10px;background:linear-gradient(90deg,#eef2f7 25%,#e2e8f0 50%,#eef2f7 75%);background-size:200% 100%;animation:shimmer 1.3s infinite}
+    @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+    .qr-hint{font-size:13px;font-weight:600;color:var(--muted);text-align:center;display:flex;align-items:center;gap:7px}
+    .apps-strip{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+    .app-chip{font-size:11px;font-weight:700;padding:6px 11px;border-radius:8px;border:1px solid var(--border);color:var(--muted);background:var(--surface2)}
+    .qr-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%}
+    .ghost-btn{flex:1;min-width:140px;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;padding:11px 14px;border-radius:12px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:background .2s,border-color .2s,transform .12s}
+    .ghost-btn:hover{background:rgba(100,116,139,.08)}
+    .ghost-btn:active{transform:scale(.98)}
+
+    /* UPI id row */
+    .upi-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:var(--input-bg);border:1px solid var(--border);margin-top:2px}
+    .upi-row .label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);flex-shrink:0}
+    .upi-row .val{flex:1;font-size:14px;font-weight:700;word-break:break-all;font-variant-numeric:tabular-nums}
+    .icon-btn{border:none;background:none;cursor:pointer;color:var(--muted);padding:6px;border-radius:8px;font-size:14px;transition:color .2s,background .2s}
+    .icon-btn:hover{color:var(--text);background:rgba(100,116,139,.12)}
+
+    /* Primary CTA */
+    .primary-btn{width:100%;padding:15px;background:var(--btn);color:var(--btn-text);border:none;border-radius:16px;font-size:16px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;transition:background .4s,color .4s,transform .12s,opacity .2s}
+    .primary-btn:hover{opacity:.9}
+    .primary-btn:active{transform:scale(.985)}
+    .primary-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    #mobile-cta{display:none}
+    @media(max-width:699px){#mobile-cta{display:flex}}
+
+    /* Timer */
+    .timer{display:flex;align-items:center;justify-content:center;gap:8px;font-size:13px;font-weight:700;padding:11px 14px;border-radius:14px;background:var(--pending-bg);color:var(--pending);font-variant-numeric:tabular-nums}
+
+    /* Steps divider */
+    .step-head{display:flex;align-items:center;gap:11px;margin-bottom:16px}
+    .step-num{width:26px;height:26px;border-radius:9px;background:var(--btn);color:var(--btn-text);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+    .step-title{font-size:16px;font-weight:800;letter-spacing:-.4px}
+    .step-sub{font-size:13px;color:var(--muted);font-weight:500;line-height:1.55;margin-bottom:16px}
+
+    /* Form */
+    .fg{margin-bottom:13px}
+    .fg label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:7px;letter-spacing:.02em}
+    .fg input{width:100%;padding:13px 14px;background:var(--input-bg);border:1px solid var(--border);border-radius:13px;font-size:16px;font-weight:600;font-family:'Inter',sans-serif;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s}
+    .fg input::placeholder{color:var(--muted);opacity:.75;font-weight:500}
+    .fg input:focus{border-color:var(--muted);box-shadow:0 0 0 3px rgba(100,116,139,.12)}
+    .fg input.err{border-color:var(--bad);box-shadow:0 0 0 3px var(--bad-bg)}
+    .fg input#utr{letter-spacing:.14em;font-variant-numeric:tabular-nums}
+    .field-err{display:none;font-size:12px;font-weight:600;color:var(--bad);margin-top:6px}
+    .field-err.show{display:block}
+    .fine{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:12px;text-align:center}
+
+    /* Status banner */
+    .banner{display:flex;gap:13px;align-items:flex-start;padding:16px 18px;border-radius:18px;border:1px solid transparent}
+    .banner i{font-size:19px;margin-top:1px;flex-shrink:0}
+    .banner .b-title{font-size:15px;font-weight:800;letter-spacing:-.3px;margin-bottom:3px}
+    .banner .b-body{font-size:13px;font-weight:500;line-height:1.6;opacity:.9}
+    .banner.ok{background:var(--ok-bg);color:var(--ok);border-color:var(--ok)}
+    .banner.pending{background:var(--pending-bg);color:var(--pending);border-color:var(--pending)}
+    .banner.bad{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+    .banner.info{background:rgba(100,116,139,.09);color:var(--muted);border-color:var(--border)}
+
+    .poll-note{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12px;font-weight:600;color:var(--muted);margin-top:14px}
+    .spin{animation:rot 1s linear infinite}
+    @keyframes rot{to{transform:rotate(360deg)}}
+
+    .hidden{display:none!important}
+
+    /* Skeleton loading state */
+    .sk{border-radius:10px;background:linear-gradient(90deg,rgba(100,116,139,.10) 25%,rgba(100,116,139,.18) 50%,rgba(100,116,139,.10) 75%);background-size:200% 100%;animation:shimmer 1.3s infinite}
+
+    footer{position:relative;z-index:10;text-align:center;padding:0 20px 40px;font-size:12px;color:var(--muted);line-height:1.7}
+    footer a{font-weight:700;color:var(--text)}
+
+    .toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,120%);z-index:900;background:var(--btn);color:var(--btn-text);font-size:13px;font-weight:700;padding:12px 20px;border-radius:12px;box-shadow:var(--shadow);transition:transform .3s cubic-bezier(.16,1,.3,1);display:flex;align-items:center;gap:8px}
+    .toast.show{transform:translate(-50%,0)}
+  
+    /* Nav Animation */
+    .nav-links a{position:relative;padding-bottom:2px;}
+    .nav-links a::after{content:'';position:absolute;width:0;height:2px;bottom:0;left:0;background-color:var(--text);transition:width .3s cubic-bezier(.4,0,.2,1);}
+    .nav-links a:hover::after,.nav-links a.active::after{width:100%;}
+    html.dark .nav-links a::after{background-color:#fff;}
+  
+      
+    .nav-signup-btn {
+        padding: 8px 18px !important;
+        border-radius: 8px !important;
+        background: var(--text) !important;
+        color: var(--bg) !important;
+        font-weight: 700 !important;
+        transition: transform 0.2s, box-shadow 0.2s !important;
+        text-decoration: none !important;
+        border: 2px solid var(--border) !important;
+    }
+    .nav-signup-btn:hover {
+        transform: translate(-2px, -2px) !important;
+        box-shadow: 4px 4px 0px var(--border) !important;
+    }
+    .nav-signup-btn::after { display: none !important; }
+  
+    [class^="ri-"], [class*=" ri-"] {
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.3s;
+        display: inline-block;
+    }
+    button:hover [class^="ri-"], button:hover [class*=" ri-"], a:hover [class^="ri-"], a:hover [class*=" ri-"] {
+        transform: scale(1.15) rotate(4deg);
+    }
+    .ri-spin-anim {
+        animation: ri-spin 1s infinite linear;
+    }
+    @keyframes ri-spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(359deg); }
+    }
+  
+    .profile-menu-wrapper { position: relative !important; }
+  </style>
+    <style>
+    .profile-btn, #theme-btn, #ham-btn {
+        border: 2px solid var(--border) !important;
+        border-radius: 8px !important;
+        background: var(--surface) !important;
+        box-shadow: 2px 2px 0px var(--border) !important;
+        transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+    .profile-btn:hover, #theme-btn:hover, #ham-btn:hover {
+        transform: translate(-2px, -2px) !important;
+        box-shadow: 4px 4px 0px var(--border) !important;
+    }
+    .profile-btn:active, #theme-btn:active, #ham-btn:active {
+        transform: translate(0px, 0px) !important;
+        box-shadow: 0px 0px 0px var(--border) !important;
+    }
+    .profile-dropdown {
+        border: 2px solid var(--border) !important;
+        border-radius: 8px !important;
+        box-shadow: 4px 4px 0px var(--border) !important;
+        top: calc(100% + 12px) !important;
+    }
+    .profile-avatar {
+        border: 2px solid var(--border) !important;
+        background: var(--text) !important;
+        color: var(--bg) !important;
+        border-radius: 8px !important;
+    }
+    .profile-dropdown-item {
+        border-radius: 6px !important;
+    }
+    
+    .profile-menu-wrapper { position: relative !important; }
+  </style>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+  <!-- Firebase Config -->
+  <script src="firebase-config.js"></script>
+<style>
+/* GLOBAL PROFILE MENU CORE + BRUTALIST CSS */
+.profile-menu-wrapper { position: relative !important; }
+.profile-btn {
+    display: flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px;
+    border: 2px solid var(--border) !important;
+    border-radius: 8px !important;
+    background: var(--surface) !important;
+    box-shadow: 2px 2px 0px var(--border) !important;
+    cursor: pointer; transition: transform 0.2s, box-shadow 0.2s !important;
+    font-family: 'Inter', sans-serif;
+}
+.profile-btn:hover {
+    transform: translate(-2px, -2px) !important;
+    box-shadow: 4px 4px 0px var(--border) !important;
+}
+.profile-btn:active {
+    transform: translate(0px, 0px) !important;
+    box-shadow: 0px 0px 0px var(--border) !important;
+}
+.profile-btn .ri-user-3-line { font-size: 24px; color: var(--text); }
+.profile-name { font-size: 13px; font-weight: 600; color: var(--text); max-width: 90px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.profile-chevron { font-size: 12px; color: var(--muted); transition: transform 0.2s; }
+.profile-btn.active .profile-chevron { transform: rotate(180deg); }
+
+.profile-dropdown {
+    position: absolute; top: calc(100% + 12px) !important; right: 0; width: 240px;
+    background: var(--surface);
+    border: 2px solid var(--border) !important;
+    border-radius: 8px !important;
+    box-shadow: 4px 4px 0px var(--border) !important;
+    padding: 10px; opacity: 0; visibility: hidden; transform: translateY(-8px);
+    transition: opacity 0.2s, transform 0.2s, visibility 0.2s; z-index: 300;
+}
+.profile-dropdown.open { opacity: 1; visibility: visible; transform: translateY(0); }
+.profile-dropdown-header { display: flex; align-items: center; gap: 12px; padding: 8px; }
+
+.profile-avatar {
+    width: 40px; height: 40px; 
+    border: 2px solid var(--border) !important;
+    border-radius: 8px !important;
+    background: var(--text) !important; color: var(--bg) !important;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 16px; flex-shrink: 0;
+}
+.profile-info { display: flex; flex-direction: column; min-width: 0; }
+.profile-display-name { font-size: 14px; font-weight: 800; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.profile-display-email { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 600; }
+.profile-dropdown-divider { height: 2px; background: var(--border); margin: 6px 0; }
+.profile-dropdown-item {
+    width: 100%; display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+    border: 2px solid transparent !important; background: none; border-radius: 6px !important;
+    cursor: pointer; font-size: 13px; font-weight: 700; font-family: 'Inter', sans-serif;
+    color: var(--text); transition: all 0.15s; text-align: left;
+}
+.profile-dropdown-item:hover {
+    background: var(--input-bg);
+    border: 2px solid var(--border) !important;
+}
+.profile-dropdown-item i { font-size: 16px; width: 18px; text-align: center; }
+.profile-dropdown-item.logout-btn { color: #ef4444; }
+.profile-dropdown-item.logout-btn:hover { background: rgba(239, 68, 68, 0.1); border-color: #ef4444 !important; }
+</style>
+</head>
+<body>
+
+<div id="ambient"><div id="grid-bg"></div><div class="orb orb1"></div><div class="orb orb2"></div></div>
+
+<div class="nav-shell">
+  <nav>
+    <div class="nav-brand">
+      <div class="nav-logo" id="brand-logo">LB</div>
+      <span class="nav-name" id="brand-name">LanceBuddy</span>
+    </div>
+        <div class="nav-right">
+      <div class="profile-menu-wrapper" id="profile-menu-wrapper">
+        <button class="profile-btn" id="profile-btn" aria-label="Profile">
+          <i class="ri-user-3-line"></i>
+          <span class="profile-name" id="nav-profile-name"></span>
+          <i class="ri-arrow-down-s-line profile-chevron"></i>
+        </button>
+        <div class="profile-dropdown" id="profile-dropdown">
+          <div class="profile-dropdown-header">
+            <div class="profile-avatar" id="dropdown-avatar">U</div>
+            <div class="profile-info">
+              <span class="profile-display-name" id="dropdown-name">User</span>
+              <span class="profile-display-email" id="dropdown-email">user@email.com</span>
+            </div>
+          </div>
+          <div class="profile-dropdown-divider"></div>
+          <button class="profile-dropdown-item logout-btn" id="logout-btn">
+            <i class="ri-logout-box-r-line"></i>
+            <span>Log Out</span>
+          </button>
+        </div>
+      </div>
+      <button id="theme-btn" aria-label="Toggle theme">
+        <i class="ri-moon-line"></i>
+        <i class="ri-sun-line"></i>
+      </button>
+      <button id="ham-btn" aria-label="Menu">
+        <i class="ri-menu-line"></i>
+      </button>
+    </div>
+    </nav>
+</div>
+
+<main>
+
+  <!-- Loading -->
+  <section id="loading-card" class="card card-pad">
+    <div class="sk" style="height:14px;width:38%;margin:0 auto 14px"></div>
+    <div class="sk" style="height:44px;width:56%;margin:0 auto 22px"></div>
+    <div class="sk" style="height:min(300px,72vw);width:min(300px,72vw);margin:0 auto;border-radius:20px"></div>
+  </section>
+
+  <!-- Fatal error -->
+  <section id="error-card" class="card card-pad hidden">
+    <div class="banner bad">
+      <i class="ph ph-triangle-exclamation"></i>
+      <div><div class="b-title" id="error-title">Payment link problem</div>
+      <div class="b-body" id="error-body">This link could not be loaded.</div></div>
+    </div>
+    <a class="primary-btn" style="margin-top:16px;text-decoration:none" href="https://www.lancebuddy.in/">
+      <i class="ph ph-arrow-left"></i> Back to LanceBuddy</a>
+  </section>
+
+  <!-- Payment flow -->
+  <div id="flow" class="hidden" style="display:flex;flex-direction:column;gap:16px">
+
+    <section class="card card-pad amount-block">
+      <div class="amount-label">Amount payable</div>
+      <div class="amount-value" id="amount">₹0.00</div>
+      <div class="amount-note" id="note"></div>
+      <div class="order-pill"><i class="ph ph-receipt"></i> <span id="order-id">—</span></div>
+    </section>
+
+    <div id="timer" class="timer hidden">
+      <i class="fa-regular fa-clock"></i> Link expires in <span id="timer-val">--:--</span>
+    </div>
+
+    <section id="status-section" class="hidden"></section>
+
+    <!-- Step 1: pay -->
+    <section id="pay-card" class="card card-pad">
+      <div class="step-head">
+        <div class="step-num">1</div>
+        <div class="step-title">Pay with any UPI app</div>
+      </div>
+
+      <div class="qr-wrap">
+        <div class="qr-frame">
+          <div class="qr-skeleton" id="qr-skeleton"></div>
+          <div id="qr" role="img" aria-label="UPI payment QR code. If you cannot scan it, use the UPI ID shown below to pay manually."></div>
+        </div>
+        <div class="qr-hint"><i class="ph ph-qrcode"></i> Scan with GPay, PhonePe, Paytm or any UPI app</div>
+        <div class="apps-strip">
+          <span class="app-chip">GPay</span><span class="app-chip">PhonePe</span>
+          <span class="app-chip">Paytm</span><span class="app-chip">BHIM</span>
+          <span class="app-chip">Amazon Pay</span>
+        </div>
+
+        <button id="mobile-cta" class="primary-btn" style="margin-top:6px">
+          <i class="ph ph-mobile-screen-button"></i> <span id="cta-label">Pay via UPI app</span>
+        </button>
+
+        <div class="qr-actions">
+          <button class="ghost-btn" id="download-qr"><i class="ph ph-download"></i> Save QR</button>
+          <button class="ghost-btn" id="copy-link"><i class="ri-links-line"></i> Copy UPI link</button>
+        </div>
+      </div>
+
+      <div class="upi-row">
+        <span class="label">UPI ID</span>
+        <span class="val" id="upi-id">—</span>
+        <button class="icon-btn" id="copy-upi" aria-label="Copy UPI ID"><i class="fa-regular fa-copy"></i></button>
+      </div>
+    </section>
+
+    <!-- Step 2: UTR -->
+    <section id="utr-card" class="card card-pad">
+      <div class="step-head">
+        <div class="step-num">2</div>
+        <div class="step-title">Confirm your payment</div>
+      </div>
+      <p class="step-sub">After paying, open your UPI app's transaction history and copy the 12-digit UTR (also called UPI Reference Number or RRN).</p>
+
+      <form id="utr-form" novalidate>
+        <div class="fg">
+          <label for="utr">UTR / Transaction reference <span style="color:var(--bad)">*</span></label>
+          <input id="utr" name="utr" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="407812345678" aria-describedby="utr-err">
+          <div class="field-err" id="utr-err"></div>
+        </div>
+        <div class="fg">
+          <label for="cust-name">Your name <span style="font-weight:500;opacity:.7">(optional)</span></label>
+          <input id="cust-name" name="customerName" autocomplete="name" maxlength="80" placeholder="Rahul Sharma">
+        </div>
+        <div class="fg">
+          <label for="cust-email">Your email <span style="font-weight:500;opacity:.7">(optional)</span></label>
+          <input id="cust-email" name="customerEmail" type="email" autocomplete="email" maxlength="200" placeholder="rahul@example.com">
+          <div class="field-err" id="email-err"></div>
+        </div>
+
+        <button type="submit" class="primary-btn" id="submit-btn">
+          <i class="ri-check-line"></i> <span>I've paid — confirm payment</span>
+        </button>
+        <div class="field-err" id="form-err" style="text-align:center;margin-top:10px"></div>
+      </form>
+
+      <p class="fine">Your UTR is checked against the merchant's bank records. Never share your UPI PIN or OTP with anyone.</p>
+    </section>
+  </div>
+</main>
+
+<footer>
+  Powered by <a href="https://www.lancebuddy.in/">LanceBuddy</a> · UPI payments run on NPCI rails<br>
+  This page never asks for your PIN, OTP, card or bank credentials.
+</footer>
+
+<div class="toast" id="toast"><i class="ri-check-line-circle"></i> <span id="toast-msg">Copied</span></div>
+
+<script>
+/* ── Theme (flash-free) ─────────────────────────────── */
+(function(){
+  if(localStorage.theme==='dark'||(!('theme' in localStorage)&&window.matchMedia('(prefers-color-scheme: dark)').matches)){
+    document.documentElement.classList.add('dark');
+  }
+})();
+
+/* ── Config ─────────────────────────────────────────── */
+const API_BASE = (localStorage.lb_api_base || 'https://lancebuddy-upi-api.workers.dev').replace(/\/$/,'');
+
+const POLL_INTERVALS = [3000,3000,5000,5000,8000,8000,12000];
+const $ = id => document.getElementById(id);
+
+const state = { order:null, merchant:null, deepLink:'', polls:0, pollTimer:null, expiryTimer:null };
+
+/* ── Utilities ──────────────────────────────────────── */
+const inr = n => '₹' + Number(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+function toast(msg){
+  $('toast-msg').textContent = msg;
+  $('toast').classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(()=>$('toast').classList.remove('show'),2000);
+}
+
+async function copy(text,label){
+  try{
+    await navigator.clipboard.writeText(text);
+  }catch{
+    const ta=document.createElement('textarea');
+    ta.value=text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); }catch{}
+    ta.remove();
+  }
+  toast(label+' copied');
+}
+
+function fatal(title,body){
+  $('loading-card').classList.add('hidden');
+  $('flow').classList.add('hidden');
+  $('error-title').textContent = title;
+  $('error-body').textContent = body;
+  $('error-card').classList.remove('hidden');
+}
+
+async function api(path,options={}){
+  let res;
+  try{
+    res = await fetch(API_BASE + path, {
+      headers:{'Content-Type':'application/json'},
+      ...options
+    });
+  }catch{
+    throw new Error('We could not reach the payment server. Check your internet connection and try again.');
+  }
+  let data = null;
+  try{ data = await res.json(); }catch{}
+  if(!res.ok){
+    const err = new Error((data && data.message) || 'Request failed. Check your connection and try again.');
+    err.code = data && data.error;
+    err.field = data && data.field;
+    err.status = res.status;
+    throw err;
+  }
+  return data;
+}
+
+/* ── UPI deep link (client-side fallback build) ─────── */
+function buildDeepLink(o,m){
+  const p = new URLSearchParams();
+  p.set('pa', m.upiId);
+  if(m.displayName) p.set('pn', m.displayName);
+  p.set('am', Number(o.amount).toFixed(2));
+  if(o.note) p.set('tn', o.note);
+  p.set('cu','INR');
+  p.set('tr', o.orderId);
+  return 'upi://pay?' + p.toString();
+}
+
+/* ── Render ─────────────────────────────────────────── */
+function renderBranding(m){
+  if(m.displayName) {
+    $('brand-name').textContent = m.displayName;
+    document.title = `Pay ${m.displayName} via UPI | LanceBuddy`;
+  }
+  if(m.logoUrl){
+    const img = new Image();
+    img.onload = () => { $('brand-logo').innerHTML=''; $('brand-logo').appendChild(img); };
+    img.alt = (m.displayName||'Merchant') + ' logo';
+    img.src = m.logoUrl;
+  } else if(m.displayName){
+    $('brand-logo').textContent = m.displayName.trim().slice(0,2).toUpperCase();
+  }
+}
+
+function renderQr(link){
+  const box = $('qr');
+  box.innerHTML='';
+  const size = Math.min(300, Math.floor(window.innerWidth*0.72)) - 28;
+  new QRCode(box,{
+    text: link,
+    width: Math.max(size,220),
+    height: Math.max(size,220),
+    correctLevel: QRCode.CorrectLevel.M
+  });
+  $('qr-skeleton').remove();
+}
+
+function startExpiryTimer(expiresAt){
+  if(!expiresAt) return;
+  $('timer').classList.remove('hidden');
+  const tick = () => {
+    const left = Date.parse(expiresAt) - Date.now();
+    if(left <= 0){
+      clearInterval(state.expiryTimer);
+      $('timer').classList.add('hidden');
+      showStatus('EXPIRED');
+      return;
+    }
+    const m = Math.floor(left/60000), s = Math.floor(left%60000/1000);
+    $('timer-val').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  };
+  tick();
+  state.expiryTimer = setInterval(tick,1000);
+}
+
+const STATUS_VIEW = {
+  PENDING:{
+    cls:'pending', icon:'ph ph-hourglass-half', title:'Awaiting merchant confirmation',
+    body:'We received your UTR. The merchant is cross-checking it against their bank records — this usually takes a few minutes. Keep this page open for live updates.'
+  },
+  VERIFIED:{
+    cls:'ok', icon:'ri-check-line-circle', title:'Payment confirmed',
+    body:'Your payment has been verified by the merchant. You can safely close this page — keep your UTR as proof of payment.'
+  },
+  REJECTED:{
+    cls:'bad', icon:'ri-checkbox-blank-circle-fill-xmark', title:'Payment could not be verified',
+    body:'The merchant could not match this UTR to a received payment. If you were debited, contact the merchant with your bank statement.'
+  },
+  EXPIRED:{
+    cls:'bad', icon:'ri-history-line', title:'This payment link has expired',
+    body:'Do not pay against this link. Ask the merchant to send you a fresh payment link.'
+  }
+};
+
+function showStatus(status,{polling=false}={}){
+  const view = STATUS_VIEW[status];
+  if(!view) return;
+  const sec = $('status-section');
+  sec.classList.remove('hidden');
+  sec.innerHTML = `
+    <div class="card card-pad">
+      <div class="banner ${view.cls}">
+        <i class="${view.icon}"></i>
+        <div><div class="b-title">${view.title}</div><div class="b-body">${view.body}</div></div>
+      </div>
+      ${polling ? `<div class="poll-note"><i class="ph ph-arrows-rotate spin"></i> Checking for updates…</div>` : ''}
+    </div>`;
+
+  if(status==='VERIFIED'){
+    sec.querySelector('.card').insertAdjacentHTML('beforeend',
+      `<a class="primary-btn" style="margin-top:16px;text-decoration:none" href="https://www.lancebuddy.in/">
+         <i class="ph ph-arrow-left"></i> Back to LanceBuddy</a>`);
+  }
+
+  const terminal = status==='VERIFIED' || status==='REJECTED' || status==='EXPIRED';
+  $('utr-card').classList.toggle('hidden', status==='PENDING' || terminal);
+  $('pay-card').classList.toggle('hidden', terminal);
+  if(terminal){
+    $('timer').classList.add('hidden');
+    clearInterval(state.expiryTimer);
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── Polling ────────────────────────────────────────── */
+function startPolling(){
+  clearTimeout(state.pollTimer);
+  const schedule = () => {
+    const delay = POLL_INTERVALS[Math.min(state.polls, POLL_INTERVALS.length-1)];
+    state.polls += 1;
+    state.pollTimer = setTimeout(check, delay);
+  };
+  const check = async () => {
+    try{
+      const data = await api(`/api/status?orderId=${encodeURIComponent(state.order.orderId)}`);
+      if(data.status !== 'PENDING'){
+        state.order.status = data.status;
+        showStatus(data.status);
+        return;
+      }
+    }catch{ /* transient — keep polling */ }
+    if(state.polls < 200) schedule();
+    else showStatus('PENDING',{polling:false});
+  };
+  schedule();
+}
+
+/* ── Boot ───────────────────────────────────────────── */
+async function boot(){
+  const params = new URLSearchParams(location.search);
+  const orderId = params.get('orderId');
+  const sig = params.get('sig');
+
+  if(!orderId){
+    fatal('Invalid payment page','This link was opened directly instead of through checkout. To pay, go back to LanceBuddy and click "Upgrade to Premium".');
+    return;
+  }
+
+  let data;
+  try{
+    data = await api(`/api/order?orderId=${encodeURIComponent(orderId)}${sig?`&sig=${encodeURIComponent(sig)}`:''}`);
+  }catch(err){
+    const titles = {
+      order_not_found:'Payment link not found',
+      invalid_signature:'This link has been tampered with'
+    };
+    fatal(titles[err.code] || 'Payment link problem', err.message);
+    return;
+  }
+
+  state.order = data.order;
+  state.merchant = data.merchant;
+  state.deepLink = data.upiDeepLink || buildDeepLink(data.order, data.merchant);
+
+  renderBranding(data.merchant);
+  $('amount').textContent = inr(data.order.amount);
+  $('note').textContent = data.order.note || '';
+  $('order-id').textContent = data.order.orderId;
+  $('upi-id').textContent = data.merchant.upiId;
+  $('cta-label').textContent = `Pay ${inr(data.order.amount)} via UPI app`;
+  $('qr').setAttribute('aria-label',
+    `UPI QR code to pay ${inr(data.order.amount)} to ${data.merchant.displayName||data.merchant.upiId} for order ${data.order.orderId}. If you cannot scan, pay manually to UPI ID ${data.merchant.upiId}.`);
+
+  $('loading-card').classList.add('hidden');
+  $('flow').classList.remove('hidden');
+  $('flow').style.display='flex';
+
+  renderQr(state.deepLink);
+
+  if(data.order.status === 'CREATED'){
+    startExpiryTimer(data.order.expiresAt);
+  } else if(data.order.status === 'PENDING'){
+    showStatus('PENDING',{polling:true});
+    startPolling();
+  } else {
+    showStatus(data.order.status);
+  }
+}
+
+/* ── Events ─────────────────────────────────────────── */
+$('theme-btn').addEventListener('click',()=>{
+  document.documentElement.classList.toggle('dark');
+  localStorage.theme = document.documentElement.classList.contains('dark')?'dark':'light';
+});
+
+$('mobile-cta').addEventListener('click',()=>{ window.location.href = state.deepLink; });
+$('copy-upi').addEventListener('click',()=> copy(state.merchant.upiId,'UPI ID'));
+$('copy-link').addEventListener('click',()=> copy(state.deepLink,'UPI link'));
+
+$('download-qr').addEventListener('click',()=>{
+  const canvas = $('qr').querySelector('canvas');
+  const img = $('qr').querySelector('img');
+  const src = canvas ? canvas.toDataURL('image/png') : (img ? img.src : null);
+  if(!src) return toast('QR not ready yet');
+  const a = document.createElement('a');
+  a.href = src;
+  a.download = `upi-qr-${state.order.orderId}.png`;
+  a.click();
+  toast('QR saved');
+});
+
+$('utr').addEventListener('input',e=>{
+  e.target.value = e.target.value.replace(/\D/g,'').slice(0,12);
+  e.target.classList.remove('err');
+  $('utr-err').classList.remove('show');
+});
+
+$('utr-form').addEventListener('submit', async e => {
+  e.preventDefault();
+  const utr = $('utr').value.trim();
+  const email = $('cust-email').value.trim();
+  let ok = true;
+
+  $('form-err').classList.remove('show');
+
+  if(!/^\d{12}$/.test(utr)){
+    $('utr').classList.add('err');
+    $('utr-err').textContent = utr.length ? `UTR must be 12 digits — you entered ${utr.length}.` : 'Enter the 12-digit UTR from your UPI app.';
+    $('utr-err').classList.add('show');
+    ok = false;
+  }
+  if(email && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){
+    $('cust-email').classList.add('err');
+    $('email-err').textContent = 'Enter a valid email address, e.g. name@example.com.';
+    $('email-err').classList.add('show');
+    ok = false;
+  }
+  if(!ok) return;
+
+  const btn = $('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="ph ph-arrows-rotate spin"></i> <span>Submitting…</span>';
+
+  try{
+    const res = await api('/api/verify',{
+      method:'POST',
+      body: JSON.stringify({
+        orderId: state.order.orderId,
+        utr,
+        customerName: $('cust-name').value.trim() || null,
+        customerEmail: email || null
+      })
+    });
+    state.order.status = res.status;
+    if(res.status === 'PENDING'){
+      showStatus('PENDING',{polling:true});
+      startPolling();
+    } else {
+      showStatus(res.status);
+    }
+  }catch(err){
+    if(err.code === 'order_expired'){ showStatus('EXPIRED'); return; }
+    $('form-err').textContent = err.message;
+    $('form-err').classList.add('show');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ri-check-line"></i> <span>I\'ve paid — confirm payment</span>';
+  }
+});
+
+document.addEventListener('visibilitychange',()=>{
+  if(!document.hidden && state.order && state.order.status === 'PENDING'){
+    state.polls = 0;
+    startPolling();
+  }
+});
+
+boot();
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    function updateGlobalAuthUI() {
+        try {
+            const user = JSON.parse(localStorage.getItem('lb_current_user'));
+            const signinLinks = document.querySelectorAll('a[href="LogIn/index.html"], a[href="LogIn/index.html?mode=signup"], .nav-signin-link, .nav-signup-btn');
+            
+            if (user) {
+                // User is logged in: hide Sign In / Sign Up
+                signinLinks.forEach(link => {
+                    if (link) link.style.display = 'none';
+                });
+                
+                
+            } else {
+                // User is guest: show Sign In / Sign Up
+                signinLinks.forEach(link => {
+                    if (link) link.style.display = '';
+                });
+            }
+        } catch(e) {}
+    }
+    updateGlobalAuthUI();
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const profileBtn = document.getElementById('profile-btn');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    const profileName = document.getElementById('nav-profile-name');
+    const dropdownAvatar = document.getElementById('dropdown-avatar');
+    const dropdownName = document.getElementById('dropdown-name');
+    const dropdownEmail = document.getElementById('dropdown-email');
+    
+    if(!profileBtn) return;
+
+    function getCurrentUser() {
+        try { return JSON.parse(localStorage.getItem('lb_current_user')); }
+        catch (e) { return null; }
+    }
+
+    function updateProfileUI() {
+        const user = getCurrentUser();
+        if (user) {
+            const name = user.name || 'User';
+            profileName.textContent = name.length > 10 ? name.substring(0, 10) + '...' : name;
+            dropdownAvatar.textContent = name.charAt(0).toUpperCase();
+            dropdownName.textContent = name;
+            dropdownEmail.textContent = user.email || '';
+            profileBtn.classList.remove('guest');
+            profileBtn.style.display = 'flex';
+        } else {
+            profileBtn.style.display = 'none';
+        }
+    }
+
+    profileBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const user = getCurrentUser();
+        if (!user) {
+            window.location.href = (window.location.pathname.includes('/LogIn/') ? 'index.html' : 'LogIn/index.html');
+            return;
+        }
+        const isOpen = profileDropdown.classList.contains('open');
+        if (isOpen) {
+            profileDropdown.classList.remove('open');
+            profileBtn.classList.remove('active');
+        } else {
+            updateProfileUI();
+            profileDropdown.classList.add('open');
+            profileBtn.classList.add('active');
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        if (profileDropdown && !profileDropdown.contains(e.target) && !profileBtn.contains(e.target)) {
+            profileDropdown.classList.remove('open');
+            profileBtn.classList.remove('active');
+        }
+    });
+
+    const logoutBtn = document.getElementById('logout-btn');
+    if(logoutBtn) {
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('lb_current_user');
+            window.location.href = (window.location.pathname.includes('/LogIn/') ? 'index.html' : 'LogIn/index.html');
+        });
+    }
+
+    updateProfileUI();
+});
+</script>
+</body>
+</html>
