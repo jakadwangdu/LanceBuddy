@@ -1,9 +1,0 @@
-{
-  "name": "lancebuddy-workspace",
-  "private": true,
-  "scripts": {
-    "dev": "npm run dev --prefix react-web",
-    "build": "npm run build --prefix react-web",
-    "preview": "npm run preview --prefix react-web"
-  }
-}
