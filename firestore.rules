@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Users Collection Rules
+    match /users/{userId} {
+      // 1. Users can only read their own document
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // 2. Users can create their own document if it matches their Auth UID
+      // But they cannot set their plan to premium on creation
+      allow create: if request.auth != null 
+                    && request.auth.uid == userId
+                    && request.resource.data.plan == 'basic-free-plan'
+                    && !('premiumUntil' in request.resource.data);
+
+      // 3. Users can only update non-sensitive fields. 
+      // They CANNOT modify 'plan' or 'premiumUntil'.
+      // Only the backend (Firebase Admin SDK) can update these fields upon successful payment.
+      allow update: if request.auth != null 
+                    && request.auth.uid == userId
+                    && !request.resource.data.diff(resource.data).affectedKeys()
+                        .hasAny(['plan', 'premiumUntil']);
+      
+      // 4. Users cannot delete their own record directly unless explicitly allowed
+      allow delete: if false;
+    }
+    
+    // Future collections can be added here
+  }
+}

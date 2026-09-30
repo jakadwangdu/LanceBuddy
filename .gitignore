@@ -22,6 +22,20 @@ dist/
 dist-ssr/
 *.local
 
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Agent & AI tool metadata
+.agents/
+.mcp.json
+skills-lock.json
+
+# Scratch files & raw screenshots
+test_*.js
+Screenshot_*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

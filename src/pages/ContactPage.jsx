@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 export const ContactPage = () => {
   const [name, setName] = useState('');
@@ -25,7 +26,7 @@ export const ContactPage = () => {
           _subject: `[LanceBuddy Contact] ${subject}`
         })
       });
-      setStatus('Message sent successfully! Jakad usually replies within 24 hours.');
+      setStatus('Message sent successfully! Shaurya usually replies within 24 hours.');
       setMessage('');
     } catch {
       setStatus('Failed to send. You can also reach out directly via email.');
@@ -35,12 +36,23 @@ export const ContactPage = () => {
 
   return (
     <div className="contact-page">
-      <div className="page-header">
+      <motion.div 
+        className="page-header"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <h1>Contact &amp; Support</h1>
         <p>Questions, feedback, or custom integration requests? We'd love to hear from you.</p>
-      </div>
+      </motion.div>
 
-      <div className="contact-layout">
+      <motion.div 
+        className="contact-layout"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
         <div className="contact-info-card">
           <h2>Get in Touch</h2>
           <p className="contact-desc">
@@ -74,7 +86,7 @@ export const ContactPage = () => {
             </a>
 
             <a
-              href="https://instagram.com/official_jakadwangdu"
+              href="https://www.instagram.com/shaurya__5656"
               target="_blank"
               rel="noopener noreferrer"
               className="ci"
@@ -99,7 +111,6 @@ export const ContactPage = () => {
           </div>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="contact-form-card">
           <h2>Send a Message</h2>
 
@@ -111,7 +122,7 @@ export const ContactPage = () => {
               maxLength={100}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="e.g. Rahul Sharma"
+              placeholder="e.g. John Doe"
             />
           </div>
 
@@ -168,7 +179,7 @@ export const ContactPage = () => {
 
           {status && <div className="sup-status">{status}</div>}
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 };

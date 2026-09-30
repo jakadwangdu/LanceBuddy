@@ -59,7 +59,7 @@ export const BlogPage = () => {
               <div className="article-footer">
                 <div className="article-author">
                   <div className="author-avatar">JW</div>
-                  <span>Jakad Wangdu</span>
+                  <span>Shaurya Pratap Singh (Jakadwangdu)</span>
                 </div>
                 <Link to={`/blog/${article.slug}`} className="read-more">
                   Read Guide <i className="ri-arrow-right-line"></i>

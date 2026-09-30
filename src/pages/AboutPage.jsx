@@ -1,14 +1,26 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 export const AboutPage = () => {
   return (
     <div className="about-page">
-      <div className="page-header">
+      <motion.div 
+        className="page-header"
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
         <h1>About LanceBuddy</h1>
         <p>Built by a freelancer, for freelancers — to solve the hardest part of freelancing: finding clients.</p>
-      </div>
+      </motion.div>
 
-      <div className="content-card">
+      <motion.div 
+        className="content-card"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
         <h2>The Problem</h2>
         <p>
           Freelancing is freedom — but it comes with a catch. The hardest part isn't doing the work; it's <strong>getting the work</strong>. Most freelancers spend 30-50% of their time chasing leads: cold emailing, scrolling directories, paying for Leadfeeder, Apollo, or Upwork connects, and still coming up empty.
@@ -25,11 +37,55 @@ export const AboutPage = () => {
           Instead of paying $50-200/month for databases that gatekeep public information, LanceBuddy taps into public sources — Google Maps, JustDial, IndiaMART, Sulekha, LinkedIn, Facebook — and structures that data for you. Every lead comes with a verified source link so you can check it yourself.
         </p>
 
+        {/* Core Capabilities */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+          gap: '16px',
+          margin: '28px 0 36px'
+        }}>
+          <div style={{
+            borderRadius: 'var(--radius-lg)',
+            padding: '20px',
+            border: '1px solid var(--border)',
+            background: 'var(--surface2)',
+            boxShadow: 'var(--shadow-sm)'
+          }}>
+            <div style={{ fontSize: '1.25rem', color: 'var(--accent)', marginBottom: '8px' }}>
+              <i className="ri-compass-3-line"></i>
+            </div>
+            <div style={{ fontSize: '0.95rem', fontWeight: 750, color: 'var(--text)', marginBottom: '6px' }}>
+              1. Direct Market Querying
+            </div>
+            <div style={{ fontSize: '0.85rem', color: 'var(--muted)', lineHeight: 1.5 }}>
+              Query specific commercial sectors and geographical hubs across 500+ Indian cities in seconds.
+            </div>
+          </div>
+
+          <div style={{
+            borderRadius: 'var(--radius-lg)',
+            padding: '20px',
+            border: '1px solid var(--border)',
+            background: 'var(--surface2)',
+            boxShadow: 'var(--shadow-sm)'
+          }}>
+            <div style={{ fontSize: '1.25rem', color: '#10b981', marginBottom: '8px' }}>
+              <i className="ri-shield-check-line"></i>
+            </div>
+            <div style={{ fontSize: '0.95rem', fontWeight: 750, color: 'var(--text)', marginBottom: '6px' }}>
+              2. Verified Public Sources
+            </div>
+            <div style={{ fontSize: '0.85rem', color: 'var(--muted)', lineHeight: 1.5 }}>
+              Cross-checked directory profiles with direct phone verification, Google Maps, and one-click outreach.
+            </div>
+          </div>
+        </div>
+
         {/* Founder Card */}
         <div className="founder-card">
           <div className="founder-img">JW</div>
           <div className="founder-info">
-            <h3>Jakad Wangdu</h3>
+            <h3>Shaurya Pratap Singh (Jakadwangdu)</h3>
             <div className="founder-role">Founder &amp; Developer</div>
             <p style={{ margin: 0, fontSize: '14px', opacity: 0.85, lineHeight: 1.6 }}>
               Freelance full-stack developer turned builder. I write code, design interfaces, and build tools that solve real problems for independent professionals.
@@ -63,7 +119,7 @@ export const AboutPage = () => {
                 <i className="ri-linkedin-fill"></i>
               </a>
               <a
-                href="https://instagram.com/official_jakadwangdu"
+                href="https://www.instagram.com/shaurya__5656"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -82,8 +138,8 @@ export const AboutPage = () => {
             <div className="value-icon">
               <i className="ri-gift-2-line"></i>
             </div>
-            <h3>Forever Free</h3>
-            <p>No subscriptions, no hidden limits, no premium tiers. All features free for everyone.</p>
+            <h3>Free &amp; Fair Pricing</h3>
+            <p>Start 100% free with monthly scouts and private CRM. Ultra-affordable Premium tier with zero lock-in.</p>
           </div>
 
           <div className="value-card">
@@ -148,7 +204,7 @@ export const AboutPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -13,18 +13,24 @@ export const FilterBar = ({
       <div className="search-input-wrap">
         <i className="ri-search-line"></i>
         <input
+          id="filterSearchInput"
+          name="filterSearch"
           type="text"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Filter leads by name, phone, details..."
+          aria-label="Filter leads by name, phone, or keywords"
         />
       </div>
 
       <div className="filters-dropdown-group">
         <select
+          id="statusFilterSelect"
+          name="statusFilter"
           value={statusFilter}
           onChange={(e) => onStatusChange(e.target.value)}
           className="filter-select"
+          aria-label="Filter leads by pipeline status"
         >
           <option value="all">All Statuses</option>
           <option value="new">New</option>
@@ -35,9 +41,12 @@ export const FilterBar = ({
         </select>
 
         <select
+          id="priorityFilterSelect"
+          name="priorityFilter"
           value={priorityFilter}
           onChange={(e) => onPriorityChange(e.target.value)}
           className="filter-select"
+          aria-label="Filter leads by priority tier"
         >
           <option value="all">All Priorities</option>
           <option value="hot">Hot</option>

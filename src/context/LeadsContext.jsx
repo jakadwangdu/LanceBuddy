@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { generateMockLeads } from '../data/mockLeads';
+import { fetchRealworldLeads } from '../services/apiLeads';
 
 const LeadsContext = createContext();
 
@@ -73,7 +73,11 @@ export const LeadsProvider = ({ children }) => {
     // Simulate scout latency for natural UX
     await new Promise(r => setTimeout(r, 600));
 
-    const generated = generateMockLeads(biz, loc);
+    let generated = await fetchRealworldLeads(biz, loc);
+    if (!generated || generated.length === 0) {
+      setScoutMessage({ type: 'warning', text: 'No real-world leads found for this query.' });
+      generated = [];
+    }
 
     // Merge any existing notes from notesList
     const merged = generated.map(lead => {
@@ -144,7 +148,7 @@ export const LeadsProvider = ({ children }) => {
       emailBodyHTML += `
           <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center; font-size: 13px; color: #64748b;">
               <p style="margin: 0 0 5px 0;">This automated report was generated via LanceBuddy.</p>
-              <p style="margin: 0;">Made by <strong>Jakad Wangdu</strong></p>
+              <p style="margin: 0;">Made by <strong>Shaurya Pratap Singh (Jakadwangdu)</strong></p>
           </div>
         </div>
       `;

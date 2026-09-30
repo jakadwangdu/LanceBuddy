@@ -1,9 +1,27 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
 export const MoreSheet = ({ isOpen, onClose }) => {
   const { currentUser, logout } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleNavClick = (path, e) => {
+    if (path.startsWith('/#')) {
+      const id = path.replace('/#', '');
+      const el = document.getElementById(id);
+      if (el && location.pathname === '/') {
+        e.preventDefault();
+        onClose();
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        onClose();
+      }
+    } else {
+      onClose();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -25,6 +43,13 @@ export const MoreSheet = ({ isOpen, onClose }) => {
         </div>
 
         <div className="more-sheet-links">
+          {currentUser?.plan !== 'paid-premium-plan' && (
+            <Link to="/#pricing" onClick={(e) => handleNavClick('/#pricing', e)}>
+              <i className="ri-vip-crown-line"></i>
+              <span>Plans &amp; Pricing</span>
+            </Link>
+          )}
+
           <Link to="/about" onClick={onClose}>
             <i className="ri-information-line"></i>
             <span>About LanceBuddy</span>
@@ -72,7 +97,12 @@ export const MoreSheet = ({ isOpen, onClose }) => {
               }}
             >
               <i className="ri-logout-box-r-line"></i>
-              <span>Log Out ({currentUser.name})</span>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                Log Out ({currentUser.name})
+                {currentUser?.plan === 'paid-premium-plan' && (
+                  <i className="ri-vip-crown-2-fill" style={{ color: '#f59e0b', fontSize: '0.85rem' }} title="Premium Member"></i>
+                )}
+              </span>
             </button>
           ) : (
             <>

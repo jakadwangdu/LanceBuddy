@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLeads } from '../../context/LeadsContext';
+import { motion } from 'framer-motion';
 
 export const NotesSection = () => {
   const { notesList = [], deleteNote } = useLeads() || {};
@@ -24,18 +25,33 @@ export const NotesSection = () => {
 
   return (
     <section className="notes-section" id="notes">
-      <div className="sec-hd">
+      <motion.div 
+        className="sec-hd"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6 }}
+      >
         <h2>Saved Lead Notes</h2>
         <p>Your meeting notes, research findings, and follow-up checklists, stored locally on your device.</p>
-      </div>
+      </motion.div>
 
       {safeNotes.length > 0 ? (
-        <div className="notes-grid">
+        <motion.div 
+          className="notes-grid"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={{
+            visible: { transition: { staggerChildren: 0.15 } },
+            hidden: {}
+          }}
+        >
           {safeNotes.map((note) => (
-            <div key={note.id || Math.random()} className="note-card">
+            <motion.div variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5 } } }} key={note.id || Math.random()} className="note-card">
               <div className="note-card-top">
                 <div>
-                  <h4 className="note-card-title">{note.leadName || 'Lead Note'}</h4>
+                  <h3 className="note-card-title">{note.leadName || 'Lead Note'}</h3>
                   <div className="note-card-meta">
                     {note.biz && (
                       <span>
@@ -64,9 +80,9 @@ export const NotesSection = () => {
               </div>
 
               <p className="note-card-content">{note.notes}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       ) : (
         <div className="notes-empty">
           <i className="ri-file-text-line"></i>

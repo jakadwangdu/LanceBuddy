@@ -18,7 +18,8 @@ export const LoginPage = () => {
     loginWithGoogle,
     sendVerificationEmail,
     checkEmailVerification,
-    verifyActionCode
+    verifyActionCode,
+    resetPassword
   } = useAuth();
 
   const isInitialSignUp = location.pathname.includes('signup') || searchParams.get('mode') === 'signup';
@@ -69,9 +70,14 @@ export const LoginPage = () => {
   // Redirect if already logged in and verified
   useEffect(() => {
     if (currentUser && currentUser.emailVerified && authStep !== 'verify') {
-      navigate('/');
+      const redirect = searchParams.get('redirect');
+      if (redirect) {
+        navigate(redirect.startsWith('/') ? redirect : `/${redirect}`);
+      } else {
+        navigate('/');
+      }
     }
-  }, [currentUser, navigate, authStep]);
+  }, [currentUser, navigate, authStep, searchParams]);
 
   // Resend Countdown Timer
   useEffect(() => {
@@ -146,12 +152,12 @@ export const LoginPage = () => {
         navigate('/');
       }
     } catch (err) {
-      console.error(err);
-      let msg = err.message || 'Authentication failed. Please check your credentials.';
+      let msg = err?.message || 'Authentication failed. Please check your credentials.';
       if (msg.includes('auth/invalid-credential') || msg.includes('auth/wrong-password')) {
-        msg = 'Invalid email or password.';
+        msg = 'Invalid email or password. Please verify your credentials or click "Forgot Password?" below.';
       } else if (msg.includes('auth/email-already-in-use')) {
-        msg = 'This email is already registered. Please sign in instead.';
+        msg = 'This email is already registered. Switched to Sign In — please enter your password.';
+        setMode('signin');
       } else if (msg.includes('auth/weak-password')) {
         msg = 'Password should be at least 6 characters.';
       }
@@ -223,16 +229,45 @@ export const LoginPage = () => {
     setIsSubmitting(false);
   };
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setError('Please enter your email address first to reset your password.');
+      return;
+    }
+    setError('');
+    setInfoMsg('');
+    setIsSubmitting(true);
+    try {
+      await resetPassword(email);
+      setInfoMsg('Password reset link sent! Check your inbox.');
+    } catch (err) {
+      if (err.code === 'auth/user-not-found') {
+        setError('No account found with this email.');
+      } else {
+        setError('Failed to send reset email. ' + err.message);
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // Google OAuth
   const handleGoogleAuth = async () => {
     setError('');
     setIsSubmitting(true);
     try {
       await loginWithGoogle();
-      navigate('/');
+      const redirect = searchParams.get('redirect');
+      if (redirect) {
+        navigate(redirect.startsWith('/') ? redirect : `/${redirect}`);
+      } else {
+        navigate('/');
+      }
     } catch (err) {
-      console.error(err);
-      setError(err.message || 'Google authentication failed.');
+      if (err?.code !== 'auth/popup-closed-by-user' && err?.message?.indexOf('popup-closed-by-user') === -1) {
+        console.error(err);
+        setError(err.message || 'Google authentication failed.');
+      }
     }
     setIsSubmitting(false);
   };
@@ -300,10 +335,13 @@ export const LoginPage = () => {
               <form onSubmit={handleFormSubmit} className="auth-form">
                 {mode === 'signup' && (
                   <div className="form-group">
-                    <label>Full Name</label>
+                    <label htmlFor="fullName">Full Name</label>
                     <input
+                      id="fullName"
+                      name="fullName"
                       type="text"
                       required
+                      autoComplete="name"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Alex Rivera"
@@ -312,10 +350,13 @@ export const LoginPage = () => {
                 )}
 
                 <div className="form-group">
-                  <label>Email Address</label>
+                  <label htmlFor="authEmail">Email Address</label>
                   <input
+                    id="authEmail"
+                    name="email"
                     type="email"
                     required
+                    autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="alex@domain.com"
@@ -323,11 +364,27 @@ export const LoginPage = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>Password</label>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <label htmlFor="authPassword" style={{ margin: 0 }}>Password</label>
+                    {mode === 'signin' && (
+                      <button
+                        type="button"
+                        onClick={handleForgotPassword}
+                        disabled={isSubmitting}
+                        aria-label="Reset forgotten password"
+                        style={{ background: 'transparent', border: 'none', color: 'var(--text)', textDecoration: 'underline', fontSize: '0.8rem', cursor: 'pointer', padding: 0 }}
+                      >
+                        Forgot Password?
+                      </button>
+                    )}
+                  </div>
                   <input
+                    id="authPassword"
+                    name="password"
                     type="password"
                     required
                     minLength={6}
+                    autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
@@ -358,6 +415,7 @@ export const LoginPage = () => {
                 disabled={isSubmitting}
                 onClick={handleGoogleAuth}
                 className="social-btn"
+                aria-label="Continue with Google authentication"
               >
                 <i className="ri-google-fill" style={{ color: '#ea4335' }}></i>
                 <span>Continue with Google</span>
@@ -380,6 +438,7 @@ export const LoginPage = () => {
                     setInfoMsg('');
                   }}
                   title="Change email"
+                  aria-label="Change email address"
                 >
                   <i className="ri-edit-line"></i> Edit
                 </button>
@@ -402,6 +461,7 @@ export const LoginPage = () => {
                 disabled={isCheckingStatus || isSubmitting}
                 onClick={handleCheckStatus}
                 className="submit-btn"
+                aria-label="Check if email was verified"
               >
                 {isCheckingStatus ? (
                   <>
@@ -418,9 +478,11 @@ export const LoginPage = () => {
               {/* Optional Manual Code / Link Paste */}
               <form onSubmit={handleVerifyCodeSubmit} className="verify-code-subform">
                 <div className="form-group">
-                  <label>Or paste verification code / link</label>
+                  <label htmlFor="verifyCodeInput">Or paste verification code / link</label>
                   <div className="verify-input-group">
                     <input
+                      id="verifyCodeInput"
+                      name="verifyCode"
                       type="text"
                       value={actionCodeInput}
                       onChange={(e) => setActionCodeInput(e.target.value)}
@@ -431,6 +493,7 @@ export const LoginPage = () => {
                       type="submit"
                       disabled={isSubmitting || !actionCodeInput.trim()}
                       className="verify-apply-btn"
+                      aria-label="Submit verification code"
                     >
                       Verify
                     </button>

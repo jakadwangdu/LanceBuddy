@@ -7,14 +7,18 @@ import { Footer } from './components/layout/Footer';
 import { ConsentNotice } from './components/layout/ConsentNotice';
 
 import { HomePage } from './pages/HomePage';
-import { AboutPage } from './pages/AboutPage';
-import { BlogPage } from './pages/BlogPage';
-import { BlogPostPage } from './pages/BlogPostPage';
-import { ContactPage } from './pages/ContactPage';
-import { HelpPage } from './pages/HelpPage';
-import { LoginPage } from './pages/LoginPage';
-import { LegalPage } from './pages/LegalPage';
-import { NotFoundPage } from './pages/NotFoundPage';
+import { InteractiveCursor } from './components/layout/InteractiveCursor';
+
+// Code-split secondary routes to shrink initial bundle and accelerate page load
+const AboutPage = React.lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
+const BlogPage = React.lazy(() => import('./pages/BlogPage').then(m => ({ default: m.BlogPage })));
+const BlogPostPage = React.lazy(() => import('./pages/BlogPostPage').then(m => ({ default: m.BlogPostPage })));
+const ContactPage = React.lazy(() => import('./pages/ContactPage').then(m => ({ default: m.ContactPage })));
+const HelpPage = React.lazy(() => import('./pages/HelpPage').then(m => ({ default: m.HelpPage })));
+const LoginPage = React.lazy(() => import('./pages/LoginPage').then(m => ({ default: m.LoginPage })));
+const LegalPage = React.lazy(() => import('./pages/LegalPage').then(m => ({ default: m.LegalPage })));
+const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
+const CheckoutPage = React.lazy(() => import('./pages/CheckoutPage').then(m => ({ default: m.CheckoutPage })));
 
 // Scroll to top or target section on route changes
 function ScrollToTop() {
@@ -52,6 +56,7 @@ export const App = () => {
   return (
     <div className="app-shell">
       <ScrollToTop />
+      <InteractiveCursor />
 
       {/* Ambient Animated Gradient Orbs & Grid */}
       <div id="ambient" aria-hidden="true">
@@ -65,27 +70,30 @@ export const App = () => {
 
       {/* Main Content Area */}
       <main className="main-content">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/scout" element={<HomePage />} />
-          <Route path="/notes" element={<HomePage />} />
-          <Route path="/pipeline" element={<HomePage />} />
-          <Route path="/pricing" element={<HomePage />} />
-          <Route path="/faq" element={<HomePage />} />
-          <Route path="/features" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/blog" element={<BlogPage />} />
-          <Route path="/blog/:slug" element={<BlogPostPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/help" element={<HelpPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<LoginPage />} />
-          <Route path="/privacy-policy" element={<LegalPage />} />
-          <Route path="/terms-of-service" element={<LegalPage />} />
-          <Route path="/cookie-policy" element={<LegalPage />} />
-          <Route path="/security" element={<LegalPage />} />
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+        <React.Suspense fallback={<div className="page-route-loader"><div className="page-spinner"></div></div>}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/scout" element={<HomePage />} />
+            <Route path="/notes" element={<HomePage />} />
+            <Route path="/pipeline" element={<HomePage />} />
+            <Route path="/pricing" element={<HomePage />} />
+            <Route path="/faq" element={<HomePage />} />
+            <Route path="/features" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
+            <Route path="/contact" element={<ContactPage />} />
+            <Route path="/help" element={<HelpPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<LoginPage />} />
+            <Route path="/privacy-policy" element={<LegalPage />} />
+            <Route path="/terms-of-service" element={<LegalPage />} />
+            <Route path="/cookie-policy" element={<LegalPage />} />
+            <Route path="/security" element={<LegalPage />} />
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </React.Suspense>
       </main>
 
       {/* Footer */}

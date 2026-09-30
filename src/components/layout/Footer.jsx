@@ -18,15 +18,15 @@ export const Footer = () => {
 
           <div className="footer-links-grid">
             <div className="footer-col">
-              <h4>Platform</h4>
-              <Link to="/#scout">Scout Tool</Link>
-              <Link to="/#pipeline">Outreach Pipeline</Link>
-              <Link to="/#notes">Saved Notes</Link>
-              <Link to="/#pricing">Pledge & Free Tier</Link>
+              <h3 className="footer-col-title">Platform</h3>
+              <Link to="/scout">Scout Tool</Link>
+              <Link to="/pipeline">Outreach Pipeline</Link>
+              <Link to="/notes">Saved Notes</Link>
+              <Link to="/pricing">Plans &amp; Pricing</Link>
             </div>
 
             <div className="footer-col">
-              <h4>Resources</h4>
+              <h3 className="footer-col-title">Resources</h3>
               <Link to="/blog">Freelance Blog</Link>
               <Link to="/about">About Us</Link>
               <Link to="/help">Help & FAQs</Link>
@@ -34,7 +34,7 @@ export const Footer = () => {
             </div>
 
             <div className="footer-col">
-              <h4>Legal</h4>
+              <h3 className="footer-col-title">Legal</h3>
               <Link to="/privacy-policy">Privacy Policy</Link>
               <Link to="/terms-of-service">Terms of Service</Link>
               <Link to="/cookie-policy">Cookie Policy</Link>
@@ -52,7 +52,7 @@ export const Footer = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Jakad Wangdu
+              Shaurya Pratap Singh (Jakadwangdu)
             </a>
           </p>
         </div>

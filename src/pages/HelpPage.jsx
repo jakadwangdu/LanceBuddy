@@ -8,6 +8,11 @@ export const HelpPage = () => {
 
   const guides = [
     {
+      title: 'Free Plan vs Premium Plan',
+      category: 'Plans & Pricing',
+      description: 'Understand what is included in our lifetime Free Plan (5 monthly scouts, CRM) and Premium Plan (unlimited scouts, CSV exports, cold email templates).'
+    },
+    {
       title: 'How to Scout Your First 50 Leads',
       category: 'Scouting',
       description: 'Step-by-step workflow: selecting high-intent sectors, inputting locations, and verifying Google Maps listings.'
@@ -50,6 +55,26 @@ export const HelpPage = () => {
             placeholder="Search questions, guides, or keywords..."
           />
         </div>
+      </div>
+
+      {/* Plans & Pricing Guarantee Banner */}
+      <div className="free-guarantee-banner" style={{
+        background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(59, 130, 246, 0.08))',
+        border: '1.5px solid rgba(245, 158, 11, 0.3)',
+        borderRadius: '16px',
+        padding: '24px 20px',
+        margin: '24px 0 32px',
+        textAlign: 'center'
+      }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#f59e0b', color: '#000000', fontWeight: 800, fontSize: '0.8rem', padding: '4px 12px', borderRadius: '20px', marginBottom: '12px' }}>
+          <i className="ri-vip-crown-fill"></i> FREE &amp; PREMIUM PLANS
+        </div>
+        <h2 style={{ fontSize: 'clamp(18px, 3.5vw, 24px)', fontWeight: 800, margin: '0 0 8px', color: 'var(--text)' }}>
+          Start Free Forever, Upgrade Anytime
+        </h2>
+        <p style={{ color: 'var(--muted)', fontSize: '0.95rem', lineHeight: 1.6, maxWidth: '680px', margin: '0 auto' }}>
+          Enjoy 5 free monthly market searches, private CRM, and direct outreach on the Basic Free Plan. Upgrade to Premium for just ₹50 / 3 months or ₹179 / 1 year to unlock unlimited scouting, 1-click CSV spreadsheet exports, and high-converting cold email pitch templates.
+        </p>
       </div>
 
       {/* Guides Grid */}

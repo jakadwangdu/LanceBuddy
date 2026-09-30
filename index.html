@@ -1,27 +1,92 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LanceBuddy &mdash; Free Local Business Lead Finder for Freelancers &amp; Agencies</title>
     <meta name="description" content="Find verified local business leads across India with real contact details, Google Maps verification, customizable cold email templates, and private in-browser CRM pipeline." />
+    <meta name="keywords" content="freelancer tool, freelancing website, freelancing web, freelancing, student earn money, business leads, b2b leads free, local business scouter, cold email templates, crm for freelancers, find clients fast, make money online" />
     <meta name="theme-color" content="#09090b" />
     <link rel="icon" type="image/png" href="/Logo.png" />
     <link rel="apple-touch-icon" href="/Logo.png" />
     <link rel="manifest" href="/manifest.json" />
+
+    <!-- Resource Hints & Preconnects for CDNs -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+
+    <!-- Non-blocking asynchronous loading for Google Fonts & Remixicon -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" /></noscript>
+
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" /></noscript>
+
     <style>
       html, body {
         margin: 0;
         padding: 0;
         background-color: #09090b;
         color: #ffffff;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
     </style>
+    <!-- Clean Telemetry & DevTools Filter -->
+    <script>
+      (function() {
+        // Intercept unsafe CORS headers that trigger Chromium DevTools console warnings
+        if (window.XMLHttpRequest) {
+          const origGetHeader = XMLHttpRequest.prototype.getResponseHeader;
+          XMLHttpRequest.prototype.getResponseHeader = function(name) {
+            if (name) {
+              const lower = String(name).toLowerCase();
+              if (lower === 'x-rtb-fingerprint-id' || lower === 'request-id') {
+                try {
+                  const all = (this.getAllResponseHeaders() || '').toLowerCase();
+                  if (!all.includes(lower)) return null;
+                } catch (e) {
+                  return null;
+                }
+              }
+            }
+            return origGetHeader.apply(this, arguments);
+          };
+        }
+
+        // Filter out third-party/informational noise from console.error & console.warn
+        const origError = console.error;
+        console.error = function(...args) {
+          const str = (args[0] && typeof args[0] === 'string') ? args[0] : (args[0] && args[0].message ? args[0].message : '');
+          if (
+            str.indexOf('lumberjack.razorpay.com') !== -1 ||
+            str.indexOf('browser.sentry-cdn.com') !== -1 ||
+            str.indexOf('api.sardine.ai') !== -1 ||
+            str.indexOf('ERR_BLOCKED_BY_CLIENT') !== -1 ||
+            str.indexOf('popup-closed-by-user') !== -1
+          ) {
+            return;
+          }
+          return origError.apply(this, args);
+        };
+
+        const origWarn = console.warn;
+        console.warn = function(...args) {
+          const str = (args[0] && typeof args[0] === 'string') ? args[0] : '';
+          if (
+            str.indexOf('Refused to get unsafe header') !== -1 ||
+            str.indexOf('preloaded using link preload but not used') !== -1 ||
+            str.indexOf('Cross-Origin-Opener-Policy') !== -1
+          ) {
+            return;
+          }
+          return origWarn.apply(this, args);
+        };
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

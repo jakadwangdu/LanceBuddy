@@ -38,7 +38,7 @@ export const BlogPostPage = () => {
         <div className="article-author-header">
           <div className="author-avatar">JW</div>
           <div>
-            <div className="ab-name">Jakad Wangdu</div>
+            <div className="ab-name">Shaurya Pratap Singh (Jakadwangdu)</div>
             <div className="ab-role">Founder, LanceBuddy</div>
           </div>
         </div>

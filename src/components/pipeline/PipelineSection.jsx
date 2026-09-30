@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLeads } from '../../context/LeadsContext';
+import { motion } from 'framer-motion';
 import { LeadCard } from '../scout/LeadCard';
 
 export const PipelineSection = ({ onSelectForEmail }) => {
@@ -25,13 +26,25 @@ export const PipelineSection = ({ onSelectForEmail }) => {
 
   return (
     <section className="pipeline-section" id="pipeline">
-      <div className="sec-hd">
+      <motion.div 
+        className="sec-hd"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6 }}
+      >
         <h2>Outreach Pipeline CRM</h2>
         <p>Track your prospecting pipeline from initial discovery to signed client contract.</p>
-      </div>
+      </motion.div>
 
       {/* Tabs */}
-      <div className="pipeline-tabs">
+      <motion.div 
+        className="pipeline-tabs"
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6, delay: 0.1 }}
+      >
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -43,10 +56,16 @@ export const PipelineSection = ({ onSelectForEmail }) => {
             <span className="tab-count">{tab.count}</span>
           </button>
         ))}
-      </div>
+      </motion.div>
 
       {/* Leads List */}
-      <div className="pipeline-leads-grid">
+      <motion.div 
+        className="pipeline-leads-grid"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+      >
         {filteredLeads.map((lead) => (
           <LeadCard
             key={lead.id}
@@ -62,7 +81,7 @@ export const PipelineSection = ({ onSelectForEmail }) => {
             <span>Click on any lead's status badge to advance them through your pipeline.</span>
           </div>
         )}
-      </div>
+      </motion.div>
     </section>
   );
 };

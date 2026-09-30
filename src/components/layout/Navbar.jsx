@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
-
 export const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const { currentUser, logout } = useAuth();
@@ -39,14 +38,24 @@ export const Navbar = () => {
     }
   };
 
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Scout Tool', path: '/scout' },
-    { name: 'About', path: '/about' },
-    { name: 'Blog', path: '/blog' },
-    { name: 'Contact', path: '/contact' },
-    { name: 'Notes', path: '/notes' }
-  ];
+  const navLinks = !currentUser
+    ? [
+        { name: 'Features', path: '/#features' },
+        { name: 'Live Demo', path: '/#demo' },
+        { name: 'Pricing', path: '/#pricing' },
+        { name: 'About', path: '/about' },
+        { name: 'Blog', path: '/blog' },
+        { name: 'Contact', path: '/contact' }
+      ]
+    : [
+        { name: 'Workspace', path: '/' },
+        { name: 'Scout Tool', path: '/scout' },
+        { name: 'Pipeline', path: '/pipeline' },
+        { name: 'Notes', path: '/notes' },
+        ...(currentUser?.plan !== 'paid-premium-plan' ? [{ name: 'Upgrade', path: '/#pricing' }] : []),
+        { name: 'About', path: '/about' },
+        { name: 'Blog', path: '/blog' }
+      ];
 
   return (
     <header className="nav-shell">
@@ -82,7 +91,12 @@ export const Navbar = () => {
                 aria-label="User Profile Menu"
               >
                 <i className="ri-user-3-line"></i>
-                <span className="profile-name">{currentUser.name || 'Account'}</span>
+                <span className="profile-name" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                  {currentUser.name || 'Account'}
+                  {currentUser?.plan === 'paid-premium-plan' && (
+                    <i className="ri-vip-crown-2-fill" style={{ color: '#f59e0b', fontSize: '0.82rem' }} title="Premium Member"></i>
+                  )}
+                </span>
                 <i className="ri-arrow-down-s-line profile-chevron"></i>
               </button>
 
@@ -92,12 +106,63 @@ export const Navbar = () => {
                     {(currentUser.name ? currentUser.name[0] : 'U').toUpperCase()}
                   </div>
                   <div className="profile-info">
-                    <span className="profile-display-name">{currentUser.name}</span>
+                    <span className="profile-display-name" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      {currentUser.name}
+                      {currentUser?.plan === 'paid-premium-plan' && (
+                        <i className="ri-vip-crown-2-fill" style={{ color: '#f59e0b', fontSize: '0.85rem' }} title="Premium Member"></i>
+                      )}
+                    </span>
                     <span className="profile-display-email">{currentUser.email}</span>
+                    {currentUser?.plan === 'paid-premium-plan' ? (
+                      <span className="profile-display-plan" style={{
+                        fontSize: '0.72rem',
+                        background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                        color: '#ffffff',
+                        padding: '2px 9px',
+                        borderRadius: '9999px',
+                        marginTop: '4px',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        fontWeight: '700',
+                        boxShadow: '0 2px 6px rgba(245, 158, 11, 0.25)'
+                      }}>
+                        <i className="ri-vip-crown-fill"></i> PRO MEMBER
+                      </span>
+                    ) : (
+                      <span className="profile-display-plan" style={{
+                        fontSize: '0.72rem',
+                        background: 'var(--surface2)',
+                        color: 'var(--muted)',
+                        border: '1px solid var(--border-soft)',
+                        padding: '2px 9px',
+                        borderRadius: '9999px',
+                        marginTop: '4px',
+                        display: 'inline-block',
+                        fontWeight: '600'
+                      }}>
+                        FREE TIER
+                      </span>
+                    )}
                   </div>
                 </div>
 
                 <div className="profile-dropdown-divider"></div>
+
+                {currentUser?.plan !== 'paid-premium-plan' && (
+                  <Link
+                    to="/#pricing"
+                    className="profile-dropdown-item"
+                    onClick={(e) => {
+                      setProfileOpen(false);
+                      handleNavClick('/#pricing', e);
+                    }}
+                    style={{ color: '#eab308', fontWeight: 700 }}
+                  >
+                    <i className="ri-vip-crown-line" style={{ color: '#eab308' }}></i>
+                    <span>Upgrade to Premium</span>
+                  </Link>
+                )}
 
                 <Link
                   to="/#notes"
