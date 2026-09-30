@@ -1,0 +1,13 @@
+# LanceBuddy
+
+> Free Local Business Lead Finder for Freelancers & Agencies
+
+LanceBuddy helps freelancers, consultants, and agencies find verified local business leads across India with verified contact information, Google Maps verification, and private in-browser CRM pipeline tools.
+
+## Core Platform Links
+- [Lead Scouter](https://lancebuddy.in/#/scout): Search and extract verified local business prospects across cities.
+- [Outreach Pipeline](https://lancebuddy.in/#/pipeline): Private in-browser CRM Kanban board.
+- [Private Notes](https://lancebuddy.in/#/notes): Offline-first scratchpad for prospect intelligence.
+- [100% Free Forever Pledge](https://lancebuddy.in/#/pricing): 100% free forever for all freelancers and agencies. No subscriptions, no hidden limits, and no paid tiers.
+- [About the Founder](https://lancebuddy.in/#/about): Founded by Shaurya Pratap Singh (Jakadwangdu).
+- [Support Contact](https://lancebuddy.in/#/contact): Customer and developer support channel.
