@@ -2,30 +2,41 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     
-    // Users Collection Rules
+    // Users Collection: Profiles, scout counters & settings
     match /users/{userId} {
-      // 1. Users can only read their own document
+      // 1. Authenticated users can read their own profile
       allow read: if request.auth != null && request.auth.uid == userId;
       
-      // 2. Users can create their own document if it matches their Auth UID
-      // But they cannot set their plan to premium on creation
+      // 2. New account creation: Must start on basic free tier without premium expiration
       allow create: if request.auth != null 
                     && request.auth.uid == userId
-                    && request.resource.data.plan == 'basic-free-plan'
+                    && (!('plan' in request.resource.data) || request.resource.data.plan == 'basic-free-plan')
                     && !('premiumUntil' in request.resource.data);
 
-      // 3. Users can only update non-sensitive fields. 
-      // They CANNOT modify 'plan' or 'premiumUntil'.
-      // Only the backend (Firebase Admin SDK) can update these fields upon successful payment.
+      // 3. User profile updates: Users can edit legitimate profile fields (name, photoURL, scout counters)
+      // Authoritative subscription fields (plan, premiumUntil, paymentId, role, isAdmin) are 
+      // strictly protected and can ONLY be updated by the server backend via Firebase Service Account.
       allow update: if request.auth != null 
                     && request.auth.uid == userId
                     && !request.resource.data.diff(resource.data).affectedKeys()
-                        .hasAny(['plan', 'premiumUntil']);
+                        .hasAny(['plan', 'premiumUntil', 'paymentId', 'razorpayPaymentId', 'role', 'isAdmin']);
       
-      // 4. Users cannot delete their own record directly unless explicitly allowed
+      // 4. Accounts cannot be deleted directly by clients
       allow delete: if false;
     }
     
-    // Future collections can be added here
+    // Server-Controlled Redeemed Orders (Idempotency & Anti-Replay Ledger)
+    // Completely closed to client writes. ONLY the server backend (Firebase Service Account) can write.
+    match /redeemed_orders/{orderId} {
+      allow read: if request.auth != null;
+      allow write: if false;
+    }
+
+    // Upgrade Requests Audit Log
+    match /upgrade_requests/{requestId} {
+      allow read: if request.auth != null && resource.data.userId == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if false;
+    }
   }
 }

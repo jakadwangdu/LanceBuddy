@@ -35,6 +35,7 @@ skills-lock.json
 # Scratch files & raw screenshots
 test_*.js
 Screenshot_*
+.wrangler/
 
 # Editor directories and files
 .vscode/*

@@ -5,6 +5,7 @@ import path from 'path';
 import zlib from 'zlib';
 
 import { verifyUtrViaGmail } from './server/verifyUpi.js';
+import { cashfreeDevPlugin } from './server/cashfree.js';
 
 // High-performance native build compression plugin (Gzip Level 9 + Brotli Quality 11)
 function nativeCompressionPlugin() {
@@ -100,10 +101,16 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   if (env.UPI_VERIFY_EMAIL) process.env.UPI_VERIFY_EMAIL = env.UPI_VERIFY_EMAIL;
   if (env.UPI_VERIFY_APP_PASS) process.env.UPI_VERIFY_APP_PASS = env.UPI_VERIFY_APP_PASS;
+  if (env.CASHFREE_APP_ID) process.env.CASHFREE_APP_ID = env.CASHFREE_APP_ID;
+  if (env.CASHFREE_SECRET_KEY) process.env.CASHFREE_SECRET_KEY = env.CASHFREE_SECRET_KEY;
+  if (env.CASHFREE_ENV) process.env.CASHFREE_ENV = env.CASHFREE_ENV;
+  if (env.FIREBASE_SERVICE_ACCOUNT) process.env.FIREBASE_SERVICE_ACCOUNT = env.FIREBASE_SERVICE_ACCOUNT;
+  if (env.FIREBASE_CLIENT_EMAIL) process.env.FIREBASE_CLIENT_EMAIL = env.FIREBASE_CLIENT_EMAIL;
+  if (env.FIREBASE_PRIVATE_KEY) process.env.FIREBASE_PRIVATE_KEY = env.FIREBASE_PRIVATE_KEY;
 
   return {
     base: './',
-    plugins: [react(), nativeCompressionPlugin(), upiVerificationPlugin()],
+    plugins: [react(), nativeCompressionPlugin(), upiVerificationPlugin(), cashfreeDevPlugin()],
     server: {
       port: 5173,
       host: true,

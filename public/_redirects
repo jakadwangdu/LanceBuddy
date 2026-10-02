@@ -1,0 +1,3 @@
+# Cloudflare Pages SPA Routing
+# Direct all non-file navigation requests to index.html with HTTP 200
+/*  /index.html  200

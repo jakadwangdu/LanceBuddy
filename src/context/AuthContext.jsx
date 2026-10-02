@@ -201,6 +201,43 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const refreshUser = async () => {
+    if (!auth?.currentUser) return null;
+    try {
+      const database = await getDb();
+      if (!database) return null;
+      const { doc, getDoc } = await import('firebase/firestore');
+      const userDocRef = doc(database, 'users', auth.currentUser.uid);
+      const userSnap = await getDoc(userDocRef);
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+        let plan = data.plan || 'basic-free-plan';
+        if (plan === 'paid-premium-plan' && data.premiumUntil) {
+          if (new Date(data.premiumUntil) < new Date()) {
+            plan = 'basic-free-plan';
+          }
+        }
+        const updated = {
+          ...(currentUser || {}),
+          uid: auth.currentUser.uid,
+          email: auth.currentUser.email,
+          name: auth.currentUser.displayName || data.name || 'User',
+          plan,
+          premiumUntil: data.premiumUntil || null,
+          paymentId: data.paymentId || data.razorpayPaymentId || '',
+          scoutsThisMonth: data.scoutsThisMonth || 0,
+          scoutResetDate: data.scoutResetDate || new Date().toISOString()
+        };
+        setCurrentUser(updated);
+        try { localStorage.setItem('lb_current_user', JSON.stringify(updated)); } catch {}
+        return updated;
+      }
+    } catch (err) {
+      console.warn('Failed to refresh user profile from Firestore:', err);
+    }
+    return null;
+  };
+
   const upgradePlan = async (planName, premiumUntil, paymentId = '') => {
     const isoDate = premiumUntil instanceof Date ? premiumUntil.toISOString() : String(premiumUntil);
     const updated = {
@@ -211,23 +248,6 @@ export const AuthProvider = ({ children }) => {
     };
     setCurrentUser(updated);
     try { localStorage.setItem('lb_current_user', JSON.stringify(updated)); } catch {}
-
-    if (currentUser?.uid) {
-      try {
-        const database = await getDb();
-        if (database) {
-          const { doc, updateDoc } = await import('firebase/firestore');
-          const userRef = doc(database, 'users', currentUser.uid);
-          await updateDoc(userRef, {
-            plan: planName,
-            premiumUntil: isoDate,
-            razorpayPaymentId: paymentId
-          });
-        }
-      } catch (err) {
-        console.warn('Could not sync payment with Firestore:', err);
-      }
-    }
   };
 
   const logout = async () => {
@@ -256,7 +276,8 @@ export const AuthProvider = ({ children }) => {
       verifyActionCode,
       resetPassword,
       incrementScoutCount,
-      upgradePlan
+      upgradePlan,
+      refreshUser
     }}>
       {children}
     </AuthContext.Provider>

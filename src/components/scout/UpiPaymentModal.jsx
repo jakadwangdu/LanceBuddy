@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { launchCashfreeCheckout } from '../../services/cashfreeClient';
 
 export const UpiPaymentModal = ({ isOpen, onClose, initialPlan = 'yearly' }) => {
-  const { currentUser, upgradePlan } = useAuth();
+  const { currentUser, upgradePlan, refreshUser } = useAuth();
   const [billingCycle, setBillingCycle] = useState(initialPlan); // 'quarterly' or 'yearly'
   const [utr, setUtr] = useState('');
   const [copied, setCopied] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [cashfreeLoading, setCashfreeLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [success, setSuccess] = useState(false);
 
@@ -55,6 +57,42 @@ export const UpiPaymentModal = ({ isOpen, onClose, initialPlan = 'yearly' }) => 
         .catch(() => fallbackCopy(textToCopy));
     } else {
       fallbackCopy(textToCopy);
+    }
+  };
+
+  const handleCashfreePay = async () => {
+    setErrorMsg('');
+    if (!currentUser) {
+      alert('Please sign in or create an account first so your Pro upgrade is linked.');
+      return;
+    }
+
+    setCashfreeLoading(true);
+    try {
+      const res = await launchCashfreeCheckout({
+        amount,
+        plan: billingCycle,
+        userPhone: '9876543210'
+      });
+
+      if (res.success && res.paid) {
+        // Refresh authoritative user account state from Firestore
+        if (typeof refreshUser === 'function') {
+          await refreshUser();
+        } else if (res.durationMonths) {
+          const premiumUntil = new Date();
+          premiumUntil.setMonth(premiumUntil.getMonth() + res.durationMonths);
+          await upgradePlan(res.plan || 'paid-premium-plan', premiumUntil, res.orderId);
+        }
+
+        setSuccess(true);
+      } else if (res.error) {
+        setErrorMsg(res.error);
+      }
+    } catch (err) {
+      setErrorMsg(err.message || 'Payment initiation failed.');
+    } finally {
+      setCashfreeLoading(false);
     }
   };
 
@@ -322,6 +360,59 @@ export const UpiPaymentModal = ({ isOpen, onClose, initialPlan = 'yearly' }) => 
               >
                 1 Year &bull; ₹179 (Save ~40%)
               </button>
+            </div>
+
+            {/* Cashfree 1-Click Gateway Checkout */}
+            <button
+              type="button"
+              onClick={handleCashfreePay}
+              disabled={cashfreeLoading}
+              className="leads-btn"
+              style={{
+                width: '100%',
+                padding: '12px 18px',
+                fontSize: '0.94rem',
+                fontWeight: 700,
+                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: 'var(--radius-md)',
+                cursor: cashfreeLoading ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
+                marginBottom: '14px'
+              }}
+            >
+              {cashfreeLoading ? (
+                <>
+                  <i className="ri-loader-4-line" style={{ animation: 'spin 1s linear infinite' }}></i>
+                  <span>Opening Cashfree Gateway...</span>
+                </>
+              ) : (
+                <>
+                  <i className="ri-secure-payment-fill"></i>
+                  <span>Pay with Cashfree &bull; ₹{amount} (Instant UPI / Cards)</span>
+                </>
+              )}
+            </button>
+
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              textAlign: 'center',
+              margin: '12px 0 16px',
+              color: 'var(--muted)',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em'
+            }}>
+              <div style={{ flex: 1, height: '1px', background: 'var(--border-soft)' }}></div>
+              <span style={{ padding: '0 10px' }}>or pay manually via UPI QR</span>
+              <div style={{ flex: 1, height: '1px', background: 'var(--border-soft)' }}></div>
             </div>
 
             {/* QR Code Container */}
