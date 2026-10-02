@@ -5,6 +5,23 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    // Health / Diagnostics endpoint (returns variable names/presence without exposing values)
+    if (url.pathname === '/api/health') {
+      return new Response(JSON.stringify({
+        status: 'ok',
+        envKeys: Object.keys(env || {}),
+        hasAppId: Boolean(env?.CASHFREE_APP_ID),
+        hasSecret: Boolean(env?.CASHFREE_SECRET_KEY),
+        hasEnv: Boolean(env?.CASHFREE_ENV),
+        hasServiceAccount: Boolean(env?.FIREBASE_SERVICE_ACCOUNT)
+      }), {
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        }
+      });
+    }
+
     // 1. Cashfree Create Order route
     if (url.pathname === '/api/cashfree/create-order') {
       if (request.method === 'OPTIONS') {
