@@ -1,9 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { SEO } from '../components/common/SEO';
 
 export const NotFoundPage = () => {
   return (
     <div className="not-found-page">
+      <SEO
+        title="404 — Page Not Found | LanceBuddy"
+        description="The requested page could not be found."
+        noindex={true}
+      />
       <div className="content-card not-found-card">
         <div className="error-badge">404</div>
         <h1>Page Not Found</h1>

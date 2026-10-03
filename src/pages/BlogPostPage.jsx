@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { blogArticles } from '../data/blogArticles';
+import { SEO } from '../components/common/SEO';
 
 export const BlogPostPage = () => {
   const { slug } = useParams();
@@ -9,6 +10,7 @@ export const BlogPostPage = () => {
   if (!article) {
     return (
       <div className="blog-not-found">
+        <SEO title="Article Not Found | LanceBuddy Blog" description="The requested guide could not be found." />
         <h2>Article Not Found</h2>
         <p>The guide you are looking for does not exist or has moved.</p>
         <Link to="/blog" className="leads-btn">
@@ -20,6 +22,35 @@ export const BlogPostPage = () => {
 
   return (
     <article className="blog-post-page">
+      <SEO
+        title={`${article.title} | LanceBuddy`}
+        description={article.excerpt}
+        canonical={`https://www.lancebuddy.in/blog/${article.slug}`}
+        ogType="article"
+        schema={{
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": article.title,
+          "description": article.excerpt,
+          "datePublished": article.date,
+          "author": {
+            "@type": "Person",
+            "name": "Shaurya Pratap Singh (Jakadwangdu)"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "LanceBuddy",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://www.lancebuddy.in/Logo.png"
+            }
+          },
+          "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": `https://www.lancebuddy.in/blog/${article.slug}`
+          }
+        }}
+      />
       <div className="post-nav-breadcrumb">
         <Link to="/blog">
           <i className="ri-arrow-left-line"></i> Back to All Guides

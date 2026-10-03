@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { SEO } from '../components/common/SEO';
 
 export const ContactPage = () => {
   const [name, setName] = useState('');
@@ -36,6 +37,12 @@ export const ContactPage = () => {
 
   return (
     <div className="contact-page">
+      <SEO
+        title="Contact LanceBuddy — Support, Feedback &amp; Partnerships"
+        description="Have questions about scouting local business leads or upgrading to LanceBuddy Pro? Reach out directly to the LanceBuddy team."
+        canonical="https://www.lancebuddy.in/contact"
+        keywords="contact lancebuddy, support, freelance lead tool help"
+      />
       <motion.div 
         className="page-header"
         initial={{ opacity: 0, y: 30 }}

@@ -1,10 +1,24 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { faqData } from '../data/faqData';
+import { SEO } from '../components/common/SEO';
 
 export const HelpPage = () => {
   const [search, setSearch] = useState('');
   const [openItem, setOpenItem] = useState(null);
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    'mainEntity': faqData.map(item => ({
+      '@type': 'Question',
+      'name': item.q,
+      'acceptedAnswer': {
+        '@type': 'Answer',
+        'text': item.a
+      }
+    }))
+  };
 
   const guides = [
     {
@@ -43,6 +57,13 @@ export const HelpPage = () => {
 
   return (
     <div className="help-page">
+      <SEO
+        title="Help Center & FAQs — LanceBuddy Freelancer Knowledge Base"
+        description="Got questions about prospecting local clients, extracting leads, cold email templates, or pricing? Explore LanceBuddy's knowledge base and FAQs."
+        keywords="lancebuddy help, freelance client prospecting guide, b2b leads faq, local lead generation help, cold email templates guide"
+        canonical="https://www.lancebuddy.in/help"
+        schema={faqSchema}
+      />
       <div className="page-header">
         <h1>Help Center &amp; Knowledge Base</h1>
         <p>Everything you need to know about using LanceBuddy, prospecting local markets, and closing deals.</p>

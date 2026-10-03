@@ -1,9 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { SEO } from '../components/common/SEO';
 
 export const AboutPage = () => {
   return (
     <div className="about-page">
+      <SEO
+        title="About LanceBuddy — The Free B2B Client Engine for Freelancers"
+        description="LanceBuddy was created by a freelancer to solve the hardest part of freelancing: finding local business clients without paying 20% marketplace commissions or expensive monthly databases."
+        canonical="https://www.lancebuddy.in/about"
+        keywords="about lancebuddy, freelance lead generation story, client acquisition for solopreneurs, free b2b tools"
+      />
       <motion.div 
         className="page-header"
         initial={{ opacity: 0, y: 30 }}

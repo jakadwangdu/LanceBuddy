@@ -15,6 +15,7 @@ import { faqData } from '../data/faqData';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { TiltCard } from '../components/layout/TiltCard';
 import { motion } from 'framer-motion';
+import { SEO } from '../components/common/SEO';
 
 export const HomePage = () => {
   const navigate = useNavigate();
@@ -177,6 +178,38 @@ export const HomePage = () => {
 
   return (
     <div className="home-page">
+      <SEO
+        title="LanceBuddy — Free Local Business Lead Finder & Client Acquisition Tool for Freelancers"
+        description="LanceBuddy is the #1 free client acquisition tool for freelancers, solopreneurs, and agencies. Extract verified local businesses, phone numbers, Google Maps listings, cold outreach pitch angles, and track leads in a private CRM pipeline."
+        keywords="freelancing tool, client acquisition tool, free local business lead finder, find clients for web design, b2b leads free, local business scraper, cold outreach tool, freelance lead generation, google maps lead extractor, agency lead finder, freelance client finder"
+        canonical="https://www.lancebuddy.in/"
+        schema={{
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'WebApplication',
+              '@id': 'https://www.lancebuddy.in/#app',
+              'name': 'LanceBuddy',
+              'url': 'https://www.lancebuddy.in',
+              'applicationCategory': 'BusinessApplication',
+              'operatingSystem': 'All',
+              'description': 'Free local business lead finder and client acquisition tool for freelancers, solopreneurs, and agencies.',
+              'offers': {
+                '@type': 'Offer',
+                'price': '0',
+                'priceCurrency': 'INR'
+              }
+            },
+            {
+              '@type': 'Organization',
+              '@id': 'https://www.lancebuddy.in/#organization',
+              'name': 'LanceBuddy',
+              'url': 'https://www.lancebuddy.in',
+              'logo': 'https://www.lancebuddy.in/Logo.png'
+            }
+          ]
+        }}
+      />
       {/* Conditionally Render: Guest Landing Page vs Authenticated Workspace */}
       {!currentUser ? (
         /* ============================================================

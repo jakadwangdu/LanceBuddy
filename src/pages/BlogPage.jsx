@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { blogArticles } from '../data/blogArticles';
+import { SEO } from '../components/common/SEO';
 
 export const BlogPage = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
@@ -27,6 +28,12 @@ export const BlogPage = () => {
 
   return (
     <div className="blog-page">
+      <SEO
+        title="Freelance Growth Blog — Lead Generation &amp; Client Acquisition Guides | LanceBuddy"
+        description="Actionable guides, proven cold email templates, and lead generation workflows to help freelancers and digital agencies land high-paying clients."
+        canonical="https://www.lancebuddy.in/blog"
+        keywords="freelance blog, lead generation for freelancers, cold email templates, upwork alternatives, client acquisition guides"
+      />
       <div className="page-header">
         <h1>Freelance Growth Blog</h1>
         <p>Expert guides on freelance lead generation, cold outreach, pricing, and building a sustainable client pipeline.</p>

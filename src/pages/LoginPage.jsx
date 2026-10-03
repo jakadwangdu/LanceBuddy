@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { SEO } from '../components/common/SEO';
 import {
   sendFirebaseVerificationEmail,
   checkEmailVerificationStatus,
@@ -274,6 +275,12 @@ export const LoginPage = () => {
 
   return (
     <div className="auth-page">
+      <SEO
+        title={mode === 'signup' ? 'Create an Account — LanceBuddy' : 'Sign In — LanceBuddy'}
+        description="Sign in or create an account on LanceBuddy to manage your freelance leads and outreach pipeline."
+        noindex={true}
+        canonical="https://www.lancebuddy.in/login"
+      />
       <div className="auth-wrapper">
         <div className="auth-card">
           {/* Header */}

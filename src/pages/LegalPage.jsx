@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
+import { SEO } from '../components/common/SEO';
 
 export const LegalPage = () => {
   const location = useLocation();
@@ -72,6 +73,11 @@ export const LegalPage = () => {
 
   return (
     <div className="legal-page">
+      <SEO
+        title={`${title} — LanceBuddy`}
+        description={`Read LanceBuddy's ${title}. Understand our strict client-side data privacy, terms, and security architecture.`}
+        canonical={`https://www.lancebuddy.in${path}`}
+      />
       <div className="page-header">
         <h1>{title}</h1>
         <p>{date}</p>

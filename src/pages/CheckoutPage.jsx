@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { launchCashfreeCheckout } from '../services/cashfreeClient';
+import { SEO } from '../components/common/SEO';
 
 export const CheckoutPage = () => {
   const [searchParams] = useSearchParams();
@@ -220,6 +221,12 @@ export const CheckoutPage = () => {
 
   return (
     <div className="checkout-page" style={{ minHeight: '85vh', padding: '5rem 1.5rem 4rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <SEO
+        title="Checkout — Upgrade to LanceBuddy Pro"
+        description="Upgrade to LanceBuddy Pro for unlimited scouting, CSV export, and email templates."
+        noindex={true}
+        canonical="https://www.lancebuddy.in/checkout"
+      />
       <div className="checkout-container" style={{ maxWidth: '540px', width: '100%', background: 'var(--surface)', padding: '2.2rem 2rem', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }}>
         
         {/* Header */}
