@@ -21,6 +21,8 @@ const LoginPage = React.lazy(() => import('./pages/LoginPage').then(m => ({ defa
 const LegalPage = React.lazy(() => import('./pages/LegalPage').then(m => ({ default: m.LegalPage })));
 const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
 const CheckoutPage = React.lazy(() => import('./pages/CheckoutPage').then(m => ({ default: m.CheckoutPage })));
+const ErrorPage = React.lazy(() => import('./pages/ErrorPage').then(m => ({ default: m.ErrorPage })));
+const StatusPage = React.lazy(() => import('./pages/StatusPage').then(m => ({ default: m.StatusPage })));
 
 // Scroll to top or target section on route changes
 function ScrollToTop() {
@@ -93,6 +95,16 @@ export const App = () => {
             <Route path="/cookie-policy" element={<LegalPage />} />
             <Route path="/security" element={<LegalPage />} />
             <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/status" element={<StatusPage />} />
+            <Route path="/404" element={<ErrorPage code={404} />} />
+            <Route path="/403" element={<ErrorPage code={403} />} />
+            <Route path="/500" element={<ErrorPage code={500} />} />
+            <Route path="/502" element={<ErrorPage code={502} />} />
+            <Route path="/503" element={<ErrorPage code={503} />} />
+            <Route path="/504" element={<ErrorPage code={504} />} />
+            <Route path="/505" element={<ErrorPage code={505} />} />
+            <Route path="/525" element={<ErrorPage code={525} />} />
+            <Route path="/maintenance" element={<ErrorPage code={503} />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </React.Suspense>

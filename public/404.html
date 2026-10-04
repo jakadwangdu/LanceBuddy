@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>404 — Page Not Found | LanceBuddy</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <script>
+      (function(){
+        var r = document.documentElement;
+        try {
+          var t = localStorage.getItem('lb-theme');
+          if (t === 'dark' || t === 'light') r.setAttribute('data-theme', t);
+        } catch(e){}
+      })();
+    </script>
+    <style>
+      :root {
+        --bg: #ffffff;
+        --ink: #000000;
+        --mute: #666666;
+        --line: #e4e4e4;
+        --on: #ffffff;
+      }
+      :root[data-theme="dark"], @media(prefers-color-scheme:dark){
+        :root:not([data-theme="light"]) {
+          --bg: #000000;
+          --ink: #ffffff;
+          --mute: #8f8f8f;
+          --line: #262626;
+          --on: #000000;
+        }
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: 'Geist', system-ui, sans-serif;
+        min-height: 100svh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        text-align: center;
+      }
+      .card {
+        max-width: 500px;
+        width: 100%;
+        background: color-mix(in srgb, var(--bg) 88%, transparent);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        padding: 48px 32px;
+      }
+      .num {
+        font-family: 'Geist Mono', monospace;
+        font-size: clamp(5rem, 16vw, 8rem);
+        font-weight: 700;
+        line-height: 0.9;
+        -webkit-text-stroke: 1px var(--line);
+        color: transparent;
+        margin-bottom: 12px;
+      }
+      .eyebrow {
+        font-family: 'Geist Mono', monospace;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        color: var(--mute);
+        margin-bottom: 12px;
+      }
+      h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        margin-bottom: 12px;
+      }
+      p {
+        color: var(--mute);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 24px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--ink);
+        color: var(--on);
+        border: 1px solid var(--ink);
+        border-radius: 99px;
+        padding: 12px 28px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        text-decoration: none;
+        cursor: pointer;
+        transition: transform 0.2s;
+      }
+      .btn:hover {
+        transform: translateY(-2px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="num">404</div>
+      <div class="eyebrow">HTTP 404 // RESOURCE NOT FOUND</div>
+      <h1>Page Not Found.</h1>
+      <p>The page or resource you requested could not be located. Redirecting you to the homepage...</p>
+      <a href="/" class="btn">Return to Homepage &rarr;</a>
+    </div>
+    <script>
+      setTimeout(function() {
+        window.location.href = '/';
+      }, 5000);
+    </script>
+  </body>
+</html>
