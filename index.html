@@ -2,13 +2,27 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LanceBuddy — Free Local Business Lead Finder &amp; Client Acquisition Tool for Freelancers</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>LanceBuddy — Direct local client discovery</title>
     <meta name="description" content="Find verified local business leads across India &amp; globally. Get direct owner phone numbers, emails, Google Maps verification, cold email templates, and private in-browser CRM pipeline." />
     <meta name="keywords" content="freelance lead generation tool, b2b client finder, local business leads, cold email templates for freelancers, upwork alternatives, find clients without upwork, freelance CRM, web design client finder, student earn money freelancing, b2b leads free, local business scouter" />
     <meta name="author" content="LanceBuddy" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://www.lancebuddy.in/" />
+
+    <!-- Theme initialization script (prevents flash of wrong theme) -->
+    <script>
+      (function(){
+        var r = document.documentElement, t = null;
+        try { t = localStorage.getItem('lb-theme'); } catch(e) {}
+        if (t === 'dark' || t === 'light') r.setAttribute('data-theme', t);
+      })();
+    </script>
+
+    <!-- Geist & Geist Mono typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
     <!-- OpenGraph (Facebook, LinkedIn, WhatsApp, Discord) -->
     <meta property="og:type" content="website" />
@@ -88,24 +102,8 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
     <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
 
-    <!-- Non-blocking asynchronous loading for Google Fonts & Remixicon -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" /></noscript>
-
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
     <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" /></noscript>
-
-    <style>
-      html, body {
-        margin: 0;
-        padding: 0;
-        background-color: #09090b;
-        color: #ffffff;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-      }
-    </style>
     <!-- Clean Telemetry & DevTools Filter -->
     <script>
       (function() {

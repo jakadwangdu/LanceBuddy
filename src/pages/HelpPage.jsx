@@ -80,20 +80,22 @@ export const HelpPage = () => {
 
       {/* Plans & Pricing Guarantee Banner */}
       <div className="free-guarantee-banner" style={{
-        background: 'linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(59, 130, 246, 0.08))',
-        border: '1.5px solid rgba(245, 158, 11, 0.3)',
-        borderRadius: '16px',
-        padding: '24px 20px',
-        margin: '24px 0 32px',
-        textAlign: 'center'
+        background: 'color-mix(in srgb, var(--bg) 80%, transparent)',
+        border: '1px solid var(--line)',
+        borderRadius: '24px',
+        padding: '28px 24px',
+        margin: '24px auto 36px',
+        maxWidth: '48rem',
+        textAlign: 'center',
+        backdropFilter: 'blur(16px)'
       }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: '#f59e0b', color: '#000000', fontWeight: 800, fontSize: '0.8rem', padding: '4px 12px', borderRadius: '20px', marginBottom: '12px' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'var(--ink)', color: 'var(--on)', fontWeight: 600, fontSize: '0.75rem', padding: '4px 14px', borderRadius: '99px', marginBottom: '14px', letterSpacing: '0.04em' }}>
           <i className="ri-vip-crown-fill"></i> FREE &amp; PREMIUM PLANS
         </div>
-        <h2 style={{ fontSize: 'clamp(18px, 3.5vw, 24px)', fontWeight: 800, margin: '0 0 8px', color: 'var(--text)' }}>
+        <h2 style={{ fontSize: 'clamp(20px, 3.5vw, 26px)', fontWeight: 700, margin: '0 0 10px', color: 'var(--ink)', letterSpacing: '-0.03em' }}>
           Start Free Forever, Upgrade Anytime
         </h2>
-        <p style={{ color: 'var(--muted)', fontSize: '0.95rem', lineHeight: 1.6, maxWidth: '680px', margin: '0 auto' }}>
+        <p style={{ color: 'var(--mute)', fontSize: '0.95rem', lineHeight: 1.6, maxWidth: '640px', margin: '0 auto' }}>
           Enjoy 5 free monthly market searches, private CRM, and direct outreach on the Basic Free Plan. Upgrade to Premium for just ₹50 / 3 months or ₹179 / 1 year to unlock unlimited scouting, 1-click CSV spreadsheet exports, and high-converting cold email pitch templates.
         </p>
       </div>

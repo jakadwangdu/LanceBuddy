@@ -231,13 +231,13 @@ export const CheckoutPage = () => {
         
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: '1.8rem' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--accent-light)', color: 'var(--accent)', fontWeight: 800, fontSize: '0.78rem', padding: '4px 12px', borderRadius: 'var(--radius-full)', marginBottom: '10px', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'color-mix(in srgb, var(--ink) 8%, transparent)', color: 'var(--ink)', fontWeight: 700, fontSize: '0.78rem', padding: '4px 14px', borderRadius: '99px', marginBottom: '12px', border: '1px solid var(--line)', letterSpacing: '0.04em' }}>
             <i className="ri-vip-crown-fill"></i> UPGRADE TO PRO
           </div>
-          <h1 style={{ fontSize: 'clamp(22px, 4vw, 28px)', fontWeight: 850, margin: '0 0 6px', color: 'var(--text)', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: 'clamp(22px, 4vw, 28px)', fontWeight: 700, margin: '0 0 6px', color: 'var(--ink)', letterSpacing: '-0.03em' }}>
             Direct UPI Checkout
           </h1>
-          <p style={{ color: 'var(--muted)', fontSize: '0.9rem', margin: 0 }}>
+          <p style={{ color: 'var(--mute)', fontSize: '0.9rem', margin: 0 }}>
             Pay directly via Google Pay, PhonePe, Paytm, or FamPay with 0% extra fees.
           </p>
         </div>
@@ -281,19 +281,19 @@ export const CheckoutPage = () => {
         ) : (
           <>
             {/* Plan Switcher */}
-            <div style={{ display: 'flex', background: 'var(--surface2)', borderRadius: 'var(--radius-full)', padding: '3px', border: '1px solid var(--border-soft)', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', background: 'color-mix(in srgb, var(--bg) 60%, transparent)', borderRadius: '99px', padding: '4px', border: '1px solid var(--line)', marginBottom: '1.5rem', gap: '4px' }}>
               <button
                 type="button"
                 onClick={() => setBillingCycle('quarterly')}
                 style={{
                   flex: 1,
-                  padding: '8px 12px',
-                  borderRadius: 'var(--radius-full)',
+                  padding: '9px 14px',
+                  borderRadius: '99px',
                   border: 'none',
-                  background: billingCycle === 'quarterly' ? 'var(--btn)' : 'transparent',
-                  color: billingCycle === 'quarterly' ? 'var(--btn-text)' : 'var(--muted)',
+                  background: billingCycle === 'quarterly' ? 'var(--ink)' : 'transparent',
+                  color: billingCycle === 'quarterly' ? 'var(--on)' : 'var(--mute)',
                   cursor: 'pointer',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   fontSize: '0.85rem',
                   transition: 'all 0.2s ease'
                 }}
@@ -305,13 +305,13 @@ export const CheckoutPage = () => {
                 onClick={() => setBillingCycle('yearly')}
                 style={{
                   flex: 1,
-                  padding: '8px 12px',
-                  borderRadius: 'var(--radius-full)',
+                  padding: '9px 14px',
+                  borderRadius: '99px',
                   border: 'none',
-                  background: billingCycle === 'yearly' ? 'var(--btn)' : 'transparent',
-                  color: billingCycle === 'yearly' ? 'var(--btn-text)' : 'var(--muted)',
+                  background: billingCycle === 'yearly' ? 'var(--ink)' : 'transparent',
+                  color: billingCycle === 'yearly' ? 'var(--on)' : 'var(--mute)',
                   cursor: 'pointer',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   fontSize: '0.85rem',
                   transition: 'all 0.2s ease'
                 }}
@@ -330,17 +330,16 @@ export const CheckoutPage = () => {
                 width: '100%',
                 padding: '13px 20px',
                 fontSize: '0.96rem',
-                fontWeight: 800,
-                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: 'var(--radius-md)',
+                fontWeight: 600,
+                background: 'var(--ink)',
+                color: 'var(--on)',
+                border: '1px solid var(--ink)',
+                borderRadius: '99px',
                 cursor: cashfreeLoading ? 'not-allowed' : 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '8px',
-                boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
                 marginBottom: '16px'
               }}
             >
@@ -362,15 +361,16 @@ export const CheckoutPage = () => {
               alignItems: 'center',
               textAlign: 'center',
               margin: '14px 0 18px',
-              color: 'var(--muted)',
+              color: 'var(--mute)',
               fontSize: '0.74rem',
-              fontWeight: 700,
+              fontWeight: 500,
+              fontFamily: '"Geist Mono", monospace',
               textTransform: 'uppercase',
-              letterSpacing: '0.05em'
+              letterSpacing: '0.08em'
             }}>
-              <div style={{ flex: 1, height: '1px', background: 'var(--border-soft)' }}></div>
+              <div style={{ flex: 1, height: '1px', background: 'var(--line)' }}></div>
               <span style={{ padding: '0 12px' }}>or pay manually via UPI QR</span>
-              <div style={{ flex: 1, height: '1px', background: 'var(--border-soft)' }}></div>
+              <div style={{ flex: 1, height: '1px', background: 'var(--line)' }}></div>
             </div>
 
             {/* QR Card */}
@@ -411,17 +411,17 @@ export const CheckoutPage = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '8px',
-                  background: 'var(--surface)',
+                  background: 'color-mix(in srgb, var(--bg) 80%, transparent)',
                   padding: '6px 14px',
-                  borderRadius: 'var(--radius-full)',
-                  border: copied ? '1px solid #10b981' : '1px solid var(--border)',
+                  borderRadius: '99px',
+                  border: copied ? '1px solid var(--ink)' : '1px solid var(--line)',
                   fontSize: '0.85rem',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
                   userSelect: 'none'
                 }}
               >
-                <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--text)' }}>
+                <span style={{ fontFamily: '"Geist Mono", monospace', fontWeight: 600, color: 'var(--ink)' }}>
                   {upiId}
                 </span>
                 <button
@@ -431,8 +431,8 @@ export const CheckoutPage = () => {
                     background: 'none',
                     border: 'none',
                     cursor: 'pointer',
-                    color: copied ? '#10b981' : 'var(--accent)',
-                    fontWeight: 700,
+                    color: 'var(--mute)',
+                    fontWeight: 600,
                     fontSize: '0.8rem',
                     display: 'inline-flex',
                     alignItems: 'center',
@@ -440,25 +440,25 @@ export const CheckoutPage = () => {
                   }}
                 >
                   <i className={copied ? "ri-check-line" : "ri-file-copy-line"}></i>
-                  {copied ? 'Copied!' : 'Copy UPI'}
+                  {copied ? 'Copied' : 'Copy'}
                 </button>
               </div>
 
               {/* 1-Click Mobile UPI Button */}
               <a
                 href={upiIntentUrl}
-                className="leads-btn"
+                className="leads-btn secondary"
                 style={{
                   marginTop: '12px',
                   width: '100%',
-                  padding: '9px 16px',
+                  padding: '10px 16px',
                   fontSize: '0.88rem',
-                  fontWeight: 700,
+                  fontWeight: 600,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '6px',
-                  borderRadius: 'var(--radius-full)'
+                  borderRadius: '99px'
                 }}
               >
                 <i className="ri-smartphone-line"></i>
@@ -469,9 +469,9 @@ export const CheckoutPage = () => {
             {/* Login Warning if not logged in */}
             {!currentUser && (
               <div style={{
-                background: 'rgba(234, 179, 8, 0.08)',
-                border: '1px solid rgba(234, 179, 8, 0.25)',
-                borderRadius: '12px',
+                background: 'color-mix(in srgb, var(--ink) 4%, transparent)',
+                border: '1px solid var(--line)',
+                borderRadius: '16px',
                 padding: '10px 14px',
                 display: 'flex',
                 alignItems: 'center',
@@ -479,10 +479,10 @@ export const CheckoutPage = () => {
                 textAlign: 'left',
                 marginBottom: '1rem'
               }}>
-                <i className="ri-information-fill" style={{ color: '#eab308', fontSize: '1.2rem', flexShrink: 0 }}></i>
-                <div style={{ fontSize: '0.82rem', color: 'var(--muted)', lineHeight: 1.4 }}>
-                  <strong style={{ color: 'var(--text)', display: 'block' }}>Account Login Required</strong>
-                  <Link to={`/login?redirect=${encodeURIComponent(`/checkout?plan=${billingCycle}`)}`} style={{ color: 'var(--accent)', textDecoration: 'underline' }}>
+                <i className="ri-information-fill" style={{ color: 'var(--ink)', fontSize: '1.2rem', flexShrink: 0 }}></i>
+                <div style={{ fontSize: '0.82rem', color: 'var(--mute)', lineHeight: 1.4 }}>
+                  <strong style={{ color: 'var(--ink)', display: 'block' }}>Account Login Required</strong>
+                  <Link to={`/login?redirect=${encodeURIComponent(`/checkout?plan=${billingCycle}`)}`} style={{ color: 'var(--ink)', textDecoration: 'underline' }}>
                     Sign in or create account
                   </Link> before verifying your UTR.
                 </div>
@@ -494,12 +494,13 @@ export const CheckoutPage = () => {
               <div style={{ marginBottom: '12px' }}>
                 <label style={{
                   display: 'block',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
+                  fontSize: '0.72rem',
+                  fontWeight: 600,
+                  fontFamily: '"Geist Mono", monospace',
                   textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                  color: 'var(--muted)',
-                  marginBottom: '6px'
+                  letterSpacing: '0.08em',
+                  color: 'var(--mute)',
+                  marginBottom: '8px'
                 }}>
                   Enter 12-Digit UPI Reference / UTR Number
                 </label>
@@ -516,19 +517,19 @@ export const CheckoutPage = () => {
                   placeholder="e.g. 427812984123"
                   style={{
                     width: '100%',
-                    padding: '11px 14px',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--border)',
-                    background: 'var(--input-bg)',
-                    color: 'var(--text)',
-                    fontFamily: 'monospace',
+                    padding: '12px 18px',
+                    borderRadius: '99px',
+                    border: '1px solid var(--line)',
+                    background: 'color-mix(in srgb, var(--bg) 70%, transparent)',
+                    color: 'var(--ink)',
+                    fontFamily: '"Geist Mono", monospace',
                     fontSize: '1rem',
                     letterSpacing: '1px',
                     outline: 'none',
                     boxSizing: 'border-box'
                   }}
                 />
-                <span style={{ fontSize: '0.74rem', color: 'var(--muted)', marginTop: '4px', display: 'block' }}>
+                <span style={{ fontSize: '0.74rem', color: 'var(--mute)', marginTop: '6px', display: 'block' }}>
                   * Check your payment receipt in GPay, PhonePe, or Paytm for the 12-digit "UPI Ref No" or "UTR".
                 </span>
               </div>
@@ -538,7 +539,7 @@ export const CheckoutPage = () => {
                   padding: '8px 12px',
                   background: 'rgba(239, 68, 68, 0.1)',
                   border: '1px solid rgba(239, 68, 68, 0.25)',
-                  borderRadius: 'var(--radius-sm)',
+                  borderRadius: '12px',
                   color: '#ef4444',
                   fontSize: '0.82rem',
                   marginBottom: '12px'
@@ -555,9 +556,12 @@ export const CheckoutPage = () => {
                   width: '100%',
                   padding: '12px 18px',
                   fontSize: '0.95rem',
-                  fontWeight: 700,
+                  fontWeight: 600,
+                  borderRadius: '99px',
+                  background: 'var(--ink)',
+                  color: 'var(--on)',
                   cursor: (submitting || utr.length !== 12 || !currentUser) ? 'not-allowed' : 'pointer',
-                  opacity: (submitting || utr.length !== 12 || !currentUser) ? 0.7 : 1
+                  opacity: (submitting || utr.length !== 12 || !currentUser) ? 0.6 : 1
                 }}
               >
                 {submitting ? (

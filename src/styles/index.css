@@ -1215,7 +1215,7 @@ html.dark .priority-badge.cold { color: #60a5fa; }
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: #6366f1;
+  background: var(--ink);
   display: inline-block;
   margin-left: 2px;
 }
@@ -1912,8 +1912,8 @@ html.dark .priority-badge.cold { color: #60a5fa; }
 .fg input:focus,
 .fg select:focus,
 .fg textarea:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px var(--ink);
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -2031,15 +2031,15 @@ html.dark .priority-badge.cold { color: #60a5fa; }
   width: 76px;
   height: 76px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  background: var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 26px;
-  font-weight: 900;
-  color: #fff;
+  font-weight: 700;
+  color: var(--on);
   flex-shrink: 0;
-  box-shadow: 0 8px 20px -4px rgba(124, 58, 237, 0.38);
+  box-shadow: none;
 }
 
 .founder-info {
@@ -2049,20 +2049,23 @@ html.dark .priority-badge.cold { color: #60a5fa; }
 
 .founder-info h3 {
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
   margin-bottom: 2px;
   color: var(--text);
 }
 
 .founder-role {
-  color: #6366f1;
-  font-weight: 700;
+  color: var(--mute);
+  font-weight: 600;
   font-size: 13.5px;
   margin-bottom: 8px;
+  font-family: 'Geist Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 html.dark .founder-role {
-  color: #818cf8;
+  color: var(--mute);
 }
 
 .founder-links {
@@ -2136,21 +2139,21 @@ html.dark .founder-role {
 
 .value-card:hover {
   transform: translateY(-2px);
-  border-color: #6366f1;
+  border-color: var(--ink);
 }
 
 .value-icon {
   width: 44px;
   height: 44px;
   border-radius: 12px;
-  background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+  background: var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 20px;
-  color: #fff;
+  color: var(--on);
   margin-bottom: 10px;
-  box-shadow: 0 6px 16px -3px rgba(124, 58, 237, 0.4);
+  box-shadow: none;
 }
 
 .value-card h3 {
@@ -2186,7 +2189,7 @@ html.dark .founder-role {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #6366f1;
+  background: var(--ink);
   position: absolute;
   left: 0;
   top: 5px;
@@ -2541,8 +2544,8 @@ html.dark .founder-role {
 
 .template-block {
   background: var(--surface2);
-  border: 1.5px solid var(--border);
-  border-left: 5px solid #6366f1;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--ink);
   border-radius: 12px;
   padding: 14px;
   margin: 18px 0;
@@ -2974,9 +2977,9 @@ html.dark .founder-role {
 .otp-change-email-btn {
   background: none;
   border: none;
-  color: #6366f1;
+  color: var(--ink);
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -3001,19 +3004,19 @@ html.dark .founder-role {
   height: 48px;
   text-align: center;
   font-size: 20px;
-  font-weight: 900;
-  border: 2px solid var(--border);
-  border-radius: 10px;
+  font-weight: 700;
+  border: 1px solid var(--border);
+  border-radius: 12px;
   background: var(--input-bg);
   color: var(--text);
-  box-shadow: 2px 2px 0px var(--border);
+  box-shadow: none;
   transition: all 0.15s ease;
   outline: none;
 }
 
 .otp-box:focus {
-  border-color: #6366f1;
-  box-shadow: 2px 2px 0px #6366f1;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px var(--ink);
   transform: translateY(-2px);
 }
 
@@ -3029,8 +3032,8 @@ html.dark .founder-role {
 .otp-resend-link {
   background: none;
   border: none;
-  color: #6366f1;
-  font-weight: 800;
+  color: var(--ink);
+  font-weight: 700;
   font-size: 13px;
   cursor: pointer;
   display: inline-flex;
@@ -3084,9 +3087,9 @@ html.dark .founder-role {
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: rgba(99, 102, 241, 0.15);
-  border: 1.5px solid #6366f1;
-  color: #6366f1;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  border: 1px solid var(--line);
+  color: var(--ink);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3124,7 +3127,7 @@ html.dark .founder-role {
   flex: 1;
   min-height: 40px;
   padding: 8px 12px;
-  border: 1.5px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--input-bg);
   font-family: inherit;
@@ -3134,19 +3137,18 @@ html.dark .founder-role {
 }
 
 .verify-manual-input:focus {
-  border-color: #6366f1;
+  border-color: var(--ink);
 }
 
 .verify-apply-btn {
   padding: 8px 16px;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  font-weight: 800;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 99px;
+  font-weight: 600;
   font-size: 13px;
-  color: var(--text);
+  color: var(--on);
   cursor: pointer;
-  box-shadow: 2px 2px 0px var(--border);
 }
 
 .verify-apply-btn:hover:not(:disabled) {
@@ -3719,7 +3721,7 @@ html.dark .founder-role {
 }
 
 .site-notice-bar a {
-  color: #6366f1;
+  color: var(--ink);
   text-decoration: underline;
   font-weight: 700;
 }
@@ -4875,13 +4877,14 @@ html.dark .radar-layer-baseplate {
 }
 
 .demo-tag {
-  font-size: 11px;
-  font-weight: 700;
-  background: rgba(99, 102, 241, 0.12);
-  color: var(--accent);
+  font: 600 11px "Geist Mono", monospace;
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
+  color: var(--ink);
   padding: 2px 8px;
   border-radius: var(--radius-full);
-  letter-spacing: 0.02em;
+  border: 1px solid var(--line);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .demo-instruction {
@@ -4920,11 +4923,16 @@ html.dark .radar-layer-baseplate {
 }
 
 .demo-tab-btn.active {
-  background: var(--surface);
-  color: var(--text);
-  font-weight: 700;
-  border-color: var(--border-soft);
-  box-shadow: var(--shadow-sm);
+  background: var(--ink);
+  color: var(--on);
+  font-weight: 600;
+  border-color: var(--ink);
+  box-shadow: none;
+}
+
+.demo-tab-btn.active .demo-tab-meta {
+  color: var(--on);
+  opacity: 0.8;
 }
 
 .demo-tab-meta {

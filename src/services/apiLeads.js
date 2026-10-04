@@ -2,9 +2,14 @@
 
 const getTagQuery = (biz) => {
   const map = {
+    'Dental clinic': '["amenity"="dentist"]',
+    'Dental Clinic': '["amenity"="dentist"]',
+    'Interior designer': '["office"="interior_design"]',
+    'Interior Designer': '["office"="interior_design"]',
     'Cafe': '["amenity"="cafe"]',
     'Hotel': '["tourism"="hotel"]',
     'Travel Agency': '["shop"="travel_agency"]',
+    'Travel agency': '["shop"="travel_agency"]',
     'Software Company': '["office"="it"]',
     'Restaurant': '["amenity"="restaurant"]',
     'Gym': '["leisure"="fitness_centre"]',

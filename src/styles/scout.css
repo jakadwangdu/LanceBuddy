@@ -1,0 +1,44 @@
+.pill{font:500 .75rem "Geist Mono",ui-monospace,monospace;text-transform:uppercase;letter-spacing:.07em;border:1px solid var(--line);border-radius:99px;padding:.5rem .9rem;background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(12px)}
+.sc h1.h1s{font-size:clamp(3rem,8vw,6.5rem);line-height:.95}
+.in.wide{max-width:42rem;width:100%}
+form label{display:block;font:500 .72rem "Geist Mono",ui-monospace,monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--mute);margin:1.3rem 0 .5rem}
+input{width:100%;background:color-mix(in srgb,var(--bg) 70%,transparent);border:1px solid var(--line);border-radius:12px;color:var(--ink);font-size:1.05rem;padding:.8rem 1rem;backdrop-filter:blur(8px)}
+input:focus{outline:0;border-color:var(--ink)}
+form .row{margin-top:1.6rem}.chips{margin:0}
+.res{list-style:none;padding:0;margin:0 0 1.5rem}
+.lr{border-top:1px solid var(--line);padding:1rem 0;animation:in .6s both cubic-bezier(.2,.8,.2,1)}
+@keyframes in{from{opacity:0;transform:translateX(30px)}}
+.rh{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+.rh b{font-size:1.2rem;letter-spacing:-.02em}
+.rh span{font-size:.9rem}
+.mute{color:var(--mute)}
+.st{min-width:6.5rem;text-align:center}
+.st.s1{border-color:var(--ink);color:var(--ink)}
+.st.s2{background:var(--ink);color:var(--on);border-color:var(--ink)}
+.ra{display:flex;gap:.45rem;flex-wrap:wrap;margin-top:.7rem}
+.ra .chip{padding:.3rem .8rem;font-size:.85rem}
+.pt{margin-top:.8rem;border-left:2px solid var(--ink);padding-left:1rem;animation:in .4s both}
+.pt p{margin:0 0 .6rem;font-size:.95rem}
+#hud{position:fixed;left:50%;bottom:max(1.4rem,env(safe-area-inset-bottom));z-index:40;transform:translate(-50%,160%);transition:transform .5s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;gap:.6rem;min-width:min(22rem,90vw);padding:1rem 1.3rem;border:1px solid var(--ink);border-radius:18px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(14px);font:500 .85rem "Geist Mono",ui-monospace,monospace}
+#hud.on{transform:translate(-50%,0)}
+.hb{height:2px;background:var(--line)}
+.hb i{display:block;height:100%;background:var(--ink);transform:scaleX(0);transform-origin:0 50%;transition:transform .4s}
+#toast{position:fixed;top:5rem;left:50%;transform:translate(-50%,-300%);opacity:0;pointer-events:none;z-index:45;padding:.7rem 1.2rem;border-radius:99px;background:var(--ink);color:var(--on);font-size:.9rem;transition:transform .4s cubic-bezier(.2,.8,.2,1),opacity .3s;max-width:90vw}
+#toast.on{transform:translate(-50%,0);opacity:1}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin:0 0 1.8rem}
+.stats3 div{border:1px solid var(--line);border-radius:20px;padding:1.1rem 1.2rem;background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(12px)}
+.stats3 b{display:block;font:700 3.2rem Geist,sans-serif;letter-spacing:-.05em;line-height:1}
+.stats3 span{font:500 .72rem "Geist Mono",monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--mute)}
+.stats3 b.bump{animation:pop .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes pop{from{transform:scale(1.4)}}
+.nts{list-style:none;padding:0;margin:0}
+.nts li{display:flex;gap:.6rem;margin-bottom:.6rem;animation:in .4s both}
+.empty{color:var(--mute);border:1px dashed var(--line);border-radius:16px;padding:1.2rem}
+.faq{margin:1.5rem 0}
+details{border-top:1px solid var(--line);padding:1rem 0}
+summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+summary::after{content:"+"}
+details[open] summary::after{content:"–"}
+details p{color:var(--mute);margin:.7rem 0 0}
+footer{position:static;margin-top:3rem;padding:0;text-align:left}
+@media(max-width:899px){.pill{display:none}}

@@ -471,7 +471,7 @@ export const HomePage = () => {
                   transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)'
                 }}
               >
-                Yearly (1 Year) <span style={{ fontSize: '0.72rem', background: '#059669', color: '#ffffff', padding: '2px 8px', borderRadius: 'var(--radius-full)', marginLeft: '6px', fontWeight: 700 }}>Save ~20%</span>
+                Yearly (1 Year) <span style={{ fontSize: '0.72rem', background: 'var(--ink)', color: 'var(--on)', padding: '2px 8px', borderRadius: '99px', marginLeft: '6px', fontWeight: 600 }}>Save ~20%</span>
               </button>
             </div>
           </div>
@@ -487,7 +487,7 @@ export const HomePage = () => {
           }}>
             {/* Free Plan Card */}
             <TiltCard className="pricing-card" maxRotation={3} scale={1.01}>
-              <div className="pricing-badge" style={{ background: 'var(--surface2)', color: 'var(--text)', border: '1px solid var(--border-soft)' }}>
+              <div className="pricing-badge" style={{ background: 'color-mix(in srgb, var(--ink) 6%, transparent)', color: 'var(--ink)', border: '1px solid var(--line)', font: '600 0.72rem "Geist Mono", monospace', letterSpacing: '0.06em' }}>
                 BASIC FREE TIER
               </div>
               <div className="pricing-cost">
@@ -505,10 +505,10 @@ export const HomePage = () => {
                 <li><i className="ri-check-line"></i> <span>1-Click WhatsApp outreach links</span></li>
                 <li><i className="ri-check-line"></i> <span>In-browser private CRM pipeline (New, Contacted, Converted)</span></li>
                 <li><i className="ri-check-line"></i> <span>Local notes saved privately on your device</span></li>
-                <li style={{ opacity: 0.65 }}><i className="ri-close-line" style={{ color: '#ef4444' }}></i> <span>Instant CSV Spreadsheet Export</span></li>
-                <li style={{ opacity: 0.65 }}><i className="ri-close-line" style={{ color: '#ef4444' }}></i> <span>Built-in Cold Email Pitch Templates</span></li>
-                <li style={{ opacity: 0.65 }}><i className="ri-close-line" style={{ color: '#ef4444' }}></i> <span>Automated Market Dossier Email Delivery</span></li>
-                <li style={{ opacity: 0.65 }}><i className="ri-close-line" style={{ color: '#ef4444' }}></i> <span>Priority 24/7 Developer Support</span></li>
+                <li style={{ opacity: 0.5 }}><i className="ri-close-line" style={{ color: 'var(--mute)' }}></i> <span>Instant CSV Spreadsheet Export</span></li>
+                <li style={{ opacity: 0.5 }}><i className="ri-close-line" style={{ color: 'var(--mute)' }}></i> <span>Built-in Cold Email Pitch Templates</span></li>
+                <li style={{ opacity: 0.5 }}><i className="ri-close-line" style={{ color: 'var(--mute)' }}></i> <span>Automated Market Dossier Email Delivery</span></li>
+                <li style={{ opacity: 0.5 }}><i className="ri-close-line" style={{ color: 'var(--mute)' }}></i> <span>Priority 24/7 Developer Support</span></li>
               </ul>
               <div style={{ marginTop: '2rem' }}>
                 {currentUser ? (
@@ -525,7 +525,7 @@ export const HomePage = () => {
 
             {/* Premium Plan Card */}
             <TiltCard className="pricing-card premium" maxRotation={3} scale={1.02}>
-              <div className="pricing-badge" style={{ background: 'var(--accent-light)', color: 'var(--accent)', border: '1px solid rgba(99, 102, 241, 0.25)', fontWeight: 700 }}>
+              <div className="pricing-badge" style={{ background: 'var(--ink)', color: 'var(--on)', border: '1px solid var(--ink)', font: '600 0.72rem "Geist Mono", monospace', letterSpacing: '0.06em' }}>
                 <i className="ri-vip-crown-fill" style={{ marginRight: '4px' }}></i> PRO MEMBER &bull; PREMIUM
               </div>
               <div className="pricing-cost">

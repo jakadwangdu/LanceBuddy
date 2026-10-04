@@ -5,9 +5,11 @@ import { MobileDock } from './components/layout/MobileDock';
 import { MoreSheet } from './components/layout/MoreSheet';
 import { Footer } from './components/layout/Footer';
 import { ConsentNotice } from './components/layout/ConsentNotice';
-
 import { HomePage } from './pages/HomePage';
-import { InteractiveCursor } from './components/layout/InteractiveCursor';
+
+import { Glow } from './components/Glow';
+import { Globe } from './components/Globe';
+import { ProgressBar } from './components/ProgressBar';
 
 // Code-split secondary routes to shrink initial bundle and accelerate page load
 const AboutPage = React.lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
@@ -25,7 +27,7 @@ function ScrollToTop() {
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    const sectionRoutes = ['/notes', '/scout', '/pipeline', '/pricing', '/faq', '/features'];
+    const sectionRoutes = ['/notes', '/scout', '/pipeline', '/pricing', '/faq', '/features', '/demo'];
     let targetId = null;
 
     if (hash) {
@@ -56,13 +58,13 @@ export const App = () => {
   return (
     <div className="app-shell">
       <ScrollToTop />
-      <InteractiveCursor />
+      <Glow />
+      <Globe />
+      <ProgressBar />
 
-      {/* Ambient Animated Gradient Orbs & Grid */}
+      {/* Ambient Grid */}
       <div id="ambient" aria-hidden="true">
         <div id="grid-bg"></div>
-        <div className="orb orb1"></div>
-        <div className="orb orb2"></div>
       </div>
 
       {/* Global Navbar */}

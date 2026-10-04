@@ -94,7 +94,7 @@ export const Navbar = () => {
                 <span className="profile-name" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
                   {currentUser.name || 'Account'}
                   {currentUser?.plan === 'paid-premium-plan' && (
-                    <i className="ri-vip-crown-2-fill" style={{ color: '#f59e0b', fontSize: '0.82rem' }} title="Premium Member"></i>
+                    <i className="ri-vip-crown-2-fill" style={{ color: 'var(--ink)', fontSize: '0.82rem' }} title="Premium Member"></i>
                   )}
                 </span>
                 <i className="ri-arrow-down-s-line profile-chevron"></i>
@@ -109,23 +109,23 @@ export const Navbar = () => {
                     <span className="profile-display-name" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                       {currentUser.name}
                       {currentUser?.plan === 'paid-premium-plan' && (
-                        <i className="ri-vip-crown-2-fill" style={{ color: '#f59e0b', fontSize: '0.85rem' }} title="Premium Member"></i>
+                        <i className="ri-vip-crown-2-fill" style={{ color: 'var(--ink)', fontSize: '0.85rem' }} title="Premium Member"></i>
                       )}
                     </span>
                     <span className="profile-display-email">{currentUser.email}</span>
                     {currentUser?.plan === 'paid-premium-plan' ? (
                       <span className="profile-display-plan" style={{
                         fontSize: '0.72rem',
-                        background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                        color: '#ffffff',
+                        background: 'var(--ink)',
+                        color: 'var(--on)',
                         padding: '2px 9px',
-                        borderRadius: '9999px',
+                        borderRadius: '99px',
                         marginTop: '4px',
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '4px',
-                        fontWeight: '700',
-                        boxShadow: '0 2px 6px rgba(245, 158, 11, 0.25)'
+                        fontWeight: '600',
+                        fontFamily: '"Geist Mono", monospace'
                       }}>
                         <i className="ri-vip-crown-fill"></i> PRO MEMBER
                       </span>
@@ -136,10 +136,11 @@ export const Navbar = () => {
                         color: 'var(--muted)',
                         border: '1px solid var(--border-soft)',
                         padding: '2px 9px',
-                        borderRadius: '9999px',
+                        borderRadius: '99px',
                         marginTop: '4px',
                         display: 'inline-block',
-                        fontWeight: '600'
+                        fontWeight: '600',
+                        fontFamily: '"Geist Mono", monospace'
                       }}>
                         FREE TIER
                       </span>
@@ -157,9 +158,9 @@ export const Navbar = () => {
                       setProfileOpen(false);
                       handleNavClick('/#pricing', e);
                     }}
-                    style={{ color: '#eab308', fontWeight: 700 }}
+                    style={{ color: 'var(--ink)', fontWeight: 600 }}
                   >
-                    <i className="ri-vip-crown-line" style={{ color: '#eab308' }}></i>
+                    <i className="ri-vip-crown-line" style={{ color: 'var(--ink)' }}></i>
                     <span>Upgrade to Premium</span>
                   </Link>
                 )}
