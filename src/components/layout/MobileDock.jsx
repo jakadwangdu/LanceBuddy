@@ -1,6 +1,7 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { preloadRoute } from '../../utils/preloadRoutes';
 
 export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
   const location = useLocation();
@@ -53,6 +54,8 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
             type="button"
             className={`dock-item ${isScoutActive && !isMoreOpen ? 'active' : ''}`}
             onClick={() => handleNav('scout', '/scout')}
+            onTouchStart={() => preloadRoute('/scout')}
+            onMouseEnter={() => preloadRoute('/scout')}
             aria-label="Scout Tool"
           >
             <i className={isScoutActive && !isMoreOpen ? 'ri-compass-3-fill' : 'ri-compass-3-line'}></i>
@@ -64,6 +67,8 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
             type="button"
             className={`dock-item ${isNotesActive && !isMoreOpen ? 'active' : ''}`}
             onClick={() => handleNav('notes', '/notes')}
+            onTouchStart={() => preloadRoute('/notes')}
+            onMouseEnter={() => preloadRoute('/notes')}
             aria-label="Saved Notes"
           >
             <i className={isNotesActive && !isMoreOpen ? 'ri-sticky-note-fill' : 'ri-sticky-note-line'}></i>
@@ -88,6 +93,8 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
             type="button"
             className={`dock-item ${isPricingActive && !isMoreOpen ? 'active' : ''}`}
             onClick={() => handleNav('pricing', '/#pricing')}
+            onTouchStart={() => preloadRoute('/pricing')}
+            onMouseEnter={() => preloadRoute('/pricing')}
             aria-label="Pricing Plans"
           >
             <i className={isPricingActive && !isMoreOpen ? 'ri-vip-crown-2-fill' : 'ri-vip-crown-2-line'}></i>
@@ -102,6 +109,8 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
           type="button"
           className="dock-item"
           onClick={() => navigate('/login')}
+          onTouchStart={() => preloadRoute('/login')}
+          onMouseEnter={() => preloadRoute('/login')}
           aria-label="Sign In"
         >
           <i className="ri-login-box-line"></i>
@@ -112,6 +121,8 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
           type="button"
           className={`dock-item ${isBlogActive && !isMoreOpen ? 'active' : ''}`}
           onClick={() => handleNav(null, '/blog')}
+          onTouchStart={() => preloadRoute('/blog')}
+          onMouseEnter={() => preloadRoute('/blog')}
           aria-label="Blog"
         >
           <i className={isBlogActive && !isMoreOpen ? 'ri-article-fill' : 'ri-article-line'}></i>

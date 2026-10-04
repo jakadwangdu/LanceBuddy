@@ -10,6 +10,9 @@ import { HomePage } from './pages/HomePage';
 import { Glow } from './components/Glow';
 import { Globe } from './components/Globe';
 import { ProgressBar } from './components/ProgressBar';
+import { Rail } from './components/Rail';
+import { useActiveSection } from './hooks/useActiveSection';
+import { preloadCommonRoutes } from './utils/preloadRoutes';
 
 // Code-split secondary routes to shrink initial bundle and accelerate page load
 const AboutPage = React.lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
@@ -56,6 +59,15 @@ function ScrollToTop() {
 
 export const App = () => {
   const [moreSheetOpen, setMoreSheetOpen] = useState(false);
+  const location = useLocation();
+
+  // Dynamically drives the 3D globe camera between poses on scroll & section change
+  useActiveSection();
+
+  // Prefetch common page routes in browser idle time for instant 0ms switching
+  useEffect(() => {
+    preloadCommonRoutes();
+  }, []);
 
   return (
     <div className="app-shell">
@@ -63,6 +75,7 @@ export const App = () => {
       <Glow />
       <Globe />
       <ProgressBar />
+      <Rail />
 
       {/* Ambient Grid */}
       <div id="ambient" aria-hidden="true">
@@ -74,8 +87,9 @@ export const App = () => {
 
       {/* Main Content Area */}
       <main className="main-content">
-        <React.Suspense fallback={<div className="page-route-loader"><div className="page-spinner"></div></div>}>
-          <Routes>
+        <div key={location.pathname} className="page-transition-shell">
+          <React.Suspense fallback={<div className="page-route-loader"><div className="page-spinner"></div></div>}>
+            <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/scout" element={<HomePage />} />
             <Route path="/notes" element={<HomePage />} />
@@ -108,6 +122,7 @@ export const App = () => {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </React.Suspense>
+        </div>
       </main>
 
       {/* Footer */}

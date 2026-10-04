@@ -1,24 +1,91 @@
-import React, { createContext, useContext, useState, useRef, useCallback } from 'react';
+import React, { createContext, useContext, useState, useRef, useCallback, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { CITIES } from '../data/cities';
 
-const LANDING_POSES = {
-  XS: [0, 2.7, -2.7, 2.7, -2.7, 0, 0],
-  SC: [1.05, 1, 1, 1.05, 1, 0.7, 1.5],
-  OP: [0.85, 0.85, 0.85, 0.85, 0.85, 0.25, 0.6],
-  CZ: [8, 7.4, 5.8, 7, 7.4, 9.5, 6.4]
+const ROUTE_POSES = {
+  '/': {
+    XS: [0, 2.7, -2.7, 2.7, -2.7, 0, 0, 2.5],
+    SC: [1.05, 1, 1, 1.05, 1, 0.7, 1.5, 0.95],
+    OP: [0.85, 0.85, 0.85, 0.85, 0.85, 0.25, 0.6, 0.7],
+    CZ: [8, 7.4, 5.8, 7, 7.4, 9.5, 6.4, 8.0]
+  },
+  '/scout': {
+    XS: [2.5, -2.7, 0, 2.6],
+    SC: [1.05, 1.0, 0.75, 0.95],
+    OP: [0.85, 0.65, 0.3, 0.7],
+    CZ: [7.4, 8.2, 9.8, 8.0]
+  },
+  '/notes': {
+    XS: [2.6, 0],
+    SC: [1.0, 0.8],
+    OP: [0.7, 0.35],
+    CZ: [8.0, 9.4]
+  },
+  '/pipeline': {
+    XS: [0, -2.6],
+    SC: [0.75, 1.0],
+    OP: [0.3, 0.65],
+    CZ: [9.8, 8.2]
+  },
+  '/pricing': {
+    XS: [0],
+    SC: [0.78],
+    OP: [0.35],
+    CZ: [9.5]
+  },
+  '/about': {
+    XS: [2.6, 0, -2.4],
+    SC: [1.1, 0.85, 1.0],
+    OP: [0.75, 0.45, 0.7],
+    CZ: [7.2, 9.0, 7.8]
+  },
+  '/blog': {
+    XS: [-2.5, 2.6, -2.2],
+    SC: [0.95, 1.05, 0.9],
+    OP: [0.65, 0.7, 0.6],
+    CZ: [8.4, 7.6, 8.5]
+  },
+  '/contact': {
+    XS: [2.6],
+    SC: [1.05],
+    OP: [0.7],
+    CZ: [7.5]
+  },
+  '/help': {
+    XS: [-2.7, 2.5],
+    SC: [0.9, 1.0],
+    OP: [0.65, 0.7],
+    CZ: [8.2, 7.8]
+  },
+  '/status': {
+    XS: [2.5, -2.4],
+    SC: [1.05, 0.95],
+    OP: [0.75, 0.65],
+    CZ: [7.6, 8.2]
+  },
+  '/login': {
+    XS: [0],
+    SC: [0.75],
+    OP: [0.35],
+    CZ: [9.4]
+  },
+  '/signup': {
+    XS: [0],
+    SC: [0.75],
+    OP: [0.35],
+    CZ: [9.4]
+  },
+  '/checkout': {
+    XS: [2.7],
+    SC: [0.85],
+    OP: [0.4],
+    CZ: [9.0]
+  }
 };
 
-const SCOUT_POSES = {
-  XS: [2.7, -2.7, 2.7, 0, -2.7],
-  SC: [1.05, 1, 1.05, 0.7, 1],
-  OP: [0.9, 0.65, 0.85, 0.25, 0.7],
-  CZ: [7.2, 7.6, 6.8, 9.5, 7.4]
-};
-
-const AMBIENT_POSES = {
+const DEFAULT_AMBIENT = {
   XS: [0],
-  SC: [0.75],
+  SC: [0.78],
   OP: [0.35],
   CZ: [9.2]
 };
@@ -27,8 +94,10 @@ const SiteContext = createContext();
 
 export const SiteProvider = ({ children }) => {
   const location = useLocation();
-  const isLanding = location.pathname === '/';
-  const isScout = location.pathname === '/scout';
+  const path = location.pathname.toLowerCase();
+
+  const isScout = path === '/scout' || path === '/pipeline' || path === '/notes';
+  const poses = ROUTE_POSES[path] || (path.startsWith('/blog') ? ROUTE_POSES['/blog'] : DEFAULT_AMBIENT);
 
   const [activeSection, setActiveSection] = useState(0);
   const [selectedCityIndex, setSelectedCityIndexState] = useState(0);
@@ -39,6 +108,12 @@ export const SiteProvider = ({ children }) => {
   const addLeadRef = useRef(null);
   const clearLeadsRef = useRef(null);
   const citySelectRef = useRef(null);
+
+  // Pulse effect when changing routes
+  useEffect(() => {
+    shockRef.current = 1;
+    setActiveSection(0);
+  }, [location.pathname]);
 
   const setSelectedCityIndex = useCallback((idx) => {
     setSelectedCityIndexState(idx);
@@ -62,8 +137,6 @@ export const SiteProvider = ({ children }) => {
       clearLeadsRef.current();
     }
   }, []);
-
-  const poses = isScout ? SCOUT_POSES : (isLanding ? LANDING_POSES : AMBIENT_POSES);
 
   return (
     <SiteContext.Provider

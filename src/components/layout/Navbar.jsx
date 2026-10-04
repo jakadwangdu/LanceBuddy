@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
+import { preloadRoute } from '../../utils/preloadRoutes';
 export const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const { currentUser, logout } = useAuth();
@@ -30,29 +31,54 @@ export const Navbar = () => {
   const handleNavClick = (path, e) => {
     if (path.startsWith('/#')) {
       const id = path.replace('/#', '');
-      const el = document.getElementById(id);
-      if (el && (location.pathname === '/' || location.pathname === `/${id}`)) {
-        e.preventDefault();
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (location.pathname === '/') {
+        const el = document.getElementById(id);
+        if (el) {
+          e.preventDefault();
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    } else if (location.pathname === '/') {
+      const sectionMap = {
+        '/': 's0',
+        '/scout': 'scout',
+        '/pipeline': 'pipeline',
+        '/notes': 'notes',
+        '/pricing': 's5',
+        '/contact': 'contact'
+      };
+      const targetId = sectionMap[path];
+      if (targetId) {
+        const el = document.getElementById(targetId);
+        if (el) {
+          e.preventDefault();
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (path === '/') {
+          e.preventDefault();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       }
     }
   };
 
   const navLinks = !currentUser
     ? [
-        { name: 'Features', path: '/#features' },
-        { name: 'Live Demo', path: '/#demo' },
-        { name: 'Pricing', path: '/#pricing' },
+        { name: 'Find', path: '/#s1' },
+        { name: 'Verify', path: '/#s2' },
+        { name: 'Write', path: '/#s3' },
+        { name: 'Track', path: '/#s4' },
+        { name: 'Pricing', path: '/#s5' },
+        { name: 'Contact', path: '/#contact' },
         { name: 'About', path: '/about' },
-        { name: 'Blog', path: '/blog' },
-        { name: 'Contact', path: '/contact' }
+        { name: 'Blog', path: '/blog' }
       ]
     : [
         { name: 'Workspace', path: '/' },
         { name: 'Scout Tool', path: '/scout' },
         { name: 'Pipeline', path: '/pipeline' },
         { name: 'Notes', path: '/notes' },
-        ...(currentUser?.plan !== 'paid-premium-plan' ? [{ name: 'Upgrade', path: '/#pricing' }] : []),
+        ...(currentUser?.plan !== 'paid-premium-plan' ? [{ name: 'Upgrade', path: '/#s5' }] : []),
+        { name: 'Contact', path: '/#contact' },
         { name: 'About', path: '/about' },
         { name: 'Blog', path: '/blog' }
       ];
@@ -61,7 +87,17 @@ export const Navbar = () => {
     <header className="nav-shell">
       <nav className="nav-container">
         {/* Brand */}
-        <Link to="/" className="nav-brand">
+        <Link
+          to="/"
+          className="nav-brand"
+          onClick={(e) => {
+            if (location.pathname === '/') {
+              e.preventDefault();
+              const el = document.getElementById('s0') || document.body;
+              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          }}
+        >
           <div className="nav-logo">LB</div>
           <span className="nav-name">LanceBuddy</span>
         </Link>
@@ -74,6 +110,8 @@ export const Navbar = () => {
               to={item.path}
               className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
               onClick={(e) => handleNavClick(item.path, e)}
+              onMouseEnter={() => preloadRoute(item.path)}
+              onFocus={() => preloadRoute(item.path)}
             >
               {item.name}
             </Link>
@@ -197,10 +235,20 @@ export const Navbar = () => {
             </div>
           ) : (
             <div className="nav-auth-buttons">
-              <Link to="/login" className="nav-signin-link">
+              <Link
+                to="/login"
+                className="nav-signin-link"
+                onMouseEnter={() => preloadRoute('/login')}
+                onFocus={() => preloadRoute('/login')}
+              >
                 Sign In
               </Link>
-              <Link to="/login?mode=signup" className="nav-signup-btn">
+              <Link
+                to="/login?mode=signup"
+                className="nav-signup-btn"
+                onMouseEnter={() => preloadRoute('/login')}
+                onFocus={() => preloadRoute('/login')}
+              >
                 Sign Up
               </Link>
             </div>

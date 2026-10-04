@@ -79,11 +79,11 @@ export const DemoLeadInspector = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Contacted': return { bg: 'rgba(245, 158, 11, 0.12)', text: '#d97706', border: 'rgba(245, 158, 11, 0.3)' };
-      case 'Interested': return { bg: 'rgba(59, 130, 246, 0.12)', text: '#2563eb', border: 'rgba(59, 130, 246, 0.3)' };
-      case 'Meeting Set': return { bg: 'rgba(139, 92, 246, 0.12)', text: '#7c3aed', border: 'rgba(139, 92, 246, 0.3)' };
-      case 'Won': return { bg: 'rgba(16, 185, 129, 0.12)', text: '#059669', border: 'rgba(16, 185, 129, 0.3)' };
-      default: return { bg: 'var(--accent-light)', text: 'var(--accent)', border: 'var(--border)' };
+      case 'Contacted': return { bg: 'color-mix(in srgb, var(--mute) 12%, transparent)', text: 'var(--mute)', border: 'var(--line)' };
+      case 'Interested': return { bg: 'color-mix(in srgb, var(--ink) 8%, transparent)', text: 'var(--ink)', border: 'var(--ink)' };
+      case 'Meeting Set': return { bg: 'color-mix(in srgb, var(--ink) 12%, transparent)', text: 'var(--ink)', border: 'var(--ink)' };
+      case 'Won': return { bg: 'var(--ink)', text: 'var(--on)', border: 'var(--ink)' };
+      default: return { bg: 'color-mix(in srgb, var(--ink) 5%, transparent)', text: 'var(--ink)', border: 'var(--line)' };
     }
   };
 
@@ -152,7 +152,7 @@ export const DemoLeadInspector = () => {
           <div className="demo-metric-item">
             <span className="demo-metric-label">Rating</span>
             <span className="demo-metric-val">
-              <i className="ri-star-fill" style={{ color: '#f59e0b' }}></i> {activeLead.rating} ({activeLead.reviews} reviews)
+              <i className="ri-star-fill"></i> {activeLead.rating} ({activeLead.reviews} reviews)
             </span>
           </div>
           <div className="demo-metric-item">
@@ -198,7 +198,7 @@ export const DemoLeadInspector = () => {
               className="demo-btn-secondary"
               onClick={() => alert(`WhatsApp outreach link ready with personalized greeting for ${activeLead.name}`)}
             >
-              <i className="ri-whatsapp-line" style={{ color: '#10b981' }}></i> WhatsApp
+              <i className="ri-whatsapp-line"></i> WhatsApp
             </button>
           </div>
         </div>

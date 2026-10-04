@@ -326,8 +326,12 @@ export const Globe = () => {
 
       const mats = [lmp, pm, cm, wm, mkm, om, sm, swm_, lm, pkm, stm, gm];
 
-      function paint() {
+      let lastTheme = '';
+      function paint(force = false) {
         try {
+          const currentTheme = root.getAttribute('data-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+          if (!force && currentTheme === lastTheme) return;
+          lastTheme = currentTheme;
           const c = new THREE.Color(getComputedStyle(root).getPropertyValue('--ink').trim() || '#000');
           mats.forEach((m) => m.color.copy(c));
         } catch (e) {}
@@ -482,14 +486,18 @@ export const Globe = () => {
           cur.ry += 0.14;
         }
 
+        const floatY = Math.sin(t * 0.0016) * (d ? 0.08 : 0.04);
+        const floatX = Math.cos(t * 0.0011) * (d ? 0.05 : 0.02);
+
         globe.rotation.set(cur.rx, cur.ry, 0);
-        wrap.position.set(cur.x, cur.y, 0);
+        wrap.position.set(cur.x + (rm ? 0 : floatX), cur.y + (rm ? 0 : floatY), 0);
         wrap.scale.setScalar(cur.s);
 
-        wrap.rotation.y += ((rm ? 0 : mx * 0.3) - wrap.rotation.y) * 0.05;
-        wrap.rotation.x += ((rm ? 0 : my * 0.2) - wrap.rotation.x) * 0.05;
+        wrap.rotation.y += ((rm ? 0 : mx * 0.35) - wrap.rotation.y) * 0.05;
+        wrap.rotation.x += ((rm ? 0 : my * 0.25) - wrap.rotation.x) * 0.05;
+        wrap.rotation.z += ((rm ? 0 : -mx * 0.08) - wrap.rotation.z) * 0.05;
 
-        camera.position.set(rm ? 0 : mx * 0.6, rm ? 0 : -my * 0.4, cur.z);
+        camera.position.set(rm ? 0 : mx * 0.7, rm ? 0 : -my * 0.45, cur.z);
         camera.lookAt(0, 0, 0);
 
         stars.rotation.y += rm ? 0 : 0.0002;

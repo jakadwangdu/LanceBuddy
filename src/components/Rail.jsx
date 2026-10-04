@@ -9,7 +9,8 @@ const LANDING_LINKS = [
   { href: '#s3', label: 'Write' },
   { href: '#s4', label: 'Track' },
   { href: '#s5', label: 'Pricing' },
-  { href: '#s6', label: 'Go' }
+  { href: '#s6', label: 'Go' },
+  { href: '#contact', label: 'Contact' }
 ];
 
 const SCOUT_LINKS = [

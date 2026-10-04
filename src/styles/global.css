@@ -74,8 +74,8 @@ dd{margin:.2rem 0 0;font-weight:500}.u{text-decoration:underline;text-underline-
 ul.f{list-style:none;padding:0;margin:1.2rem 0 1.5rem}ul.f li{display:flex;gap:.7rem;padding:.42rem 0;border-bottom:1px solid var(--line);font-size:.95rem}
 ul.f li::before{content:"";flex:none;width:1em;height:1em;margin-top:.3em;background:currentColor;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 12 5 5L20 6'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 12 5 5L20 6'/%3E%3C/svg%3E") center/contain no-repeat}
 ul.f li.no{color:var(--mute)}
-.fin h2{font-size:clamp(3rem,9vw,8rem);max-width:13ch;margin:0 auto 2.2rem}
-footer{position:absolute;bottom:1.4rem;left:0;right:0;text-align:center;font-size:.85rem;color:var(--mute);padding-bottom:env(safe-area-inset-bottom)}
+.sc footer, .fin footer{position:absolute;bottom:1.4rem;left:0;right:0;text-align:center;font-size:.85rem;color:var(--mute);padding-bottom:env(safe-area-inset-bottom)}
+footer.site-footer, .site-footer{position:relative!important;width:100%;text-align:left;clear:both;z-index:10}
 @media(max-width:899px){.rail{display:none}.sc,.sc.r{justify-content:flex-start}.in{backdrop-filter:blur(3px)}.plans{grid-template-columns:1fr}dl{grid-template-columns:1fr}.hero{justify-content:center}}
 .glow{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(520px circle at var(--mx,50%) var(--my,40%),color-mix(in srgb,var(--ink) 7%,transparent),transparent 70%)}
 @media(hover:none){.glow{display:none}}
@@ -243,4 +243,22 @@ footer{position:absolute;bottom:1.4rem;left:0;right:0;text-align:center;font-siz
 /* 404 & Legal */
 .not-found-card{text-align:center;padding:4rem 2rem}
 .error-badge{font:700 4rem "Geist Mono",monospace;color:var(--ink);line-height:1;margin-bottom:1rem}
+
+/* Smooth Page Transitions & Performance */
+.page-transition-shell {
+  animation: pageTransitionFade 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
+  will-change: opacity, transform;
+  width: 100%;
+}
+
+@keyframes pageTransitionFade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
 
