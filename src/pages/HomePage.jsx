@@ -452,6 +452,7 @@ export const HomePage = () => {
 
   // Filter leads
   const safeLeads = Array.isArray(leads) ? leads : [];
+  const safeNotes = Array.isArray(notesList) ? notesList : [];
   const filteredLeads = safeLeads.filter((lead) => {
     if (!lead) return false;
     const name = (lead.name || '').toLowerCase();
