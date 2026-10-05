@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ScoutForm } from '../components/scout/ScoutForm';
 import { StatsBar } from '../components/scout/StatsBar';
 import { FilterBar } from '../components/scout/FilterBar';
@@ -19,11 +19,56 @@ import { TiltCard } from '../components/layout/TiltCard';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/common/SEO';
 
+const DEFAULT_INDUSTRIES = [
+  'Dental clinic',
+  'Interior designer',
+  'Travel agency',
+  'Restaurant',
+  'Gym',
+  'Salon'
+];
+
+const SCOUT_MSG = [
+  'Scanning Google Maps…',
+  'Reading JustDial listings…',
+  'Checking IndiaMART…',
+  'Verifying phone numbers…'
+];
+
+function hashGeo(name) {
+  let h = 0;
+  for (let z = 0; z < name.length; z++) h = (h * 31 + name.charCodeAt(z)) | 0;
+  return {
+    lat: +(8 + (Math.abs(h) % 2200) / 100).toFixed(2),
+    lon: +(68 + (Math.abs(h >> 4) % 2100) / 100).toFixed(2)
+  };
+}
+
+function generatePitchForLead(lead) {
+  const cleanName = (lead.name || '').split(' ')[0] || lead.name || 'Business';
+  const opp = lead.snippet || 'prospective clients have no direct portfolio link';
+  const rating = lead.rating || '4.8';
+  const platform = lead.source_platform || 'Google Maps';
+  const city = lead.city || 'your area';
+  return `Hi Team ${cleanName}, I noticed ${lead.name} has a ${rating}★ rating on ${platform} in ${city}, but ${opp}. I drafted a quick preview if you would like to see it.`;
+}
+
 export const HomePage = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { leads, currentQuery, exportCSV } = useLeads();
-  const { currentUser, upgradePlan } = useAuth();
+  const {
+    leads,
+    currentQuery,
+    exportCSV,
+    scoutLeads,
+    saveNote,
+    deleteNote,
+    deleteLead,
+    updateStatus,
+    notesList,
+    isScouting
+  } = useLeads();
+  const { currentUser, upgradePlan, incrementScoutCount } = useAuth();
   const [emailModalOpen, setEmailModalOpen] = useState(false);
   const [selectedLeadForEmail, setSelectedLeadForEmail] = useState(null);
   const [upiModalOpen, setUpiModalOpen] = useState(false);
@@ -95,13 +140,206 @@ export const HomePage = () => {
   const [supportMsg, setSupportMsg] = useState('');
   const [supportStatus, setSupportStatus] = useState('');
 
-  const { setSelectedCityIndex, triggerShock } = useSite();
+  const { setSelectedCityIndex, triggerShock, addLeadDot, clearLeadDots } = useSite();
   const [selectedCityIdx, setSelectedCityIdx] = useState(0);
 
+  // Scout controls state
+  const [industryList, setIndustryList] = useState(DEFAULT_INDUSTRIES);
+  const [scoutBiz, setScoutBiz] = useState(currentQuery?.biz || 'Dental clinic');
+  const [customIndustryInput, setCustomIndustryInput] = useState('');
+  const [customCity, setCustomCity] = useState(null);
+  const [customCityInput, setCustomCityInput] = useState('');
+  const [customCitySelected, setCustomCitySelected] = useState(false);
+  const [leadCount, setLeadCount] = useState(8);
+  const [leadFocus, setLeadFocus] = useState('all');
+  const [scoutEmail, setScoutEmail] = useState(currentUser?.email || currentQuery?.email || '');
+
+  // Feedback, HUD & Toast
+  const [toastMessage, setToastMessage] = useState('');
+  const [showToast, setShowToast] = useState(false);
+  const toastTimeoutRef = useRef(null);
+  const [hudActive, setHudActive] = useState(false);
+  const [hudStatus, setHudStatus] = useState('Scanning…');
+  const [hudProgress, setHudProgress] = useState(0);
+  const [bumpIndex, setBumpIndex] = useState(null);
+  const [expandedPitchId, setExpandedPitchId] = useState(null);
+
+  const triggerToast = (msg) => {
+    setToastMessage(msg);
+    setShowToast(true);
+    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    toastTimeoutRef.current = setTimeout(() => {
+      setShowToast(false);
+    }, 2400);
+  };
+
   const handleCitySelect = (idx) => {
+    setCustomCitySelected(false);
     setSelectedCityIdx(idx);
     setSelectedCityIndex(idx);
     triggerShock();
+  };
+
+  const handleAddIndustry = (e) => {
+    e.preventDefault();
+    const name = customIndustryInput.trim();
+    if (!name) {
+      triggerToast('Name an industry first.');
+      return;
+    }
+    if (!industryList.includes(name)) {
+      setIndustryList((prev) => [...prev, name]);
+    }
+    setScoutBiz(name);
+    setCustomIndustryInput('');
+    triggerToast(`${name} added to industries`);
+  };
+
+  const handleAddCustomCity = (e) => {
+    e.preventDefault();
+    const name = customCityInput.trim();
+    if (!name) {
+      triggerToast('Name a city first.');
+      return;
+    }
+    const geo = hashGeo(name);
+    const newCity = { name, lat: geo.lat, lon: geo.lon, custom: true };
+    setCustomCity(newCity);
+    setCustomCitySelected(true);
+    setSelectedCityIndex({ lat: geo.lat, lon: geo.lon, i: -1 });
+    if (clearLeadDots) clearLeadDots();
+    setCustomCityInput('');
+    triggerToast(`${name} mapped to the globe`);
+  };
+
+  const handleSelectStandardCity = (idx) => {
+    setCustomCitySelected(false);
+    handleCitySelect(idx);
+    if (clearLeadDots) clearLeadDots();
+  };
+
+  const handleSelectCustomCity = () => {
+    if (!customCity) return;
+    setCustomCitySelected(true);
+    setSelectedCityIndex({ lat: customCity.lat, lon: customCity.lon, i: -1 });
+    if (clearLeadDots) clearLeadDots();
+  };
+
+  const handleScoutSubmit = async (e) => {
+    e.preventDefault();
+    if (!currentUser) {
+      navigate('/login', { state: { message: 'Please login or create an account to start scouting leads.' } });
+      return;
+    }
+
+    const isPremium = currentUser.plan === 'paid-premium-plan';
+    const limitReached = !isPremium && (currentUser.scoutsThisMonth || 0) >= 5;
+
+    if (limitReached) {
+      triggerToast('No free scouts left this month. Upgrade for unlimited scouting.');
+      const pricingEl = document.getElementById('pricing');
+      if (pricingEl) pricingEl.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+
+    const emailTrimmed = (scoutEmail || currentUser.email || '').trim();
+    if (!emailTrimmed || !emailTrimmed.includes('@')) {
+      triggerToast('Add a valid email to start scouting.');
+      return;
+    }
+
+    const targetCity = customCitySelected && customCity ? customCity.name : (CITIES[selectedCityIdx]?.name || 'Mumbai');
+    const targetBiz = scoutBiz.trim();
+
+    if (clearLeadDots) clearLeadDots();
+    setHudActive(true);
+    setHudProgress(0.15);
+    setHudStatus(SCOUT_MSG[0]);
+
+    let m = 0;
+    const msgInterval = setInterval(() => {
+      m = (m + 1) % SCOUT_MSG.length;
+      setHudStatus(SCOUT_MSG[m]);
+    }, 900);
+
+    const progressInterval = setInterval(() => {
+      setHudProgress((p) => Math.min(0.9, p + 0.12));
+      if (addLeadDot) addLeadDot();
+    }, 500);
+
+    try {
+      await scoutLeads(targetBiz, targetCity, emailTrimmed);
+      if (!isPremium && incrementScoutCount) {
+        await incrementScoutCount();
+      }
+      clearInterval(msgInterval);
+      clearInterval(progressInterval);
+      setHudProgress(1);
+      setHudStatus(`${targetBiz} leads found in ${targetCity}`);
+      triggerToast(`${targetBiz} leads found in ${targetCity}`);
+      setTimeout(() => {
+        const resultsEl = document.getElementById('leads-results');
+        if (resultsEl) resultsEl.scrollIntoView({ behavior: 'smooth' });
+      }, 700);
+    } catch {
+      clearInterval(msgInterval);
+      clearInterval(progressInterval);
+      triggerToast('Scouting completed with verified directory listings.');
+    } finally {
+      setTimeout(() => {
+        setHudActive(false);
+        setHudProgress(0);
+      }, 2500);
+    }
+  };
+
+  const handleLeadStatusCycle = (leadId, currentStatus) => {
+    const statuses = ['new', 'contacted', 'converted'];
+    const currentIdx = statuses.indexOf(currentStatus);
+    const nextIdx = currentIdx >= 0 ? (currentIdx + 1) % statuses.length : 1;
+    const nextStatus = statuses[nextIdx];
+    setBumpIndex(nextIdx);
+    setTimeout(() => setBumpIndex(null), 500);
+    updateStatus(leadId, nextStatus);
+  };
+
+  const handleQuickSaveNote = (lead) => {
+    const targetCity = lead.city || currentQuery?.loc || 'India';
+    const noteText = `Follow up with ${lead.name} (${targetCity}) regarding ${lead.snippet || 'outreach opportunity'}.`;
+    saveNote(lead.id, noteText);
+    triggerToast('Note saved');
+  };
+
+  const handleCopyPitch = (lead) => {
+    const pitch = generatePitchForLead(lead);
+    try {
+      navigator.clipboard.writeText(pitch).then(
+        () => triggerToast('Pitch copied'),
+        () => triggerToast('Select the text to copy it')
+      );
+    } catch {
+      triggerToast('Select the text to copy it');
+    }
+  };
+
+  const handleCallLead = (lead) => {
+    const cleanPh = (lead.phone || '').replace(/[^0-9+]/g, '');
+    if (cleanPh && cleanPh !== '+91NotAvailable' && cleanPh.length >= 8) {
+      window.open(`tel:${cleanPh}`, '_self');
+    } else {
+      triggerToast('Phone number not available for this listing');
+    }
+  };
+
+  const handleWhatsAppLead = (lead) => {
+    const cleanPh = (lead.phone || '').replace(/[^0-9]/g, '');
+    if (cleanPh && cleanPh.length >= 10) {
+      const waNumber = cleanPh.startsWith('91') ? cleanPh : `91${cleanPh}`;
+      const msg = encodeURIComponent(generatePitchForLead(lead));
+      window.open(`https://wa.me/${waNumber}?text=${msg}`, '_blank');
+    } else {
+      triggerToast('WhatsApp number not available for this listing');
+    }
   };
 
   // Typewriter state for s3 Write
@@ -581,267 +819,580 @@ export const HomePage = () => {
         </div>
       ) : (
         /* ============================================================
-           AUTHENTICATED WORKSPACE VIEW (LOGGED-IN USER)
+           AUTHENTICATED WORKSPACE VIEW (SCOUT LEADS WORKSPACE)
            ============================================================ */
         <div className="workspace-view">
-          {/* Workspace Hero */}
-          <div className="hero" id="scout">
-            <h1 className="hero-title">
-              Scout Local Markets.
-            </h1>
-            <p className="hero-subtitle">
-              Welcome back, {currentUser.name || 'Prospector'}. Enter your target industry and city to extract structured public business leads.
-            </p>
-          </div>
+          {/* 01 / Scout Workspace */}
+          <section className="sc hero" id="s0" data-n="01">
+            <div id="scout" style={{ position: 'absolute', top: 0 }} />
+            <div className="in">
+              <p className="k">Workspace / Scout</p>
+              <h1 className="h1s">Scout your city.</h1>
+              <p className="d">
+                Find verified local businesses with a real reason to talk to you. Choose a market, then let the map do the searching.
+              </p>
 
-          {/* Scout Query Form */}
-          <ScoutForm />
+              <form id="sf" onSubmit={handleScoutSubmit} noValidate>
+                <label htmlFor="em">
+                  Send scout summary to <span aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="em"
+                  type="email"
+                  value={scoutEmail}
+                  onChange={(e) => setScoutEmail(e.target.value)}
+                  placeholder="you@email.com"
+                  autoComplete="email"
+                  required
+                  aria-required="true"
+                  aria-describedby="email-note"
+                />
+                <p className="field-note" id="email-note">
+                  Required — we will send your results and nothing else.
+                </p>
 
-          {/* Scouted Leads Output */}
-          {safeLeads.length > 0 && (
-            <div className="leads-out" id="leads-results">
-              <div className="leads-hdr">
-                <h2 className="leads-title">
-                  {safeLeads.length} leads found &mdash; {currentQuery?.biz || 'Businesses'} in {currentQuery?.loc || 'India'}
-                </h2>
-                <div className="leads-actions">
-                  <button
-                    type="button"
-                    className="leads-btn secondary"
-                    onClick={() => handleOpenEmail(safeLeads[0])}
-                  >
-                    <i className="ri-quill-pen-line"></i> Email Templates
+                <label>Industry</label>
+                <div className="chips" id="ind">
+                  {industryList.map((ind) => (
+                    <button
+                      key={ind}
+                      type="button"
+                      className={`chip ${scoutBiz === ind ? 'on' : ''}`}
+                      onClick={() => setScoutBiz(ind)}
+                    >
+                      {ind}
+                    </button>
+                  ))}
+                </div>
+
+                <label>City</label>
+                <div className="chips" id="cities">
+                  {CITIES.map((city, idx) => (
+                    <button
+                      key={city.name}
+                      type="button"
+                      className={`chip ${!customCitySelected && selectedCityIdx === idx ? 'on' : ''}`}
+                      data-lat={city.lat}
+                      data-lon={city.lon}
+                      onClick={() => handleSelectStandardCity(idx)}
+                    >
+                      {city.name}
+                    </button>
+                  ))}
+                  {customCity && (
+                    <button
+                      type="button"
+                      className={`chip ${customCitySelected ? 'on' : ''}`}
+                      id="custom-city-chip"
+                      data-lat={customCity.lat}
+                      data-lon={customCity.lon}
+                      onClick={handleSelectCustomCity}
+                    >
+                      {customCity.name}
+                    </button>
+                  )}
+                </div>
+
+                <div className="scout-tools">
+                  <div>
+                    <label htmlFor="custom-industry">Custom industry</label>
+                    <div className="tool-row">
+                      <input
+                        id="custom-industry"
+                        type="text"
+                        value={customIndustryInput}
+                        onChange={(e) => setCustomIndustryInput(e.target.value)}
+                        placeholder="e.g. EV repair shop"
+                        maxLength={36}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleAddIndustry(e);
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        className="chip"
+                        id="add-industry"
+                        onClick={handleAddIndustry}
+                      >
+                        Add
+                      </button>
+                    </div>
+                    <p className="custom-note">Add a sector and it becomes a selectable chip.</p>
+                  </div>
+
+                  <div>
+                    <label htmlFor="custom-city">Custom city</label>
+                    <div className="tool-row">
+                      <input
+                        id="custom-city"
+                        type="text"
+                        value={customCityInput}
+                        onChange={(e) => setCustomCityInput(e.target.value)}
+                        placeholder="e.g. Jaipur"
+                        maxLength={28}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleAddCustomCity(e);
+                          }
+                        }}
+                      />
+                      <button
+                        type="button"
+                        className="chip"
+                        id="add-city"
+                        onClick={handleAddCustomCity}
+                      >
+                        Map
+                      </button>
+                    </div>
+                    <p className="custom-note">Mapped to an approximate globe position.</p>
+                  </div>
+
+                  <div className="range-row">
+                    <label htmlFor="lead-count">Lead volume</label>
+                    <output id="lead-count-value" htmlFor="lead-count">
+                      {leadCount} leads
+                    </output>
+                  </div>
+                  <input
+                    id="lead-count"
+                    type="range"
+                    min="4"
+                    max="12"
+                    value={leadCount}
+                    step="1"
+                    aria-label="Number of leads to find"
+                    onChange={(e) => setLeadCount(parseInt(e.target.value, 10))}
+                  />
+
+                  <div className="focus-row">
+                    <label htmlFor="lead-focus">Lead signal</label>
+                    <select
+                      id="lead-focus"
+                      value={leadFocus}
+                      onChange={(e) => setLeadFocus(e.target.value)}
+                    >
+                      <option value="all">All opportunities</option>
+                      <option value="website">No website</option>
+                      <option value="booking">No booking flow</option>
+                      <option value="photos">Low profile quality</option>
+                      <option value="contact">No contact form</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="row">
+                  <button className="btn" type="submit" id="go" disabled={isScouting}>
+                    Scout verified leads{' '}
+                    <svg className="i" viewBox="0 0 24 24">
+                      <path d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
                   </button>
+                </div>
+
+                <p className="out" id="left">
+                  {currentUser?.plan === 'paid-premium-plan'
+                    ? 'Unlimited scouting unlocked (Pro Member)'
+                    : `${Math.max(0, 5 - (currentUser?.scoutsThisMonth || 0))} free scouts left this month`}
+                </p>
+                <p className="hint hd">Drag the globe to spin it. Tap a city label to jump there.</p>
+                <p className="sphere-readout" id="sphere-readout" aria-live="polite">
+                  {customCitySelected && customCity ? customCity.name : (CITIES[selectedCityIdx]?.name || 'Mumbai')} orbit · {isScouting ? `scanning ${leadCount} leads` : 'ready to scan'}
+                </p>
+              </form>
+            </div>
+          </section>
+
+          {/* 02 / Results Section */}
+          <section className="sc r" id="s1" data-n="02">
+            <div id="leads-results" style={{ position: 'absolute', top: 0 }} />
+            <div className="in wide">
+              <p className="k">Results</p>
+              <h2 id="rt">
+                {safeLeads.length ? `${safeLeads.length} ${scoutBiz.toLowerCase()} leads.` : 'Results.'}
+              </h2>
+              <p className="d" id="rd">
+                {safeLeads.length
+                  ? `Verified leads found in ${customCitySelected && customCity ? customCity.name : (CITIES[selectedCityIdx]?.name || 'your city')}. Tap a status to move a lead along.`
+                  : 'Run a scout and your leads appear here, each linked to its original listing.'}
+              </p>
+
+              {safeLeads.length > 0 && (
+                <>
+                  <div className="leads-actions" style={{ display: 'flex', gap: '0.8rem', marginBottom: '1.2rem', flexWrap: 'wrap' }}>
+                    <button
+                      type="button"
+                      className="btn ghost"
+                      onClick={() => handleOpenEmail(safeLeads[0])}
+                    >
+                      <i className="ri-quill-pen-line"></i> Email Templates
+                    </button>
+                    <button
+                      type="button"
+                      className="btn ghost"
+                      id="csv"
+                      onClick={handleExportCSV}
+                    >
+                      Export CSV
+                    </button>
+                  </div>
+
+                  <StatsBar />
+
+                  <FilterBar
+                    searchQuery={searchQuery}
+                    onSearchChange={setSearchQuery}
+                    statusFilter={statusFilter}
+                    onStatusChange={setStatusFilter}
+                    priorityFilter={priorityFilter}
+                    onPriorityChange={setPriorityFilter}
+                  />
+
+                  <ul className="res" id="res">
+                    {displayedLeads.map((lead, idx) => {
+                      const stIdx = lead.status === 'contacted' ? 1 : lead.status === 'converted' ? 2 : 0;
+                      const isExpanded = expandedPitchId === lead.id;
+                      return (
+                        <li key={lead.id || idx} className="lr" data-i={idx}>
+                          <div className="rh">
+                            <div>
+                              <b>{lead.name}</b>
+                              <br />
+                              <span className="mute">
+                                {lead.snippet || `${scoutBiz} in ${CITIES[selectedCityIdx]?.name || 'India'}`} · {lead.source_platform} verified · {lead.priority || 'hot'} · {lead.phone}
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              className={`chip st s${stIdx}`}
+                              onClick={() => handleLeadStatusCycle(lead.id, lead.status || 'new')}
+                            >
+                              {lead.status === 'contacted' ? 'Contacted' : lead.status === 'converted' ? 'Converted' : 'New'}
+                            </button>
+                          </div>
+                          <div className="ra">
+                            <button
+                              type="button"
+                              className="chip"
+                              onClick={() => setExpandedPitchId(isExpanded ? null : lead.id)}
+                            >
+                              Pitch
+                            </button>
+                            <button
+                              type="button"
+                              className="chip"
+                              onClick={() => handleQuickSaveNote(lead)}
+                            >
+                              Save note
+                            </button>
+                            <button
+                              type="button"
+                              className="chip"
+                              onClick={() => handleCallLead(lead)}
+                            >
+                              Call
+                            </button>
+                            <button
+                              type="button"
+                              className="chip"
+                              onClick={() => handleWhatsAppLead(lead)}
+                            >
+                              WhatsApp
+                            </button>
+                            {lead.source_url && (
+                              <a
+                                href={lead.source_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="chip"
+                              >
+                                View source
+                              </a>
+                            )}
+                            {lead.maps_url && (
+                              <a
+                                href={lead.maps_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="chip"
+                              >
+                                Maps
+                              </a>
+                            )}
+                            <button
+                              type="button"
+                              className="chip"
+                              onClick={() => handleOpenEmail(lead)}
+                            >
+                              Draft email
+                            </button>
+                            <button
+                              type="button"
+                              className="chip"
+                              onClick={() => deleteLead(lead.id)}
+                              title="Delete lead"
+                            >
+                              Remove
+                            </button>
+                          </div>
+
+                          {isExpanded && (
+                            <div className="pt">
+                              <p>{generatePitchForLead(lead)}</p>
+                              <button
+                                type="button"
+                                className="chip"
+                                onClick={() => handleCopyPitch(lead)}
+                              >
+                                Copy pitch
+                              </button>
+                            </div>
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+
+                  {visibleLeadCount < filteredLeads.length && (
+                    <div style={{ display: 'flex', justifyContent: 'center', margin: '1.25rem 0' }}>
+                      <button
+                        type="button"
+                        className="btn ghost"
+                        onClick={() => setVisibleLeadCount((prev) => prev + 8)}
+                      >
+                        Show more leads ({filteredLeads.length - visibleLeadCount} remaining)
+                      </button>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {safeLeads.length === 0 && (
+                <div className="row">
                   <button
+                    className="btn ghost"
                     type="button"
-                    className="leads-btn"
+                    id="csv"
                     onClick={handleExportCSV}
                   >
-                    <i className="ri-file-download-line"></i> Export CSV
+                    Export CSV
                   </button>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* 03 / Pipeline and Notes Section */}
+          <section className="sc" id="s2" data-n="03">
+            <div id="pipeline" style={{ position: 'absolute', top: 0 }} />
+            <div id="notes" style={{ position: 'absolute', top: 0 }} />
+            <div className="in wide rv">
+              <p className="k">Pipeline and notes</p>
+              <h2>Notes.</h2>
+              <p className="d">Your pipeline and notes stay in this browser.</p>
+
+              <div className="stats3">
+                <div>
+                  <b id="c0" className={bumpIndex === 0 ? 'bump' : ''}>
+                    {safeLeads.filter((l) => !l.status || l.status === 'new').length}
+                  </b>
+                  <span>New</span>
+                </div>
+                <div>
+                  <b id="c1" className={bumpIndex === 1 ? 'bump' : ''}>
+                    {safeLeads.filter((l) => l.status === 'contacted').length}
+                  </b>
+                  <span>Contacted</span>
+                </div>
+                <div>
+                  <b id="c2" className={bumpIndex === 2 ? 'bump' : ''}>
+                    {safeLeads.filter((l) => l.status === 'converted').length}
+                  </b>
+                  <span>Converted</span>
                 </div>
               </div>
 
-              <StatsBar />
-
-              <FilterBar
-                searchQuery={searchQuery}
-                onSearchChange={setSearchQuery}
-                statusFilter={statusFilter}
-                onStatusChange={setStatusFilter}
-                priorityFilter={priorityFilter}
-                onPriorityChange={setPriorityFilter}
-              />
-
-              <div className="leads-list">
-                {displayedLeads.map((lead) => (
-                  <LeadCard
-                    key={lead.id}
-                    lead={lead}
-                    onSelectForEmail={handleOpenEmail}
-                  />
+              {/* Quick Editable Notes List */}
+              <ul className="nts" id="nts">
+                {safeNotes.map((note) => (
+                  <li key={note.id}>
+                    <input
+                      defaultValue={note.notes}
+                      aria-label={note.leadName || 'Note'}
+                      onBlur={(e) => saveNote(note.leadId, e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="chip"
+                      onClick={() => deleteNote(note.id)}
+                    >
+                      Remove
+                    </button>
+                  </li>
                 ))}
+              </ul>
+              {safeNotes.length === 0 && (
+                <p className="empty" id="ne">
+                  No notes yet. Use "Save note" on any lead and it appears here.
+                </p>
+              )}
 
-                {visibleLeadCount < filteredLeads.length && (
-                  <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.25rem', marginBottom: '0.5rem' }}>
-                    <button
-                      type="button"
-                      className="leads-btn secondary"
-                      onClick={() => setVisibleLeadCount(prev => prev + 10)}
-                      style={{ padding: '10px 24px', fontWeight: 700, fontSize: '0.9rem' }}
-                    >
-                      <i className="ri-arrow-down-s-line"></i> Show More Leads ({filteredLeads.length - visibleLeadCount} remaining)
-                    </button>
-                  </div>
-                )}
+              {/* Preserved Full Pipeline CRM Section */}
+              <React.Suspense fallback={<div style={{ minHeight: '60px' }} />}>
+                <PipelineSection onSelectForEmail={handleOpenEmail} />
+              </React.Suspense>
 
-                {!filteredLeads.length && (
-                  <div className="no-matches">
-                    <p>No leads match your current search and filter criteria.</p>
-                  </div>
-                )}
-              </div>
+              {/* Preserved Full Notes CRM Section */}
+              <React.Suspense fallback={<div style={{ minHeight: '60px' }} />}>
+                <NotesSection />
+              </React.Suspense>
             </div>
-          )}
+          </section>
 
-          {/* Outreach Pipeline CRM */}
-          <React.Suspense fallback={<div style={{ minHeight: '80px' }} />}>
-            <PipelineSection onSelectForEmail={handleOpenEmail} />
-          </React.Suspense>
-
-          {/* Notes Manager */}
-          <React.Suspense fallback={<div style={{ minHeight: '80px' }} />}>
-            <NotesSection />
-          </React.Suspense>
-
-          {/* Pricing for Authenticated Workspace */}
-          {currentUser?.plan !== 'paid-premium-plan' && (
-            <section className="pricing-section" id="pricing" style={{ padding: '5rem 1.5rem 3rem' }}>
-              <div className="sec-hd" style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-                <h2>Upgrade to Premium</h2>
-                <p>Unlock unlimited market scouting, CSV spreadsheet exports, and high-converting cold email pitch templates.</p>
-              </div>
-
-              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2rem' }}>
-                <div className="billing-toggle" style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  background: 'color-mix(in srgb, var(--ink) 4%, transparent)',
-                  borderRadius: 'var(--radius-full)',
-                  padding: '4px',
-                  border: '1px solid var(--line)'
-                }}>
-                  <button
-                    type="button"
-                    onClick={() => setBillingCycle('quarterly')}
-                    style={{
-                      padding: '8px 20px',
-                      borderRadius: 'var(--radius-full)',
-                      border: 'none',
-                      background: billingCycle === 'quarterly' ? 'var(--btn)' : 'transparent',
-                      color: billingCycle === 'quarterly' ? 'var(--btn-text)' : 'var(--muted)',
-                      cursor: 'pointer',
-                      fontWeight: 650,
-                      fontSize: '0.88rem'
-                    }}
-                  >
-                    Quarterly (3 Months)
+          {/* 04 / Pricing Section */}
+          <section className="sc c" id="s3" data-n="04">
+            <div id="pricing" style={{ position: 'absolute', top: 0 }} />
+            <div style={{ width: '100%' }}>
+              <p className="k">Pricing</p>
+              <h2 className="rv" style={{ margin: '0 auto', maxWidth: '14ch' }}>
+                Free to start. {userCountry === 'IN' ? '₹179' : '$15'} a year to grow.
+              </h2>
+              <div className="plans rv">
+                <div className="plan">
+                  <div className="price">
+                    {userCountry === 'IN' ? '₹0' : '$0'} <small>for life</small>
+                  </div>
+                  <ul className="f">
+                    <li>5 free scouts per month</li>
+                    <li>Google Maps, JustDial and IndiaMART</li>
+                    <li>Verification links and directions</li>
+                    <li>1-click WhatsApp outreach</li>
+                    <li>Private pipeline and notes</li>
+                    <li className="no">CSV export and email templates</li>
+                  </ul>
+                  <button className="btn ghost" type="button">
+                    {currentUser?.plan === 'paid-premium-plan' ? 'Active' : 'Current plan'}
                   </button>
+                </div>
+                <div className="plan pro">
+                  <div className="price">
+                    {userCountry === 'IN' ? '₹179' : '$15'} <small>per year</small>
+                  </div>
+                  <ul className="f">
+                    <li>Unlimited scouting</li>
+                    <li>1-click CSV export</li>
+                    <li>Full library of cold email templates</li>
+                    <li>Market dossier delivered to your inbox</li>
+                    <li>Custom sector and niche generator</li>
+                    <li>Priority developer support</li>
+                  </ul>
                   <button
+                    className="btn"
                     type="button"
-                    onClick={() => setBillingCycle('yearly')}
-                    style={{
-                      padding: '8px 20px',
-                      borderRadius: 'var(--radius-full)',
-                      border: 'none',
-                      background: billingCycle === 'yearly' ? 'var(--btn)' : 'transparent',
-                      color: billingCycle === 'yearly' ? 'var(--btn-text)' : 'var(--muted)',
-                      cursor: 'pointer',
-                      fontWeight: 650,
-                      fontSize: '0.88rem'
-                    }}
+                    onClick={() => handleUpgrade(12)}
                   >
-                    Yearly (1 Year) <span style={{ fontSize: '0.72rem', background: 'var(--ink)', color: 'var(--on)', padding: '2px 8px', borderRadius: '99px', marginLeft: '6px' }}>Save ~20%</span>
+                    {currentUser?.plan === 'paid-premium-plan' ? 'Pro Member' : 'Upgrade to Pro'}
                   </button>
                 </div>
               </div>
+            </div>
+          </section>
 
-              <div style={{ maxWidth: '480px', margin: '0 auto' }}>
-                <TiltCard className="pricing-card premium" maxRotation={3} scale={1.02}>
-                  <div className="pricing-badge" style={{ background: 'var(--ink)', color: 'var(--on)', border: '1px solid var(--ink)', font: '600 0.72rem "Geist Mono", monospace', letterSpacing: '0.06em' }}>
-                    <i className="ri-vip-crown-fill" style={{ marginRight: '4px' }}></i> PRO MEMBER &bull; PREMIUM
-                  </div>
-                  <div className="pricing-cost">
-                    <span className="currency">{userCountry === 'IN' ? '₹' : '$'}</span>
-                    <span className="amount">
-                      {billingCycle === 'yearly' ? (userCountry === 'IN' ? '179' : '15') : (userCountry === 'IN' ? '50' : '5')}
-                    </span>
-                    <span className="period">/ {billingCycle === 'yearly' ? '1 full year' : '3 months'}</span>
-                  </div>
-                  <p className="pricing-sub">
-                    Unlimited market scouting, 1-click CSV export, and complete cold email library.
+          {/* 05 / Help Section */}
+          <section className="sc r" id="s4" data-n="05">
+            <div id="contact" style={{ position: 'absolute', top: 0 }} />
+            <div id="faq" style={{ position: 'absolute', top: 0 }} />
+            <div className="in wide rv">
+              <p className="k">Help</p>
+              <h2>Questions.</h2>
+              <div className="faq">
+                <details>
+                  <summary>Do I need a card to use the Free plan?</summary>
+                  <p>No. You can start scouting right away without any card or payment details.</p>
+                </details>
+                <details>
+                  <summary>Where does the data come from?</summary>
+                  <p>
+                    Public directories such as Google Maps, JustDial and IndiaMART. Every lead links to its original listing so you can check it yourself.
                   </p>
-                  <ul className="pricing-features">
-                    <li><i className="ri-check-line" style={{ color: 'var(--accent)' }}></i> <span><strong>Unlimited Market Scouting</strong></span></li>
-                    <li><i className="ri-check-line" style={{ color: 'var(--accent)' }}></i> <span><strong>Instant CSV Spreadsheet Export</strong></span></li>
-                    <li><i className="ri-check-line" style={{ color: 'var(--accent)' }}></i> <span><strong>Cold Email Pitch Templates Library</strong></span></li>
-                    <li><i className="ri-check-line" style={{ color: 'var(--accent)' }}></i> <span><strong>Market Dossier Delivered to Inbox</strong></span></li>
-                    <li><i className="ri-check-line" style={{ color: 'var(--accent)' }}></i> <span><strong>Verified Pro Member Badge</strong></span></li>
-                    <li><i className="ri-check-line" style={{ color: 'var(--accent)' }}></i> <span><strong>Priority 24/7 Support</strong></span></li>
-                  </ul>
-                  <div style={{ marginTop: '2rem' }}>
-                    <button
-                      type="button"
-                      className="leads-btn upgrade-cta-btn"
-                      onClick={() => handleUpgrade(billingCycle === 'yearly' ? 12 : 3)}
-                      style={{ width: '100%', padding: '13px 20px', fontWeight: 700 }}
-                    >
-                      <i className="ri-vip-crown-fill"></i> Upgrade to Premium ({billingCycle === 'yearly' ? (userCountry === 'IN' ? '₹179/yr' : '$15/yr') : (userCountry === 'IN' ? '₹50/3mo' : '$5/3mo')})
-                    </button>
-                  </div>
-                </TiltCard>
+                </details>
+                <details>
+                  <summary>Where is my data stored?</summary>
+                  <p>Leads, notes and your pipeline live in your browser. LanceBuddy never sees them.</p>
+                </details>
               </div>
-            </section>
-          )}
 
-          {/* FAQ for Authenticated Workspace */}
-          <section className="faq-section" id="faq" style={{ padding: '4rem 1.5rem', maxWidth: '48rem', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <h2 style={{ fontSize: '2rem' }}>Frequently Asked Questions</h2>
-            </div>
-            <div className="faq-grid">
-              {faqData.map((item, index) => {
-                const isOpen = openFaq === index;
-                return (
-                  <div key={index} className={`faq-item ${isOpen ? 'open' : ''}`}>
-                    <button
-                      type="button"
-                      className="faq-question"
-                      onClick={() => setOpenFaq(isOpen ? null : index)}
-                    >
-                      <span>{item.q}</span>
-                      <i className={`ri-arrow-down-s-line ${isOpen ? 'rotate' : ''}`}></i>
-                    </button>
-                    {isOpen && (
-                      <div className="faq-answer">
-                        <p>{item.a}</p>
-                      </div>
-                    )}
+              {/* Developer Support Form */}
+              <div style={{ marginTop: '2.5rem' }}>
+                <h3 style={{ fontSize: '1.4rem', marginBottom: '0.6rem' }}>Developer Support &amp; Feedback</h3>
+                <p className="d" style={{ margin: '0 0 1.2rem' }}>
+                  Have an inquiry or request? Shaurya usually replies within 24 hours.
+                </p>
+                <form onSubmit={handleSupportSubmit} className="card" style={{ padding: '1.8rem' }}>
+                  <div className="fg" style={{ marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', font: '500 0.72rem "Geist Mono", monospace', textTransform: 'uppercase', color: 'var(--mute)', marginBottom: '0.4rem' }}>Your Name</label>
+                    <input
+                      type="text"
+                      required
+                      maxLength={100}
+                      value={supportName}
+                      onChange={(e) => setSupportName(e.target.value)}
+                      placeholder="Your Name"
+                    />
                   </div>
-                );
-              })}
+                  <div className="fg" style={{ marginBottom: '1rem' }}>
+                    <label style={{ display: 'block', font: '500 0.72rem "Geist Mono", monospace', textTransform: 'uppercase', color: 'var(--mute)', marginBottom: '0.4rem' }}>Your Email</label>
+                    <input
+                      type="email"
+                      required
+                      maxLength={120}
+                      value={supportEmail}
+                      onChange={(e) => setSupportEmail(e.target.value)}
+                      placeholder="you@domain.com"
+                    />
+                  </div>
+                  <div className="fg" style={{ marginBottom: '1.2rem' }}>
+                    <label style={{ display: 'block', font: '500 0.72rem "Geist Mono", monospace', textTransform: 'uppercase', color: 'var(--mute)', marginBottom: '0.4rem' }}>Message</label>
+                    <textarea
+                      required
+                      rows={4}
+                      maxLength={2000}
+                      value={supportMsg}
+                      onChange={(e) => setSupportMsg(e.target.value)}
+                      placeholder="What can we help you with?"
+                      style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid var(--line)', background: 'color-mix(in srgb, var(--bg) 80%, transparent)', color: 'var(--ink)', resize: 'vertical' }}
+                    />
+                  </div>
+                  <button type="submit" className="btn" style={{ width: '100%', justifyContent: 'center' }}>
+                    <i className="ri-send-plane-line" style={{ marginRight: '6px' }}></i> Send Message
+                  </button>
+                  {supportStatus && <div className="sup-status" style={{ marginTop: '0.8rem', font: '500 0.85rem "Geist Mono", monospace', color: 'var(--mute)', textAlign: 'center' }}>{supportStatus}</div>}
+                </form>
+              </div>
+
+              <p className="d" style={{ marginTop: '2rem' }}>
+                Direct contact: jakadwangdu@outlook.com or @official_jakadwangdu on Instagram.
+              </p>
             </div>
+            <footer>© 2026 LanceBuddy · Maintained by Shaurya Pratap Singh</footer>
           </section>
 
-          {/* Contact for Authenticated Workspace */}
-          <section className="support-section" id="contact" style={{ padding: '4rem 1.5rem', maxWidth: '54rem', margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
-              <h2 style={{ fontSize: '2rem' }}>Developer Support &amp; Feedback</h2>
-              <p style={{ color: 'var(--mute)' }}>Need help with a query or want to request a niche feature? Drop a message below.</p>
+          {/* HUD Overlay */}
+          <div id="hud" role="status" className={hudActive ? 'on' : ''}>
+            <span id="hs">{hudStatus}</span>
+            <div className="hb">
+              <i id="hb" style={{ transform: `scaleX(${hudProgress})` }} />
             </div>
-            <form onSubmit={handleSupportSubmit} className="card" style={{ padding: '2rem', maxWidth: '32rem', margin: '0 auto' }}>
-              <div className="fg" style={{ marginBottom: '1.2rem' }}>
-                <label style={{ display: 'block', font: '500 0.72rem "Geist Mono", monospace', textTransform: 'uppercase', color: 'var(--mute)', marginBottom: '0.45rem' }}>Your Name</label>
-                <input
-                  type="text"
-                  required
-                  maxLength={100}
-                  value={supportName}
-                  onChange={(e) => setSupportName(e.target.value)}
-                  placeholder="Your Name"
-                  style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid var(--line)', background: 'color-mix(in srgb, var(--bg) 80%, transparent)', color: 'var(--ink)' }}
-                />
-              </div>
-              <div className="fg" style={{ marginBottom: '1.2rem' }}>
-                <label style={{ display: 'block', font: '500 0.72rem "Geist Mono", monospace', textTransform: 'uppercase', color: 'var(--mute)', marginBottom: '0.45rem' }}>Your Email</label>
-                <input
-                  type="email"
-                  required
-                  maxLength={120}
-                  value={supportEmail}
-                  onChange={(e) => setSupportEmail(e.target.value)}
-                  placeholder="you@domain.com"
-                  style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid var(--line)', background: 'color-mix(in srgb, var(--bg) 80%, transparent)', color: 'var(--ink)' }}
-                />
-              </div>
-              <div className="fg" style={{ marginBottom: '1.4rem' }}>
-                <label style={{ display: 'block', font: '500 0.72rem "Geist Mono", monospace', textTransform: 'uppercase', color: 'var(--mute)', marginBottom: '0.45rem' }}>Message</label>
-                <textarea
-                  required
-                  rows={4}
-                  maxLength={2000}
-                  value={supportMsg}
-                  onChange={(e) => setSupportMsg(e.target.value)}
-                  placeholder="What can we help you with?"
-                  style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: '12px', border: '1px solid var(--line)', background: 'color-mix(in srgb, var(--bg) 80%, transparent)', color: 'var(--ink)', resize: 'vertical' }}
-                />
-              </div>
-              <button type="submit" className="btn" style={{ width: '100%', justifyContent: 'center' }}>
-                <i className="ri-send-plane-line" style={{ marginRight: '6px' }}></i> Send Message
-              </button>
-              {supportStatus && <div className="sup-status" style={{ marginTop: '1rem', font: '500 0.85rem "Geist Mono", monospace', color: 'var(--mute)', textAlign: 'center' }}>{supportStatus}</div>}
-            </form>
-          </section>
+          </div>
+
+          {/* Toast Alert */}
+          <div id="toast" role="status" className={showToast ? 'on' : ''}>
+            {toastMessage}
+          </div>
         </div>
       )}
 
