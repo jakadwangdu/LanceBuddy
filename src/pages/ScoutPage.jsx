@@ -7,7 +7,7 @@ import { useLeads } from '../context/LeadsContext';
 import { fetchRealworldLeads } from '../services/apiLeads';
 import '../styles/scout.css';
 
-const INDUSTRIES = [
+const DEFAULT_INDUSTRIES = [
   'Dental clinic',
   'Interior designer',
   'Travel agency',
@@ -17,12 +17,13 @@ const INDUSTRIES = [
 ];
 
 const NM = ['Shree', 'Ganga', 'Kashi', 'Om', 'Sharma', 'Royal', 'Sunrise', 'Metro'];
-const OPP = [
-  'prospective clients have no website to visit',
-  'there is no easy way to book online',
-  'the profile has very few photos',
-  'there is no contact form on your page'
-];
+const OPP_MAP = {
+  website: 'prospective clients have no website to visit',
+  booking: 'there is no easy way to book online',
+  photos: 'the profile has very few photos',
+  contact: 'there is no contact form on your page'
+};
+const OPP_KEYS = ['website', 'booking', 'photos', 'contact'];
 const SRC = ['Google Maps', 'JustDial', 'IndiaMART', 'Google Maps'];
 const MSG = [
   'Scanning Google Maps…',
@@ -36,15 +37,25 @@ function randomInt(n) {
   return Math.floor(Math.random() * n);
 }
 
-function makeFallbackRow(city, industry, i) {
+function hashGeo(name) {
+  let h = 0;
+  for (let z = 0; z < name.length; z++) h = (h * 31 + name.charCodeAt(z)) | 0;
   return {
-    id: `fallback_${Date.now()}_${i}`,
+    lat: +(8 + (Math.abs(h) % 2200) / 100).toFixed(2),
+    lon: +(68 + (Math.abs(h >> 4) % 2100) / 100).toFixed(2)
+  };
+}
+
+function makeFallbackRow(city, industry, i, leadFocus) {
+  const oppKey = leadFocus === 'all' ? OPP_KEYS[i % OPP_KEYS.length] : leadFocus;
+  return {
+    id: `lead_${Date.now()}_${i}`,
     n: `${NM[i % 8]} ${industry}`,
     city,
     ph: `+91 9${1000 + randomInt(8999)} ${10000 + randomInt(89999)}`,
     rt: (4.1 + Math.random() * 0.8).toFixed(1),
     rv: 20 + randomInt(180),
-    opp: OPP[i % 4],
+    opp: OPP_MAP[oppKey] || OPP_MAP.website,
     src: SRC[i % 4],
     status: 0,
     showPitch: false
@@ -52,10 +63,11 @@ function makeFallbackRow(city, industry, i) {
 }
 
 function generatePitch(r) {
-  return `Hi Team ${r.n.split(' ')[0]}, I noticed ${r.n} has a ${r.rt}★ rating on ${r.src} in ${r.city}, but ${r.opp}. I drafted a quick preview if you would like to see it.`;
+  const cleanName = (r.n || '').split(' ')[0] || r.n || 'Business';
+  return `Hi Team ${cleanName}, I noticed ${r.n} has a ${r.rt}★ rating on ${r.src} in ${r.city}, but ${r.opp}. I drafted a quick preview if you would like to see it.`;
 }
 
-export const ScoutPage = ({ quota, setQuota }) => {
+export const ScoutPage = ({ quota: propQuota, setQuota: propSetQuota }) => {
   const {
     cities,
     selectedCityIndex,
@@ -65,11 +77,34 @@ export const ScoutPage = ({ quota, setQuota }) => {
     clearLeadDots
   } = useSite();
 
-  const { currentUser } = useAuth();
-  const { leads, setLeads, exportCSV, saveNote, notesList, deleteNote } = useLeads();
+  const { currentUser, incrementScoutCount } = useAuth();
+  const { exportCSV, saveNote, updateStatus, setLeads, scoutLeads } = useLeads();
 
+  // Industry state
+  const [industryList, setIndustryList] = useState(DEFAULT_INDUSTRIES);
   const [industry, setIndustry] = useState('Dental clinic');
-  const [email, setEmail] = useState('');
+  const [customIndustryInput, setCustomIndustryInput] = useState('');
+
+  // City state
+  const [customCity, setCustomCity] = useState(null);
+  const [customCityInput, setCustomCityInput] = useState('');
+  const [isCustomCitySelected, setIsCustomCitySelected] = useState(false);
+
+  // Configuration tools
+  const [leadCount, setLeadCount] = useState(8);
+  const [leadFocus, setLeadFocus] = useState('all');
+  const [email, setEmail] = useState(currentUser?.email || '');
+
+  // Quota for guests
+  const [guestQuota, setGuestQuota] = useState(() => {
+    try {
+      const saved = localStorage.getItem('lb_guest_scouts');
+      return saved !== null ? parseInt(saved, 10) : 5;
+    } catch {
+      return 5;
+    }
+  });
+
   const [busy, setBusy] = useState(false);
   const [rows, setRows] = useState([]);
   const [notes, setNotes] = useState(() => {
@@ -81,9 +116,11 @@ export const ScoutPage = ({ quota, setQuota }) => {
     }
   });
 
+  // UI Feedback
   const [toastMessage, setToastMessage] = useState('');
   const [showToast, setShowToast] = useState(false);
   const toastTimeoutRef = useRef(null);
+  const [bumpIndex, setBumpIndex] = useState(null);
 
   // HUD scan state
   const [hudActive, setHudActive] = useState(false);
@@ -95,7 +132,21 @@ export const ScoutPage = ({ quota, setQuota }) => {
     'Run a scout and your leads appear here, each linked to its original listing.'
   );
 
-  const selectedCity = cities[selectedCityIndex] || cities[0];
+  // Determine active city
+  const activeCity = isCustomCitySelected && customCity
+    ? customCity
+    : (cities[selectedCityIndex] || cities[0]);
+  const activeCityName = activeCity.name;
+
+  // Quota calculations
+  const isPro = currentUser?.plan === 'paid-premium-plan';
+  const effectiveQuota = isPro
+    ? Infinity
+    : currentUser
+    ? Math.max(0, 5 - (currentUser.scoutsThisMonth || 0))
+    : propQuota !== undefined
+    ? propQuota
+    : guestQuota;
 
   const triggerToast = (msg) => {
     setToastMessage(msg);
@@ -112,9 +163,75 @@ export const ScoutPage = ({ quota, setQuota }) => {
     } catch {}
   }, [notes]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem('lb_guest_scouts', guestQuota.toString());
+    } catch {}
+  }, [guestQuota]);
+
+  // Industry handlers
+  const handleAddIndustry = (e) => {
+    e.preventDefault();
+    const name = customIndustryInput.trim();
+    if (!name) {
+      triggerToast('Name an industry first.');
+      return;
+    }
+    if (!industryList.includes(name)) {
+      setIndustryList((prev) => [...prev, name]);
+    }
+    setIndustry(name);
+    setCustomIndustryInput('');
+    triggerToast(`${name} added to industries`);
+  };
+
+  // City handlers
+  const handleSelectStandardCity = (idx) => {
+    setIsCustomCitySelected(false);
+    setSelectedCityIndex(idx);
+    clearLeadDots();
+  };
+
+  const handleAddCustomCity = (e) => {
+    e.preventDefault();
+    const name = customCityInput.trim();
+    if (!name) {
+      triggerToast('Name a city first.');
+      return;
+    }
+    const geo = hashGeo(name);
+    const newCity = { name, lat: geo.lat, lon: geo.lon, custom: true };
+    setCustomCity(newCity);
+    setIsCustomCitySelected(true);
+    setSelectedCityIndex({ lat: geo.lat, lon: geo.lon, i: -1 });
+    clearLeadDots();
+    setCustomCityInput('');
+    triggerToast(`${name} mapped to the globe`);
+  };
+
+  const handleSelectCustomCity = () => {
+    if (!customCity) return;
+    setIsCustomCitySelected(true);
+    setSelectedCityIndex({ lat: customCity.lat, lon: customCity.lon, i: -1 });
+    clearLeadDots();
+  };
+
+  // Status cycling: New (0) -> Contacted (1) -> Converted (2) -> New (0)
   const handleStatusCycle = (idx) => {
     setRows((prev) =>
-      prev.map((r, i) => (i === idx ? { ...r, status: (r.status + 1) % 3 } : r))
+      prev.map((r, i) => {
+        if (i === idx) {
+          const nextStatus = (r.status + 1) % 3;
+          setBumpIndex(nextStatus);
+          setTimeout(() => setBumpIndex(null), 500);
+          if (updateStatus && r.id) {
+            const statusNames = ['new', 'contacted', 'converted'];
+            updateStatus(r.id, statusNames[nextStatus]);
+          }
+          return { ...r, status: nextStatus };
+        }
+        return r;
+      })
     );
   };
 
@@ -125,7 +242,9 @@ export const ScoutPage = ({ quota, setQuota }) => {
   };
 
   const handleSaveNote = (r) => {
-    const oppClean = r.opp ? r.opp.replace(/^(there is|prospective clients have)\s*/, '') : 'client outreach';
+    const oppClean = r.opp
+      ? r.opp.replace(/^(there is|prospective clients have)\s*/, '')
+      : 'client outreach';
     const noteText = `Follow up with ${r.n} (${r.city}) about ${oppClean}.`;
     setNotes((prev) => [...prev, noteText]);
     if (saveNote && r.id) {
@@ -166,7 +285,6 @@ export const ScoutPage = ({ quota, setQuota }) => {
   };
 
   const handleExportCSV = () => {
-    const isPro = currentUser?.plan === 'paid-premium-plan';
     if (isPro) {
       exportCSV();
       triggerToast('Exporting leads to CSV…');
@@ -181,7 +299,13 @@ export const ScoutPage = ({ quota, setQuota }) => {
     e.preventDefault();
     if (busy) return;
 
-    if (quota < 1 && currentUser?.plan !== 'paid-premium-plan') {
+    const emailTrimmed = email.trim();
+    if (!emailTrimmed || !emailTrimmed.includes('@')) {
+      triggerToast('Add a valid email to start scouting.');
+      return;
+    }
+
+    if (!isPro && effectiveQuota < 1) {
       triggerToast('No free scouts left this month. Upgrade for unlimited scouting.');
       const pricingEl = document.getElementById('s3');
       if (pricingEl) pricingEl.scrollIntoView({ behavior: 'smooth' });
@@ -189,14 +313,25 @@ export const ScoutPage = ({ quota, setQuota }) => {
     }
 
     setBusy(true);
-    if (currentUser?.plan !== 'paid-premium-plan') {
-      setQuota((q) => Math.max(0, q - 1));
+
+    // Decrement quota
+    if (!isPro) {
+      if (currentUser && incrementScoutCount) {
+        incrementScoutCount();
+      } else if (propSetQuota) {
+        propSetQuota((q) => Math.max(0, q - 1));
+      } else {
+        setGuestQuota((q) => Math.max(0, q - 1));
+      }
     }
+
     setRows([]);
     clearLeadDots();
     setIsScanning(true);
 
-    const city = selectedCity.name;
+    const city = activeCityName;
+    const totalToFetch = Math.max(4, Math.min(12, leadCount));
+
     setHudActive(true);
     setHudStatus(MSG[0]);
     setResultsTitle(`Scanning ${city}…`);
@@ -208,7 +343,12 @@ export const ScoutPage = ({ quota, setQuota }) => {
       setHudStatus(MSG[m]);
     }, 900);
 
-    // Fetch real-world leads in background
+    // Trigger background webhook delivery via LeadsContext
+    if (scoutLeads) {
+      scoutLeads(industry, city, emailTrimmed).catch(() => {});
+    }
+
+    // Fetch real-world leads
     let realLeads = [];
     try {
       realLeads = await fetchRealworldLeads(industry, city);
@@ -216,25 +356,30 @@ export const ScoutPage = ({ quota, setQuota }) => {
       realLeads = [];
     }
 
-    // Prepare full 8 leads by combining real + verified directories
-    const total = 8;
+    // Prepare leads matching leadCount and leadFocus signal
     const preparedLeads = [];
-    for (let i = 0; i < total; i++) {
+    for (let i = 0; i < totalToFetch; i++) {
+      const oppKey = leadFocus === 'all' ? OPP_KEYS[i % OPP_KEYS.length] : leadFocus;
+      const oppText = OPP_MAP[oppKey] || OPP_MAP.website;
+
       if (realLeads[i]) {
         preparedLeads.push({
-          id: realLeads[i].id,
+          id: realLeads[i].id || `lead_${Date.now()}_${i}`,
           n: realLeads[i].name,
           city,
-          ph: realLeads[i].phone !== '+91 Not Available' ? realLeads[i].phone : `+91 9${1000 + randomInt(8999)} ${10000 + randomInt(89999)}`,
+          ph:
+            realLeads[i].phone && realLeads[i].phone !== '+91 Not Available'
+              ? realLeads[i].phone
+              : `+91 9${1000 + randomInt(8999)} ${10000 + randomInt(89999)}`,
           rt: (4.2 + Math.random() * 0.7).toFixed(1),
           rv: 25 + randomInt(150),
-          opp: OPP[i % OPP.length],
+          opp: oppText,
           src: realLeads[i].source_platform || 'Google Maps',
           status: 0,
           showPitch: false
         });
       } else {
-        preparedLeads.push(makeFallbackRow(city, industry, i));
+        preparedLeads.push(makeFallbackRow(city, industry, i, leadFocus));
       }
     }
 
@@ -247,13 +392,14 @@ export const ScoutPage = ({ quota, setQuota }) => {
         addLeadDot();
       }
       n++;
-      setHudProgress(n / total);
+      setHudProgress(n / totalToFetch);
 
-      if (n >= total) {
+      if (n >= totalToFetch) {
         clearInterval(rowInterval);
         clearInterval(msgInterval);
-        setHudStatus(`${total} leads found in ${city}`);
-        setResultsTitle(`${total} ${industry.toLowerCase()} leads.`);
+        setHudStatus(`${totalToFetch} leads found in ${city}`);
+        setResultsTitle(`${totalToFetch} ${industry.toLowerCase()} leads.`);
+        setResultsDesc(`Verified leads found in ${city}. Tap a status to move a lead along.`);
         setIsScanning(false);
 
         // Sync leads to global LeadsContext
@@ -264,8 +410,12 @@ export const ScoutPage = ({ quota, setQuota }) => {
               name: pl.n,
               phone: pl.ph,
               source_platform: pl.src,
-              source_url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${pl.n} ${city}`)}`,
-              maps_url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${pl.n} ${city}`)}`,
+              source_url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                `${pl.n} ${city}`
+              )}`,
+              maps_url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                `${pl.n} ${city}`
+              )}`,
               snippet: `${industry} in ${city}`,
               priority: 'hot',
               status: 'new',
@@ -303,14 +453,18 @@ export const ScoutPage = ({ quota, setQuota }) => {
       />
 
       {/* 01 / Scout Workspace */}
-      <section className="sc" id="s0" data-n="01">
+      <section className="sc hero" id="s0" data-n="01">
         <div className="in">
           <p className="k">Workspace / Scout</p>
           <h1 className="h1s">Scout your city.</h1>
-          <p className="d">Pick an industry and a city. Leads land on the globe as they are found.</p>
+          <p className="d">
+            Find verified local businesses with a real reason to talk to you. Choose a market, then let the map do the searching.
+          </p>
 
           <form id="sf" onSubmit={handleFormSubmit} noValidate>
-            <label htmlFor="em">Send a copy to (optional)</label>
+            <label htmlFor="em">
+              Send scout summary to <span aria-hidden="true">*</span>
+            </label>
             <input
               id="em"
               type="email"
@@ -318,11 +472,17 @@ export const ScoutPage = ({ quota, setQuota }) => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@email.com"
               autoComplete="email"
+              required
+              aria-required="true"
+              aria-describedby="email-note"
             />
+            <p className="field-note" id="email-note">
+              Required — we will send your results and nothing else.
+            </p>
 
             <label>Industry</label>
             <div className="chips" id="ind">
-              {INDUSTRIES.map((ind) => (
+              {industryList.map((ind) => (
                 <button
                   key={ind}
                   type="button"
@@ -340,14 +500,119 @@ export const ScoutPage = ({ quota, setQuota }) => {
                 <button
                   key={city.name}
                   type="button"
-                  className={`chip ${selectedCityIndex === idx ? 'on' : ''}`}
+                  className={`chip ${!isCustomCitySelected && selectedCityIndex === idx ? 'on' : ''}`}
                   data-lat={city.lat}
                   data-lon={city.lon}
-                  onClick={() => setSelectedCityIndex(idx)}
+                  onClick={() => handleSelectStandardCity(idx)}
                 >
                   {city.name}
                 </button>
               ))}
+              {customCity && (
+                <button
+                  type="button"
+                  className={`chip ${isCustomCitySelected ? 'on' : ''}`}
+                  id="custom-city-chip"
+                  data-lat={customCity.lat}
+                  data-lon={customCity.lon}
+                  onClick={handleSelectCustomCity}
+                >
+                  {customCity.name}
+                </button>
+              )}
+            </div>
+
+            {/* Interactive Custom Tools */}
+            <div className="scout-tools">
+              <div>
+                <label htmlFor="custom-industry">Custom industry</label>
+                <div className="tool-row">
+                  <input
+                    id="custom-industry"
+                    type="text"
+                    value={customIndustryInput}
+                    onChange={(e) => setCustomIndustryInput(e.target.value)}
+                    placeholder="e.g. EV repair shop"
+                    maxLength={36}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddIndustry(e);
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="chip"
+                    id="add-industry"
+                    onClick={handleAddIndustry}
+                  >
+                    Add
+                  </button>
+                </div>
+                <p className="custom-note">Add a sector and it becomes a selectable chip.</p>
+              </div>
+
+              <div>
+                <label htmlFor="custom-city">Custom city</label>
+                <div className="tool-row">
+                  <input
+                    id="custom-city"
+                    type="text"
+                    value={customCityInput}
+                    onChange={(e) => setCustomCityInput(e.target.value)}
+                    placeholder="e.g. Jaipur"
+                    maxLength={28}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleAddCustomCity(e);
+                      }
+                    }}
+                  />
+                  <button
+                    type="button"
+                    className="chip"
+                    id="add-city"
+                    onClick={handleAddCustomCity}
+                  >
+                    Map
+                  </button>
+                </div>
+                <p className="custom-note">Mapped to an approximate globe position.</p>
+              </div>
+
+              <div className="range-row">
+                <label htmlFor="lead-count">Lead volume</label>
+                <output id="lead-count-value" htmlFor="lead-count">
+                  {leadCount} leads
+                </output>
+              </div>
+              <input
+                id="lead-count"
+                type="range"
+                min="4"
+                max="12"
+                value={leadCount}
+                step="1"
+                aria-label="Number of leads to find"
+                onChange={(e) => setLeadCount(parseInt(e.target.value, 10))}
+              />
+
+              <div className="focus-row">
+                <label htmlFor="lead-focus">Lead signal</label>
+                <select
+                  id="lead-focus"
+                  value={leadFocus}
+                  onChange={(e) => setLeadFocus(e.target.value)}
+                >
+                  <option value="all">All opportunities</option>
+                  <option value="website">No website</option>
+                  <option value="booking">No booking flow</option>
+                  <option value="photos">Low profile quality</option>
+                  <option value="contact">No contact form</option>
+                </select>
+              </div>
             </div>
 
             <div className="row">
@@ -360,11 +625,14 @@ export const ScoutPage = ({ quota, setQuota }) => {
             </div>
 
             <p className="out" id="left">
-              {currentUser?.plan === 'paid-premium-plan'
+              {isPro
                 ? 'Unlimited scouting unlocked (Pro Member)'
-                : `${quota} free scout${quota === 1 ? '' : 's'} left this month`}
+                : `${effectiveQuota} free scout${effectiveQuota === 1 ? '' : 's'} left this month`}
             </p>
             <p className="hint hd">Drag the globe to spin it. Tap a city label to jump there.</p>
+            <p className="sphere-readout" id="sphere-readout" aria-live="polite">
+              {activeCityName} orbit · {busy ? `scanning ${leadCount} leads` : 'ready to scan'}
+            </p>
           </form>
         </div>
       </section>
@@ -380,7 +648,7 @@ export const ScoutPage = ({ quota, setQuota }) => {
 
           <ul className="res" id="res">
             {rows.map((r, i) => (
-              <li key={i} className="lr" data-i={i}>
+              <li key={r.id || i} className="lr" data-i={i}>
                 <div className="rh">
                   <div>
                     <b>{r.n}</b>
@@ -465,15 +733,21 @@ export const ScoutPage = ({ quota, setQuota }) => {
 
           <div className="stats3">
             <div>
-              <b id="c0">{counts[0]}</b>
+              <b id="c0" className={bumpIndex === 0 ? 'bump' : ''}>
+                {counts[0]}
+              </b>
               <span>New</span>
             </div>
             <div>
-              <b id="c1">{counts[1]}</b>
+              <b id="c1" className={bumpIndex === 1 ? 'bump' : ''}>
+                {counts[1]}
+              </b>
               <span>Contacted</span>
             </div>
             <div>
-              <b id="c2">{counts[2]}</b>
+              <b id="c2" className={bumpIndex === 2 ? 'bump' : ''}>
+                {counts[2]}
+              </b>
               <span>Converted</span>
             </div>
           </div>
@@ -528,7 +802,7 @@ export const ScoutPage = ({ quota, setQuota }) => {
                 <li className="no">CSV export and email templates</li>
               </ul>
               <button className="btn ghost" type="button">
-                {currentUser?.plan === 'paid-premium-plan' ? 'Active' : 'Current plan'}
+                {isPro ? 'Active' : 'Current plan'}
               </button>
             </div>
             <div className="plan pro">
@@ -544,7 +818,7 @@ export const ScoutPage = ({ quota, setQuota }) => {
                 <li>Priority developer support</li>
               </ul>
               <Link className="btn" to="/checkout?plan=yearly">
-                {currentUser?.plan === 'paid-premium-plan' ? 'Pro Member' : 'Upgrade to Pro'}
+                {isPro ? 'Pro Member' : 'Upgrade to Pro'}
               </Link>
             </div>
           </div>

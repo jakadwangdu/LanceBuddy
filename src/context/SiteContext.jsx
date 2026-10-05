@@ -10,10 +10,10 @@ const ROUTE_POSES = {
     CZ: [8, 7.4, 5.8, 7, 7.4, 9.5, 6.4, 8.0]
   },
   '/scout': {
-    XS: [2.5, -2.7, 0, 2.6],
-    SC: [1.05, 1.0, 0.75, 0.95],
-    OP: [0.85, 0.65, 0.3, 0.7],
-    CZ: [7.4, 8.2, 9.8, 8.0]
+    XS: [2.7, -2.7, 2.7, 0, -2.7],
+    SC: [1.05, 1, 1.05, 0.7, 1],
+    OP: [0.9, 0.65, 0.85, 0.25, 0.7],
+    CZ: [7.2, 7.6, 6.8, 9.5, 7.4]
   },
   '/notes': {
     XS: [2.6, 0],
@@ -115,10 +115,12 @@ export const SiteProvider = ({ children }) => {
     setActiveSection(0);
   }, [location.pathname]);
 
-  const setSelectedCityIndex = useCallback((idx) => {
-    setSelectedCityIndexState(idx);
+  const setSelectedCityIndex = useCallback((idxOrGeo) => {
+    if (typeof idxOrGeo === 'number') {
+      setSelectedCityIndexState(idxOrGeo);
+    }
     if (citySelectRef.current) {
-      citySelectRef.current(idx);
+      citySelectRef.current(idxOrGeo);
     }
   }, []);
 

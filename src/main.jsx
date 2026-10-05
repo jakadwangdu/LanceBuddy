@@ -9,6 +9,7 @@ import { SiteProvider } from './context/SiteContext';
 import { App } from './App';
 import './styles/index.css';
 import './styles/global.css';
+import './styles/scout.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

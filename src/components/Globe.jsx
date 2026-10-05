@@ -309,13 +309,26 @@ export const Globe = () => {
         lg.setDrawRange(0, 0);
       };
 
-      citySelectRef.current = (idx) => {
-        const city = CITIES[idx];
-        if (city) {
+      citySelectRef.current = (idxOrGeo) => {
+        let targetLat, targetLon, targetIdx = 0;
+        if (typeof idxOrGeo === 'number') {
+          const city = CITIES[idxOrGeo];
+          if (city) {
+            targetLat = city.lat;
+            targetLon = city.lon;
+            targetIdx = idxOrGeo;
+          }
+        } else if (idxOrGeo && typeof idxOrGeo === 'object') {
+          targetLat = idxOrGeo.lat;
+          targetLon = idxOrGeo.lon;
+          targetIdx = typeof idxOrGeo.i === 'number' ? idxOrGeo.i : 0;
+        }
+
+        if (targetLat !== undefined && targetLon !== undefined) {
           sel = {
-            lat: city.lat,
-            lon: city.lon,
-            i: idx,
+            lat: targetLat,
+            lon: targetLon,
+            i: targetIdx,
             dirty: true,
             arcs: true
           };

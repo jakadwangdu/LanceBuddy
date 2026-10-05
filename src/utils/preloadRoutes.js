@@ -14,6 +14,7 @@ const loaders = {
   '/cookie-policy': () => import('../pages/LegalPage'),
   '/checkout': () => import('../pages/CheckoutPage'),
   '/status': () => import('../pages/StatusPage'),
+  '/scout': () => import('../pages/ScoutPage'),
 };
 
 const preloaded = new Set();
@@ -33,7 +34,7 @@ export const preloadRoute = (path) => {
  * Idle background prefetch for primary SaaS conversion pages
  */
 export const preloadCommonRoutes = () => {
-  const common = ['/about', '/pricing', '/login', '/help', '/status', '/blog'];
+  const common = ['/scout', '/about', '/pricing', '/login', '/help', '/status', '/blog'];
   const run = () => {
     common.forEach((route, idx) => {
       setTimeout(() => preloadRoute(route), idx * 250);

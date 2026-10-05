@@ -14,7 +14,7 @@ import { Rail } from './components/Rail';
 import { useActiveSection } from './hooks/useActiveSection';
 import { preloadCommonRoutes } from './utils/preloadRoutes';
 
-// Code-split secondary routes to shrink initial bundle and accelerate page load
+const ScoutPage = React.lazy(() => import('./pages/ScoutPage').then(m => ({ default: m.ScoutPage })));
 const AboutPage = React.lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
 const BlogPage = React.lazy(() => import('./pages/BlogPage').then(m => ({ default: m.BlogPage })));
 const BlogPostPage = React.lazy(() => import('./pages/BlogPostPage').then(m => ({ default: m.BlogPostPage })));
@@ -32,7 +32,7 @@ function ScrollToTop() {
   const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    const sectionRoutes = ['/notes', '/scout', '/pipeline', '/pricing', '/faq', '/features', '/demo'];
+    const sectionRoutes = ['/notes', '/pipeline', '/pricing', '/faq', '/features', '/demo'];
     let targetId = null;
 
     if (hash) {
@@ -91,7 +91,7 @@ export const App = () => {
           <React.Suspense fallback={<div className="page-route-loader"><div className="page-spinner"></div></div>}>
             <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/scout" element={<HomePage />} />
+            <Route path="/scout" element={<ScoutPage />} />
             <Route path="/notes" element={<HomePage />} />
             <Route path="/pipeline" element={<HomePage />} />
             <Route path="/pricing" element={<HomePage />} />
