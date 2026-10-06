@@ -22,7 +22,7 @@ export const FounderPage = () => {
     'sameAs': [
       'https://jakadwangdu.github.io/Portfolio',
       'https://github.com/jakadwangdu',
-      'https://linkedin.com/in/jakadwangdu',
+      'https://www.linkedin.com/in/shaurya-pratap-singh-rajput-47530b409/',
       'https://www.instagram.com/shaurya__5656'
     ]
   };
@@ -86,7 +86,7 @@ export const FounderPage = () => {
                 <i className="ri-github-fill"></i>
               </a>
               <a
-                href="https://linkedin.com/in/jakadwangdu"
+                href="https://www.linkedin.com/in/shaurya-pratap-singh-rajput-47530b409/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn Profile"
@@ -199,12 +199,12 @@ export const FounderPage = () => {
           <li>
             <strong>LinkedIn:</strong>{' '}
             <a
-              href="https://linkedin.com/in/jakadwangdu"
+              href="https://www.linkedin.com/in/shaurya-pratap-singh-rajput-47530b409/"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: 'var(--ink)', textDecoration: 'underline' }}
             >
-              linkedin.com/in/jakadwangdu
+              linkedin.com/in/shaurya-pratap-singh-rajput-47530b409
             </a>
           </li>
           <li>

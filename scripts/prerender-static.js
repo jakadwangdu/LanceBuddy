@@ -36,7 +36,7 @@ const routes = [
       'sameAs': [
         'https://jakadwangdu.github.io/Portfolio',
         'https://github.com/jakadwangdu',
-        'https://linkedin.com/in/jakadwangdu',
+        'https://www.linkedin.com/in/shaurya-pratap-singh-rajput-47530b409/',
         'https://www.instagram.com/shaurya__5656'
       ]
     }

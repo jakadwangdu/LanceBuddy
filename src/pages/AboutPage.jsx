@@ -121,7 +121,7 @@ export const AboutPage = () => {
                 <i className="ri-github-fill"></i>
               </a>
               <a
-                href="https://linkedin.com/in/jakadwangdu"
+                href="https://www.linkedin.com/in/shaurya-pratap-singh-rajput-47530b409/"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"
