@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useAuth } from '../../context/AuthContext';
 import { launchCashfreeCheckout } from '../../services/cashfreeClient';
 
@@ -11,6 +12,23 @@ export const UpiPaymentModal = ({ isOpen, onClose, initialPlan = 'yearly' }) => 
   const [cashfreeLoading, setCashfreeLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [success, setSuccess] = useState(false);
+
+  // Keep billing cycle synchronized whenever caller changes plan (e.g. ₹50 vs ₹179)
+  useEffect(() => {
+    if (initialPlan) {
+      setBillingCycle(initialPlan);
+    }
+  }, [initialPlan]);
+
+  // Lock background body scroll while modal is active to prevent scroll drift
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -212,8 +230,8 @@ export const UpiPaymentModal = ({ isOpen, onClose, initialPlan = 'yearly' }) => 
     }
   };
 
-  return (
-    <div className="upi-modal-overlay" onClick={onClose}>
+  return createPortal(
+    <div className="upi-modal-overlay" onClick={onClose} role="dialog" aria-modal="true">
       <div
         className="upi-modal-content"
         onClick={(e) => e.stopPropagation()}
@@ -400,6 +418,7 @@ export const UpiPaymentModal = ({ isOpen, onClose, initialPlan = 'yearly' }) => 
           </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

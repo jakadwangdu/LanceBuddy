@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { emailTemplates } from '../../data/emailTemplates';
 import { useLeads } from '../../context/LeadsContext';
 import { useAuth } from '../../context/AuthContext';
@@ -6,6 +7,16 @@ import { useAuth } from '../../context/AuthContext';
 export const EmailModal = ({ isOpen, onClose, selectedLead }) => {
   const { leads = [], currentQuery = {} } = useLeads() || {};
   const { currentUser } = useAuth() || {};
+
+  // Lock body scroll while modal is open
+  useEffect(() => {
+    if (!isOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [isOpen]);
 
   const safeLeads = Array.isArray(leads) ? leads.filter(Boolean) : [];
   const safeTemplates = Array.isArray(emailTemplates) ? emailTemplates : [];
@@ -61,8 +72,8 @@ export const EmailModal = ({ isOpen, onClose, selectedLead }) => {
     }
   };
 
-  return (
-    <div className="modal-overlay open" onClick={onClose}>
+  return createPortal(
+    <div className="modal-overlay open" onClick={onClose} role="dialog" aria-modal="true">
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3>Cold Outreach Email Generator</h3>
@@ -162,6 +173,7 @@ export const EmailModal = ({ isOpen, onClose, selectedLead }) => {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };

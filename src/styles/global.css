@@ -250,7 +250,7 @@ footer.site-footer, .site-footer{position:relative!important;width:100%;text-ali
 /* Smooth Page Transitions & Performance */
 .page-transition-shell {
   animation: pageTransitionFade 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
-  will-change: opacity, transform;
+  will-change: opacity;
   width: 100%;
 }
 
