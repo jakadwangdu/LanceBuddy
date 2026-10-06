@@ -13,6 +13,22 @@ export class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('LanceBuddy ErrorBoundary caught an error:', error, errorInfo);
+    const msg = error?.message || '';
+    const isChunkError =
+      msg.includes('Failed to fetch dynamically imported module') ||
+      msg.includes('dynamically imported module') ||
+      msg.includes('error loading dynamically imported module') ||
+      msg.includes('Loading chunk') ||
+      error?.name === 'ChunkLoadError';
+
+    if (isChunkError && typeof window !== 'undefined') {
+      const lastReload = parseInt(sessionStorage.getItem('lb_eb_chunk_reload') || '0', 10);
+      const now = Date.now();
+      if (now - lastReload > 12000) {
+        sessionStorage.setItem('lb_eb_chunk_reload', now.toString());
+        window.location.reload();
+      }
+    }
   }
 
   handleReset = () => {
@@ -32,8 +48,8 @@ export class ErrorBoundary extends React.Component {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: 'var(--bg)',
-          color: 'var(--ink)',
+          backgroundColor: 'var(--bg, #000)',
+          color: 'var(--ink, #fff)',
           fontFamily: 'Geist, system-ui, sans-serif',
           padding: '24px',
           textAlign: 'center',
@@ -43,17 +59,17 @@ export class ErrorBoundary extends React.Component {
           <div style={{
             maxWidth: '480px',
             width: '100%',
-            background: 'color-mix(in srgb, var(--bg) 88%, transparent)',
+            background: 'color-mix(in srgb, var(--bg, #000) 88%, transparent)',
             backdropFilter: 'blur(20px)',
             WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid var(--line)',
+            border: '1px solid var(--line, #262626)',
             borderRadius: '24px',
             padding: '3rem 2rem',
             position: 'relative'
           }}>
             <div style={{
               font: '700 5rem "Geist Mono", monospace',
-              WebkitTextStroke: '1px var(--line)',
+              WebkitTextStroke: '1px var(--line, #262626)',
               color: 'transparent',
               lineHeight: 1,
               marginBottom: '1rem',

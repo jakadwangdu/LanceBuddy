@@ -13,19 +13,20 @@ import { ProgressBar } from './components/ProgressBar';
 import { Rail } from './components/Rail';
 import { useActiveSection } from './hooks/useActiveSection';
 import { preloadCommonRoutes } from './utils/preloadRoutes';
+import { lazyWithRetry } from './utils/lazyWithRetry';
 
-const ScoutPage = React.lazy(() => import('./pages/ScoutPage').then(m => ({ default: m.ScoutPage })));
-const AboutPage = React.lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
-const BlogPage = React.lazy(() => import('./pages/BlogPage').then(m => ({ default: m.BlogPage })));
-const BlogPostPage = React.lazy(() => import('./pages/BlogPostPage').then(m => ({ default: m.BlogPostPage })));
-const ContactPage = React.lazy(() => import('./pages/ContactPage').then(m => ({ default: m.ContactPage })));
-const HelpPage = React.lazy(() => import('./pages/HelpPage').then(m => ({ default: m.HelpPage })));
-const LoginPage = React.lazy(() => import('./pages/LoginPage').then(m => ({ default: m.LoginPage })));
-const LegalPage = React.lazy(() => import('./pages/LegalPage').then(m => ({ default: m.LegalPage })));
-const NotFoundPage = React.lazy(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
-const CheckoutPage = React.lazy(() => import('./pages/CheckoutPage').then(m => ({ default: m.CheckoutPage })));
-const ErrorPage = React.lazy(() => import('./pages/ErrorPage').then(m => ({ default: m.ErrorPage })));
-const StatusPage = React.lazy(() => import('./pages/StatusPage').then(m => ({ default: m.StatusPage })));
+const ScoutPage = lazyWithRetry(() => import('./pages/ScoutPage').then(m => ({ default: m.ScoutPage })));
+const AboutPage = lazyWithRetry(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
+const BlogPage = lazyWithRetry(() => import('./pages/BlogPage').then(m => ({ default: m.BlogPage })));
+const BlogPostPage = lazyWithRetry(() => import('./pages/BlogPostPage').then(m => ({ default: m.BlogPostPage })));
+const ContactPage = lazyWithRetry(() => import('./pages/ContactPage').then(m => ({ default: m.ContactPage })));
+const HelpPage = lazyWithRetry(() => import('./pages/HelpPage').then(m => ({ default: m.HelpPage })));
+const LoginPage = lazyWithRetry(() => import('./pages/LoginPage').then(m => ({ default: m.LoginPage })));
+const LegalPage = lazyWithRetry(() => import('./pages/LegalPage').then(m => ({ default: m.LegalPage })));
+const NotFoundPage = lazyWithRetry(() => import('./pages/NotFoundPage').then(m => ({ default: m.NotFoundPage })));
+const CheckoutPage = lazyWithRetry(() => import('./pages/CheckoutPage').then(m => ({ default: m.CheckoutPage })));
+const ErrorPage = lazyWithRetry(() => import('./pages/ErrorPage').then(m => ({ default: m.ErrorPage })));
+const StatusPage = lazyWithRetry(() => import('./pages/StatusPage').then(m => ({ default: m.StatusPage })));
 
 // Scroll to top or target section on route changes
 function ScrollToTop() {

@@ -5,10 +5,9 @@ import { FilterBar } from '../components/scout/FilterBar';
 import { LeadCard } from '../components/scout/LeadCard';
 import { DemoLeadInspector } from '../components/scout/DemoLeadInspector';
 import { UpiPaymentModal } from '../components/scout/UpiPaymentModal';
-// Code-split below-the-fold and on-demand modal components
-const EmailModal = React.lazy(() => import('../components/scout/EmailModal').then(m => ({ default: m.EmailModal })));
-const PipelineSection = React.lazy(() => import('../components/pipeline/PipelineSection').then(m => ({ default: m.PipelineSection })));
-const NotesSection = React.lazy(() => import('../components/notes/NotesSection').then(m => ({ default: m.NotesSection })));
+import { EmailModal } from '../components/scout/EmailModal';
+import { PipelineSection } from '../components/pipeline/PipelineSection';
+import { NotesSection } from '../components/notes/NotesSection';
 import { useLeads } from '../context/LeadsContext';
 import { useAuth } from '../context/AuthContext';
 import { useSite } from '../context/SiteContext';

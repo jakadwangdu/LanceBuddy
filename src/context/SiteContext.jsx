@@ -104,6 +104,7 @@ export const SiteProvider = ({ children }) => {
   const path = location.pathname.toLowerCase();
 
   const [isWorkspace, setIsWorkspace] = useState(false);
+  const isScout = path === '/scout' || path === '/pipeline' || path === '/notes' || isWorkspace;
   const [activeSection, setActiveSection] = useState(0);
   const [selectedCityIndex, setSelectedCityIndexState] = useState(0);
   const [isScanning, setIsScanning] = useState(false);

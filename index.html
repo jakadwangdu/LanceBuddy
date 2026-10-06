@@ -14,8 +14,18 @@
     <script>
       (function(){
         var r = document.documentElement, t = null;
-        try { t = localStorage.getItem('lb-theme'); } catch(e) {}
-        if (t === 'dark' || t === 'light') r.setAttribute('data-theme', t);
+        try { t = localStorage.getItem('lb-theme') || localStorage.getItem('lb_theme'); } catch(e) {}
+        if (t !== 'dark' && t !== 'light') {
+          t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+        }
+        r.setAttribute('data-theme', t);
+        if (t === 'dark') {
+          r.classList.add('dark');
+          r.classList.remove('light');
+        } else {
+          r.classList.add('light');
+          r.classList.remove('dark');
+        }
       })();
     </script>
 
