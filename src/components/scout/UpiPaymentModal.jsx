@@ -213,64 +213,22 @@ export const UpiPaymentModal = ({ isOpen, onClose, initialPlan = 'yearly' }) => 
   };
 
   return (
-    <div className="upi-modal-overlay" onClick={onClose} style={{
-      position: 'fixed',
-      inset: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.72)',
-      backdropFilter: 'blur(10px)',
-      WebkitBackdropFilter: 'blur(10px)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-      padding: '16px',
-      overflowY: 'auto'
-    }}>
+    <div className="upi-modal-overlay" onClick={onClose}>
       <div
         className="upi-modal-content"
         onClick={(e) => e.stopPropagation()}
-        style={{
-          background: 'var(--surface)',
-          border: '1px solid var(--border)',
-          borderRadius: 'var(--radius-xl)',
-          maxWidth: '480px',
-          width: '100%',
-          boxShadow: 'var(--shadow-lg)',
-          overflow: 'hidden',
-          animation: 'modalSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1)'
-        }}
       >
         {/* Header */}
-        <div style={{
-          padding: '18px 22px',
-          borderBottom: '1px solid var(--border-soft)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          background: 'var(--surface2)'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <i className="ri-vip-crown-fill" style={{ color: '#f59e0b', fontSize: '1.25rem' }}></i>
-            <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: 'var(--text)' }}>
-              Upgrade to LanceBuddy Pro
-            </h3>
+        <div className="upi-modal-header">
+          <div className="upi-modal-title">
+            <i className="ri-vip-crown-fill" style={{ color: 'var(--ink)' }}></i>
+            <span>Upgrade to Pro</span>
           </div>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            style={{
-              background: 'transparent',
-              border: 'none',
-              fontSize: '1.25rem',
-              color: 'var(--muted)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '4px',
-              borderRadius: '50%'
-            }}
+            className="upi-modal-close-btn"
           >
             <i className="ri-close-line"></i>
           </button>
@@ -278,87 +236,57 @@ export const UpiPaymentModal = ({ isOpen, onClose, initialPlan = 'yearly' }) => 
 
         {/* Success View */}
         {success ? (
-          <div style={{ padding: '36px 24px', textAlign: 'center' }}>
+          <div style={{ padding: '32px 20px', textAlign: 'center' }}>
             <div style={{
               width: '64px',
               height: '64px',
               borderRadius: '50%',
-              background: 'rgba(16, 185, 129, 0.12)',
-              color: '#10b981',
+              background: 'color-mix(in srgb, var(--ink) 10%, transparent)',
+              color: 'var(--ink)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '32px',
               margin: '0 auto 18px',
-              boxShadow: '0 0 0 6px rgba(16, 185, 129, 0.08)'
+              border: '1px solid var(--line)'
             }}>
               <i className="ri-checkbox-circle-fill"></i>
             </div>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, margin: '0 0 8px', color: 'var(--text)' }}>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: '0 0 8px', color: 'var(--ink)' }}>
               Pro Access Activated!
             </h2>
-            <p style={{ color: 'var(--muted)', fontSize: '0.9rem', lineHeight: 1.6, margin: '0 auto 24px', maxWidth: '380px' }}>
-              Your {billingCycle === 'quarterly' ? '3-Month' : '1-Year'} Premium plan is now active under UTR: <strong>{utr}</strong>. Enjoy unlimited market scouting, cold email templates, and CSV exports!
+            <p style={{ color: 'var(--mute)', fontSize: '0.9rem', lineHeight: 1.6, margin: '0 auto 24px', maxWidth: '380px' }}>
+              Your {billingCycle === 'quarterly' ? '3-Month' : '1-Year'} Premium plan is now active under UTR: <strong>{utr}</strong>.
             </p>
             <button
               type="button"
-              className="leads-btn"
+              className="checkout-gateway-btn"
               onClick={() => {
                 onClose();
                 window.location.reload();
               }}
-              style={{ width: '100%', padding: '12px 20px', fontWeight: 700 }}
             >
-              Start Scouting Now
+              Start Scouting Now &rarr;
             </button>
           </div>
         ) : (
           /* Payment Steps View */
-          <div style={{ padding: '20px 22px' }}>
+          <div className="upi-modal-body">
             {/* Plan Switcher */}
-            <div style={{
-              display: 'flex',
-              background: 'var(--surface2)',
-              borderRadius: 'var(--radius-full)',
-              padding: '3px',
-              border: '1px solid var(--border-soft)',
-              marginBottom: '18px'
-            }}>
+            <div className="checkout-cycle-switch">
               <button
                 type="button"
                 onClick={() => setBillingCycle('quarterly')}
-                style={{
-                  flex: 1,
-                  padding: '7px 12px',
-                  borderRadius: 'var(--radius-full)',
-                  border: 'none',
-                  background: billingCycle === 'quarterly' ? 'var(--btn)' : 'transparent',
-                  color: billingCycle === 'quarterly' ? 'var(--btn-text)' : 'var(--muted)',
-                  cursor: 'pointer',
-                  fontWeight: 700,
-                  fontSize: '0.82rem',
-                  transition: 'all 0.2s ease'
-                }}
+                className={`checkout-cycle-btn ${billingCycle === 'quarterly' ? 'active' : ''}`}
               >
-                3 Months &bull; ₹50
+                3 Months · ₹50
               </button>
               <button
                 type="button"
                 onClick={() => setBillingCycle('yearly')}
-                style={{
-                  flex: 1,
-                  padding: '7px 12px',
-                  borderRadius: 'var(--radius-full)',
-                  border: 'none',
-                  background: billingCycle === 'yearly' ? 'var(--btn)' : 'transparent',
-                  color: billingCycle === 'yearly' ? 'var(--btn-text)' : 'var(--muted)',
-                  cursor: 'pointer',
-                  fontWeight: 700,
-                  fontSize: '0.82rem',
-                  transition: 'all 0.2s ease'
-                }}
+                className={`checkout-cycle-btn ${billingCycle === 'yearly' ? 'active' : ''}`}
               >
-                1 Year &bull; ₹179 (Save ~40%)
+                1 Year · ₹179 (Save 40%)
               </button>
             </div>
 
@@ -367,160 +295,65 @@ export const UpiPaymentModal = ({ isOpen, onClose, initialPlan = 'yearly' }) => 
               type="button"
               onClick={handleCashfreePay}
               disabled={cashfreeLoading}
-              className="leads-btn"
-              style={{
-                width: '100%',
-                padding: '12px 18px',
-                fontSize: '0.94rem',
-                fontWeight: 700,
-                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: 'var(--radius-md)',
-                cursor: cashfreeLoading ? 'not-allowed' : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)',
-                marginBottom: '14px'
-              }}
+              className="checkout-gateway-btn"
             >
               {cashfreeLoading ? (
                 <>
                   <i className="ri-loader-4-line" style={{ animation: 'spin 1s linear infinite' }}></i>
-                  <span>Opening Cashfree Gateway...</span>
+                  <span>Opening Gateway...</span>
                 </>
               ) : (
                 <>
                   <i className="ri-secure-payment-fill"></i>
-                  <span>Pay with Cashfree &bull; ₹{amount} (Instant UPI / Cards)</span>
+                  <span>Pay via Gateway · ₹{amount}</span>
                 </>
               )}
             </button>
+            <div style={{ textAlign: 'center', marginTop: '6px', fontSize: '0.72rem', color: 'var(--mute)' }}>
+              Instant: GPay, PhonePe, Paytm, Cards &amp; Netbanking
+            </div>
 
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              textAlign: 'center',
-              margin: '12px 0 16px',
-              color: 'var(--muted)',
-              fontSize: '0.72rem',
-              fontWeight: 700,
-              textTransform: 'uppercase',
-              letterSpacing: '0.05em'
-            }}>
-              <div style={{ flex: 1, height: '1px', background: 'var(--border-soft)' }}></div>
-              <span style={{ padding: '0 10px' }}>or pay manually via UPI QR</span>
-              <div style={{ flex: 1, height: '1px', background: 'var(--border-soft)' }}></div>
+            <div className="checkout-divider">
+              <span>or direct UPI transfer</span>
             </div>
 
             {/* QR Code Container */}
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              background: 'var(--surface2)',
-              padding: '16px',
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--border-soft)',
-              marginBottom: '18px'
-            }}>
-              <div style={{
-                background: '#ffffff',
-                padding: '10px',
-                borderRadius: '12px',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-                display: 'inline-block'
-              }}>
+            <div className="checkout-qr-box">
+              <div className="checkout-qr-frame">
                 <img
                   src="/upi-qr.webp"
-                  alt="LanceBuddy Official FamPay UPI QR Code"
-                  style={{
-                    width: '180px',
-                    height: 'auto',
-                    display: 'block',
-                    borderRadius: '8px'
-                  }}
+                  alt="LanceBuddy UPI QR Code"
+                  className="checkout-qr-img"
                 />
               </div>
 
               <div
+                className={`checkout-upi-pill ${copied ? 'copied' : ''}`}
                 onClick={handleCopyUpi}
                 title="Click to copy UPI ID"
-                style={{
-                  marginTop: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  background: 'var(--surface)',
-                  padding: '6px 14px',
-                  borderRadius: 'var(--radius-full)',
-                  border: copied ? '1px solid #10b981' : '1px solid var(--border)',
-                  fontSize: '0.85rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  userSelect: 'none'
-                }}
               >
-                <span style={{ fontFamily: 'monospace', fontWeight: 700, color: 'var(--text)' }}>
-                  {upiId}
-                </span>
-                <button
-                  type="button"
-                  onClick={handleCopyUpi}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: copied ? '#10b981' : 'var(--accent)',
-                    fontWeight: 700,
-                    fontSize: '0.8rem',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                >
+                <span>{upiId}</span>
+                <button type="button" onClick={handleCopyUpi}>
                   <i className={copied ? "ri-check-line" : "ri-file-copy-line"}></i>
-                  {copied ? 'Copied!' : 'Copy UPI'}
+                  <span>{copied ? 'Copied' : 'Copy'}</span>
                 </button>
               </div>
 
               {/* 1-Click Mobile UPI App Button */}
               <a
                 href={upiIntentUrl}
-                className="leads-btn"
-                style={{
-                  marginTop: '12px',
-                  width: '100%',
-                  padding: '9px 16px',
-                  fontSize: '0.88rem',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  borderRadius: 'var(--radius-full)'
-                }}
+                className="checkout-intent-btn"
               >
                 <i className="ri-smartphone-line"></i>
-                <span>Open GPay / PhonePe / Paytm (Pay ₹{amount})</span>
+                <span>Open in UPI App (₹{amount})</span>
               </a>
             </div>
 
             {/* Step 2: UTR Submission Form */}
-            <form onSubmit={handleSubmitUtr}>
-              <div style={{ marginBottom: '12px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.04em',
-                  color: 'var(--muted)',
-                  marginBottom: '6px'
-                }}>
-                  Enter 12-Digit UPI Reference / UTR Number
+            <form onSubmit={handleSubmitUtr} className="checkout-utr-form">
+              <div className="checkout-form-group">
+                <label>
+                  Enter 12-Digit UPI Reference (UTR)
                 </label>
                 <input
                   type="text"
@@ -533,35 +366,15 @@ export const UpiPaymentModal = ({ isOpen, onClose, initialPlan = 'yearly' }) => 
                     setErrorMsg('');
                   }}
                   placeholder="e.g. 427812984123"
-                  style={{
-                    width: '100%',
-                    padding: '11px 14px',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--border)',
-                    background: 'var(--input-bg)',
-                    color: 'var(--text)',
-                    fontFamily: 'monospace',
-                    fontSize: '1rem',
-                    letterSpacing: '1px',
-                    outline: 'none',
-                    boxSizing: 'border-box'
-                  }}
+                  className="checkout-utr-input"
                 />
-                <span style={{ fontSize: '0.74rem', color: 'var(--muted)', marginTop: '4px', display: 'block' }}>
-                  * Found on your payment receipt in GPay, PhonePe, or Paytm under "UPI Ref No" or "UTR".
+                <span className="checkout-form-note">
+                  Check your GPay, PhonePe, or Paytm receipt for the 12-digit UTR / Ref No.
                 </span>
               </div>
 
               {errorMsg && (
-                <div style={{
-                  padding: '8px 12px',
-                  background: 'rgba(239, 68, 68, 0.1)',
-                  border: '1px solid rgba(239, 68, 68, 0.25)',
-                  borderRadius: 'var(--radius-sm)',
-                  color: '#ef4444',
-                  fontSize: '0.82rem',
-                  marginBottom: '12px'
-                }}>
+                <div className="checkout-error">
                   {errorMsg}
                 </div>
               )}
@@ -569,25 +382,17 @@ export const UpiPaymentModal = ({ isOpen, onClose, initialPlan = 'yearly' }) => 
               <button
                 type="submit"
                 disabled={submitting || utr.length !== 12}
-                className="leads-btn"
-                style={{
-                  width: '100%',
-                  padding: '12px 18px',
-                  fontSize: '0.95rem',
-                  fontWeight: 700,
-                  cursor: (submitting || utr.length !== 12) ? 'not-allowed' : 'pointer',
-                  opacity: (submitting || utr.length !== 12) ? 0.7 : 1
-                }}
+                className="checkout-submit-btn"
               >
                 {submitting ? (
                   <>
                     <i className="ri-loader-4-line" style={{ animation: 'spin 1s linear infinite' }}></i>
-                    <span>Verifying &amp; Activating...</span>
+                    <span>Verifying UTR...</span>
                   </>
                 ) : (
                   <>
                     <i className="ri-shield-check-fill"></i>
-                    <span>Confirm &amp; Activate Pro Access</span>
+                    <span>Confirm &amp; Activate (₹{amount})</span>
                   </>
                 )}
               </button>

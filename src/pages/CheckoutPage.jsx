@@ -220,25 +220,20 @@ export const CheckoutPage = () => {
   };
 
   return (
-    <div className="checkout-page" style={{ minHeight: '85vh', padding: '5rem 1.5rem 4rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+    <div className="checkout-page">
       <SEO
         title="Checkout — Upgrade to LanceBuddy Pro"
         description="Upgrade to LanceBuddy Pro for unlimited scouting, CSV export, and email templates."
         noindex={true}
         canonical="https://www.lancebuddy.in/checkout"
       />
-      <div className="checkout-container" style={{ maxWidth: '540px', width: '100%', background: 'var(--surface)', padding: '2.2rem 2rem', borderRadius: '20px', border: '1px solid var(--border)', boxShadow: 'var(--shadow-lg)' }}>
-        
+      <div className="checkout-card">
         {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '1.8rem' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'color-mix(in srgb, var(--ink) 8%, transparent)', color: 'var(--ink)', fontWeight: 700, fontSize: '0.78rem', padding: '4px 14px', borderRadius: '99px', marginBottom: '12px', border: '1px solid var(--line)', letterSpacing: '0.04em' }}>
-            <i className="ri-vip-crown-fill"></i> UPGRADE TO PRO
-          </div>
-          <h1 style={{ fontSize: 'clamp(22px, 4vw, 28px)', fontWeight: 700, margin: '0 0 6px', color: 'var(--ink)', letterSpacing: '-0.03em' }}>
-            Direct UPI Checkout
-          </h1>
-          <p style={{ color: 'var(--mute)', fontSize: '0.9rem', margin: 0 }}>
-            Pay directly via Google Pay, PhonePe, Paytm, or FamPay with 0% extra fees.
+        <div className="checkout-header">
+          <p className="k">Pro Access</p>
+          <h1>Upgrade to Pro</h1>
+          <p>
+            Activate unlimited lead scouting, CSV export and outreach dossiers.
           </p>
         </div>
 
@@ -249,31 +244,30 @@ export const CheckoutPage = () => {
               width: '64px',
               height: '64px',
               borderRadius: '50%',
-              background: 'rgba(16, 185, 129, 0.12)',
-              color: '#10b981',
+              background: 'color-mix(in srgb, var(--ink) 10%, transparent)',
+              color: 'var(--ink)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '32px',
               margin: '0 auto 18px',
-              boxShadow: '0 0 0 6px rgba(16, 185, 129, 0.08)'
+              border: '1px solid var(--line)'
             }}>
               <i className="ri-checkbox-circle-fill"></i>
             </div>
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 800, margin: '0 0 8px', color: 'var(--text)' }}>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 700, margin: '0 0 8px', color: 'var(--ink)' }}>
               Pro Access Activated!
             </h2>
-            <p style={{ color: 'var(--muted)', fontSize: '0.9rem', lineHeight: 1.6, margin: '0 auto 24px', maxWidth: '380px' }}>
+            <p style={{ color: 'var(--mute)', fontSize: '0.9rem', lineHeight: 1.6, margin: '0 auto 24px', maxWidth: '380px' }}>
               Your {billingCycle === 'quarterly' ? '3-Month' : '1-Year'} Premium plan is now active under UTR: <strong>{utr}</strong>.
             </p>
             <button
               type="button"
-              className="leads-btn"
+              className="checkout-gateway-btn"
               onClick={() => {
                 navigate('/');
                 window.location.reload();
               }}
-              style={{ width: '100%', padding: '12px 20px', fontWeight: 700 }}
             >
               Go to Scout Workspace &rarr;
             </button>
@@ -281,42 +275,20 @@ export const CheckoutPage = () => {
         ) : (
           <>
             {/* Plan Switcher */}
-            <div style={{ display: 'flex', background: 'color-mix(in srgb, var(--bg) 60%, transparent)', borderRadius: '99px', padding: '4px', border: '1px solid var(--line)', marginBottom: '1.5rem', gap: '4px' }}>
+            <div className="checkout-cycle-switch">
               <button
                 type="button"
                 onClick={() => setBillingCycle('quarterly')}
-                style={{
-                  flex: 1,
-                  padding: '9px 14px',
-                  borderRadius: '99px',
-                  border: 'none',
-                  background: billingCycle === 'quarterly' ? 'var(--ink)' : 'transparent',
-                  color: billingCycle === 'quarterly' ? 'var(--on)' : 'var(--mute)',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  fontSize: '0.85rem',
-                  transition: 'all 0.2s ease'
-                }}
+                className={`checkout-cycle-btn ${billingCycle === 'quarterly' ? 'active' : ''}`}
               >
-                Quarterly (3 Mo) &bull; ₹50
+                3 Months · ₹50
               </button>
               <button
                 type="button"
                 onClick={() => setBillingCycle('yearly')}
-                style={{
-                  flex: 1,
-                  padding: '9px 14px',
-                  borderRadius: '99px',
-                  border: 'none',
-                  background: billingCycle === 'yearly' ? 'var(--ink)' : 'transparent',
-                  color: billingCycle === 'yearly' ? 'var(--on)' : 'var(--mute)',
-                  cursor: 'pointer',
-                  fontWeight: 600,
-                  fontSize: '0.85rem',
-                  transition: 'all 0.2s ease'
-                }}
+                className={`checkout-cycle-btn ${billingCycle === 'yearly' ? 'active' : ''}`}
               >
-                1 Year &bull; ₹179 (Save ~40%)
+                1 Year · ₹179 (Save 40%)
               </button>
             </div>
 
@@ -325,164 +297,67 @@ export const CheckoutPage = () => {
               type="button"
               onClick={handleCashfreePay}
               disabled={cashfreeLoading}
-              className="leads-btn"
-              style={{
-                width: '100%',
-                padding: '13px 20px',
-                fontSize: '0.96rem',
-                fontWeight: 600,
-                background: 'var(--ink)',
-                color: 'var(--on)',
-                border: '1px solid var(--ink)',
-                borderRadius: '99px',
-                cursor: cashfreeLoading ? 'not-allowed' : 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px',
-                marginBottom: '16px'
-              }}
+              className="checkout-gateway-btn"
             >
               {cashfreeLoading ? (
                 <>
                   <i className="ri-loader-4-line" style={{ animation: 'spin 1s linear infinite' }}></i>
-                  <span>Opening Cashfree Gateway...</span>
+                  <span>Opening Gateway...</span>
                 </>
               ) : (
                 <>
                   <i className="ri-secure-payment-fill"></i>
-                  <span>Pay with Cashfree &bull; ₹{rawAmount} (Instant UPI / Cards)</span>
+                  <span>Pay via Gateway · ₹{rawAmount}</span>
                 </>
               )}
             </button>
+            <div style={{ textAlign: 'center', marginTop: '6px', fontSize: '0.72rem', color: 'var(--mute)' }}>
+              1-Click Instant: GPay, PhonePe, Paytm, Cards &amp; Netbanking
+            </div>
 
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              textAlign: 'center',
-              margin: '14px 0 18px',
-              color: 'var(--mute)',
-              fontSize: '0.74rem',
-              fontWeight: 500,
-              fontFamily: '"Geist Mono", monospace',
-              textTransform: 'uppercase',
-              letterSpacing: '0.08em'
-            }}>
-              <div style={{ flex: 1, height: '1px', background: 'var(--line)' }}></div>
-              <span style={{ padding: '0 12px' }}>or pay manually via UPI QR</span>
-              <div style={{ flex: 1, height: '1px', background: 'var(--line)' }}></div>
+            <div className="checkout-divider">
+              <span>or direct UPI transfer</span>
             </div>
 
             {/* QR Card */}
-            <div style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              background: 'var(--surface2)',
-              padding: '16px',
-              borderRadius: 'var(--radius-lg)',
-              border: '1px solid var(--border-soft)',
-              marginBottom: '1.5rem'
-            }}>
-              <div style={{
-                background: '#ffffff',
-                padding: '10px',
-                borderRadius: '12px',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                display: 'inline-block'
-              }}>
+            <div className="checkout-qr-box">
+              <div className="checkout-qr-frame">
                 <img
                   src="/upi-qr.webp"
-                  alt="LanceBuddy FamPay UPI QR Code"
-                  style={{
-                    width: '180px',
-                    height: 'auto',
-                    display: 'block',
-                    borderRadius: '8px'
-                  }}
+                  alt="LanceBuddy UPI QR Code"
+                  className="checkout-qr-img"
                 />
               </div>
 
               <div
+                className={`checkout-upi-pill ${copied ? 'copied' : ''}`}
                 onClick={handleCopyUpi}
                 title="Click to copy UPI ID"
-                style={{
-                  marginTop: '12px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  background: 'color-mix(in srgb, var(--bg) 80%, transparent)',
-                  padding: '6px 14px',
-                  borderRadius: '99px',
-                  border: copied ? '1px solid var(--ink)' : '1px solid var(--line)',
-                  fontSize: '0.85rem',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  userSelect: 'none'
-                }}
               >
-                <span style={{ fontFamily: '"Geist Mono", monospace', fontWeight: 600, color: 'var(--ink)' }}>
-                  {upiId}
-                </span>
-                <button
-                  type="button"
-                  onClick={handleCopyUpi}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: 'var(--mute)',
-                    fontWeight: 600,
-                    fontSize: '0.8rem',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                >
+                <span>{upiId}</span>
+                <button type="button" onClick={handleCopyUpi}>
                   <i className={copied ? "ri-check-line" : "ri-file-copy-line"}></i>
-                  {copied ? 'Copied' : 'Copy'}
+                  <span>{copied ? 'Copied' : 'Copy'}</span>
                 </button>
               </div>
 
               {/* 1-Click Mobile UPI Button */}
               <a
                 href={upiIntentUrl}
-                className="leads-btn secondary"
-                style={{
-                  marginTop: '12px',
-                  width: '100%',
-                  padding: '10px 16px',
-                  fontSize: '0.88rem',
-                  fontWeight: 600,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '6px',
-                  borderRadius: '99px'
-                }}
+                className="checkout-intent-btn"
               >
                 <i className="ri-smartphone-line"></i>
-                <span>Open in UPI App (Pay ₹{rawAmount})</span>
+                <span>Open in UPI App (₹{rawAmount})</span>
               </a>
             </div>
 
             {/* Login Warning if not logged in */}
             {!currentUser && (
-              <div style={{
-                background: 'color-mix(in srgb, var(--ink) 4%, transparent)',
-                border: '1px solid var(--line)',
-                borderRadius: '16px',
-                padding: '10px 14px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px',
-                textAlign: 'left',
-                marginBottom: '1rem'
-              }}>
-                <i className="ri-information-fill" style={{ color: 'var(--ink)', fontSize: '1.2rem', flexShrink: 0 }}></i>
-                <div style={{ fontSize: '0.82rem', color: 'var(--mute)', lineHeight: 1.4 }}>
-                  <strong style={{ color: 'var(--ink)', display: 'block' }}>Account Login Required</strong>
-                  <Link to={`/login?redirect=${encodeURIComponent(`/checkout?plan=${billingCycle}`)}`} style={{ color: 'var(--ink)', textDecoration: 'underline' }}>
+              <div className="checkout-banner">
+                <i className="ri-information-fill"></i>
+                <div className="checkout-banner-text">
+                  <strong>Account Login Required</strong>
+                  <Link to={`/login?redirect=${encodeURIComponent(`/checkout?plan=${billingCycle}`)}`}>
                     Sign in or create account
                   </Link> before verifying your UTR.
                 </div>
@@ -490,19 +365,10 @@ export const CheckoutPage = () => {
             )}
 
             {/* UTR Form */}
-            <form onSubmit={handleSubmitUtr}>
-              <div style={{ marginBottom: '12px' }}>
-                <label style={{
-                  display: 'block',
-                  fontSize: '0.72rem',
-                  fontWeight: 600,
-                  fontFamily: '"Geist Mono", monospace',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.08em',
-                  color: 'var(--mute)',
-                  marginBottom: '8px'
-                }}>
-                  Enter 12-Digit UPI Reference / UTR Number
+            <form onSubmit={handleSubmitUtr} className="checkout-utr-form">
+              <div className="checkout-form-group">
+                <label>
+                  Enter 12-Digit UPI Reference (UTR)
                 </label>
                 <input
                   type="text"
@@ -515,35 +381,15 @@ export const CheckoutPage = () => {
                     setErrorMsg('');
                   }}
                   placeholder="e.g. 427812984123"
-                  style={{
-                    width: '100%',
-                    padding: '12px 18px',
-                    borderRadius: '99px',
-                    border: '1px solid var(--line)',
-                    background: 'color-mix(in srgb, var(--bg) 70%, transparent)',
-                    color: 'var(--ink)',
-                    fontFamily: '"Geist Mono", monospace',
-                    fontSize: '1rem',
-                    letterSpacing: '1px',
-                    outline: 'none',
-                    boxSizing: 'border-box'
-                  }}
+                  className="checkout-utr-input"
                 />
-                <span style={{ fontSize: '0.74rem', color: 'var(--mute)', marginTop: '6px', display: 'block' }}>
-                  * Check your payment receipt in GPay, PhonePe, or Paytm for the 12-digit "UPI Ref No" or "UTR".
+                <span className="checkout-form-note">
+                  Check your payment receipt in GPay, PhonePe, or Paytm for the 12-digit "UPI Ref No" or "UTR".
                 </span>
               </div>
 
               {errorMsg && (
-                <div style={{
-                  padding: '8px 12px',
-                  background: 'rgba(239, 68, 68, 0.1)',
-                  border: '1px solid rgba(239, 68, 68, 0.25)',
-                  borderRadius: '12px',
-                  color: '#ef4444',
-                  fontSize: '0.82rem',
-                  marginBottom: '12px'
-                }}>
+                <div className="checkout-error">
                   {errorMsg}
                 </div>
               )}
@@ -551,18 +397,7 @@ export const CheckoutPage = () => {
               <button
                 type="submit"
                 disabled={submitting || utr.length !== 12 || !currentUser}
-                className="leads-btn"
-                style={{
-                  width: '100%',
-                  padding: '12px 18px',
-                  fontSize: '0.95rem',
-                  fontWeight: 600,
-                  borderRadius: '99px',
-                  background: 'var(--ink)',
-                  color: 'var(--on)',
-                  cursor: (submitting || utr.length !== 12 || !currentUser) ? 'not-allowed' : 'pointer',
-                  opacity: (submitting || utr.length !== 12 || !currentUser) ? 0.6 : 1
-                }}
+                className="checkout-submit-btn"
               >
                 {submitting ? (
                   <>
@@ -572,14 +407,14 @@ export const CheckoutPage = () => {
                 ) : (
                   <>
                     <i className="ri-shield-check-fill"></i>
-                    <span>Verify &amp; Activate Pro Access (₹{rawAmount})</span>
+                    <span>Verify &amp; Activate (₹{rawAmount})</span>
                   </>
                 )}
               </button>
             </form>
 
-            <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
-              <Link to="/" style={{ color: 'var(--muted)', fontSize: '0.85rem', textDecoration: 'underline' }}>
+            <div className="checkout-back-link">
+              <Link to="/">
                 &larr; Return to Workspace
               </Link>
             </div>
