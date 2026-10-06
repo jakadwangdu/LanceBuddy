@@ -3,118 +3,166 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <title>404 — Page Not Found | LanceBuddy</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+    <title>LanceBuddy — Direct local client discovery</title>
+    <meta name="description" content="Find verified local business leads across India &amp; globally. Get direct owner phone numbers, emails, Google Maps verification, cold email templates, and private in-browser CRM pipeline." />
+    <meta name="keywords" content="freelance lead generation tool, b2b client finder, local business leads, cold email templates for freelancers, upwork alternatives, find clients without upwork, freelance CRM, web design client finder, student earn money freelancing, b2b leads free, local business scouter" />
+    <meta name="author" content="LanceBuddy" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <link rel="canonical" href="https://www.lancebuddy.in/" />
+
+    <!-- Theme initialization script (prevents flash of wrong theme) -->
     <script>
       (function(){
-        var r = document.documentElement;
-        try {
-          var t = localStorage.getItem('lb-theme');
-          if (t === 'dark' || t === 'light') r.setAttribute('data-theme', t);
-        } catch(e){}
+        var r = document.documentElement, t = null;
+        try { t = localStorage.getItem('lb-theme'); } catch(e) {}
+        if (t === 'dark' || t === 'light') r.setAttribute('data-theme', t);
       })();
     </script>
-    <style>
-      :root {
-        --bg: #ffffff;
-        --ink: #000000;
-        --mute: #666666;
-        --line: #e4e4e4;
-        --on: #ffffff;
-      }
-      :root[data-theme="dark"], @media(prefers-color-scheme:dark){
-        :root:not([data-theme="light"]) {
-          --bg: #000000;
-          --ink: #ffffff;
-          --mute: #8f8f8f;
-          --line: #262626;
-          --on: #000000;
+
+    <!-- Geist & Geist Mono typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+    <!-- OpenGraph (Facebook, LinkedIn, WhatsApp, Discord) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.lancebuddy.in/" />
+    <meta property="og:site_name" content="LanceBuddy" />
+    <meta property="og:title" content="LanceBuddy — Free Local Business Lead Finder for Freelancers &amp; Agencies" />
+    <meta property="og:description" content="Stop competing on crowded marketplaces. Scout high-ticket local business leads, extract verified owner contacts, and close deals with built-in cold email templates." />
+    <meta property="og:image" content="https://www.lancebuddy.in/Logo.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="LanceBuddy Logo" />
+
+    <!-- Twitter / X Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="LanceBuddy — Free Local Business Lead Finder for Freelancers" />
+    <meta name="twitter:description" content="Scout verified local business leads with direct owner phone numbers, cold email templates, and private CRM pipeline." />
+    <meta name="twitter:image" content="https://www.lancebuddy.in/Logo.png" />
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://www.lancebuddy.in/#app",
+          "name": "LanceBuddy",
+          "url": "https://www.lancebuddy.in",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "All modern web browsers",
+          "description": "Free local business lead finder, cold email generator, and private CRM pipeline for freelancers and digital marketing agencies.",
+          "offers": [
+            {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "INR",
+              "name": "Basic Free Plan",
+              "description": "Free forever local business search and pipeline tracker"
+            },
+            {
+              "@type": "Offer",
+              "price": "50",
+              "priceCurrency": "INR",
+              "name": "LanceBuddy Pro (Quarterly)",
+              "description": "Unlimited lead scouting, verified phone exports, and automated outreach templates"
+            }
+          ]
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://www.lancebuddy.in/#organization",
+          "name": "LanceBuddy",
+          "url": "https://www.lancebuddy.in",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.lancebuddy.in/Logo.png",
+            "width": 512,
+            "height": 512
+          },
+          "founder": {
+            "@type": "Person",
+            "name": "Shaurya Pratap Singh"
+          }
         }
-      }
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body {
-        background: var(--bg);
-        color: var(--ink);
-        font-family: 'Geist', system-ui, sans-serif;
-        min-height: 100svh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 24px;
-        text-align: center;
-      }
-      .card {
-        max-width: 500px;
-        width: 100%;
-        background: color-mix(in srgb, var(--bg) 88%, transparent);
-        border: 1px solid var(--line);
-        border-radius: 24px;
-        padding: 48px 32px;
-      }
-      .num {
-        font-family: 'Geist Mono', monospace;
-        font-size: clamp(5rem, 16vw, 8rem);
-        font-weight: 700;
-        line-height: 0.9;
-        -webkit-text-stroke: 1px var(--line);
-        color: transparent;
-        margin-bottom: 12px;
-      }
-      .eyebrow {
-        font-family: 'Geist Mono', monospace;
-        font-size: 0.75rem;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.09em;
-        color: var(--mute);
-        margin-bottom: 12px;
-      }
-      h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        letter-spacing: -0.04em;
-        margin-bottom: 12px;
-      }
-      p {
-        color: var(--mute);
-        font-size: 0.95rem;
-        line-height: 1.6;
-        margin-bottom: 24px;
-      }
-      .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        background: var(--ink);
-        color: var(--on);
-        border: 1px solid var(--ink);
-        border-radius: 99px;
-        padding: 12px 28px;
-        font-weight: 600;
-        font-size: 0.95rem;
-        text-decoration: none;
-        cursor: pointer;
-        transition: transform 0.2s;
-      }
-      .btn:hover {
-        transform: translateY(-2px);
-      }
-    </style>
+      ]
+    }
+    </script>
+
+    <meta name="theme-color" content="#09090b" />
+    <link rel="icon" type="image/png" href="./Logo.png" />
+    <link rel="apple-touch-icon" href="./Logo.png" />
+    <link rel="manifest" href="./manifest.json" />
+
+    <!-- Resource Hints & Preconnects for CDNs -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
+
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" /></noscript>
+    <!-- Clean Telemetry & DevTools Filter -->
+    <script>
+      (function() {
+        // Intercept unsafe CORS headers that trigger Chromium DevTools console warnings
+        if (window.XMLHttpRequest) {
+          const origGetHeader = XMLHttpRequest.prototype.getResponseHeader;
+          XMLHttpRequest.prototype.getResponseHeader = function(name) {
+            if (name) {
+              const lower = String(name).toLowerCase();
+              if (lower === 'x-rtb-fingerprint-id' || lower === 'request-id') {
+                try {
+                  const all = (this.getAllResponseHeaders() || '').toLowerCase();
+                  if (!all.includes(lower)) return null;
+                } catch (e) {
+                  return null;
+                }
+              }
+            }
+            return origGetHeader.apply(this, arguments);
+          };
+        }
+
+        // Filter out third-party/informational noise from console.error & console.warn
+        const origError = console.error;
+        console.error = function(...args) {
+          const str = (args[0] && typeof args[0] === 'string') ? args[0] : (args[0] && args[0].message ? args[0].message : '');
+          if (
+            str.indexOf('lumberjack.razorpay.com') !== -1 ||
+            str.indexOf('browser.sentry-cdn.com') !== -1 ||
+            str.indexOf('api.sardine.ai') !== -1 ||
+            str.indexOf('ERR_BLOCKED_BY_CLIENT') !== -1 ||
+            str.indexOf('popup-closed-by-user') !== -1
+          ) {
+            return;
+          }
+          return origError.apply(this, args);
+        };
+
+        const origWarn = console.warn;
+        console.warn = function(...args) {
+          const str = (args[0] && typeof args[0] === 'string') ? args[0] : '';
+          if (
+            str.indexOf('Refused to get unsafe header') !== -1 ||
+            str.indexOf('preloaded using link preload but not used') !== -1 ||
+            str.indexOf('Cross-Origin-Opener-Policy') !== -1
+          ) {
+            return;
+          }
+          return origWarn.apply(this, args);
+        };
+      })();
+    </script>
+    <script type="module" crossorigin src="./assets/index-1-oDkPRn.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/vendor-misc-DeBGxI1J.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-framework-CM3K1KOW.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-firebase-core-BHkjHWxG.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-BYoZLYa2.css">
   </head>
   <body>
-    <div class="card">
-      <div class="num">404</div>
-      <div class="eyebrow">HTTP 404 // RESOURCE NOT FOUND</div>
-      <h1>Page Not Found.</h1>
-      <p>The page or resource you requested could not be located. Redirecting you to the homepage...</p>
-      <a href="/" class="btn">Return to Homepage &rarr;</a>
-    </div>
-    <script>
-      setTimeout(function() {
-        window.location.href = '/';
-      }, 5000);
-    </script>
+    <div id="root"></div>
   </body>
 </html>
