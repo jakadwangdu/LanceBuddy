@@ -8,17 +8,17 @@ export const FounderPage = () => {
   const personSchema = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    '@id': 'https://lancebuddy.in/founder#person',
+    '@id': 'https://www.lancebuddy.in/founder#person',
     'name': 'Shaurya Pratap Singh',
     'alternateName': 'Jakadwangdu',
     'jobTitle': 'Founder',
     'worksFor': {
       '@type': 'Organization',
-      '@id': 'https://lancebuddy.in/#organization',
+      '@id': 'https://www.lancebuddy.in/#organization',
       'name': 'LanceBuddy',
-      'url': 'https://lancebuddy.in/'
+      'url': 'https://www.lancebuddy.in/'
     },
-    'url': 'https://lancebuddy.in/founder',
+    'url': 'https://www.lancebuddy.in/founder',
     'sameAs': [
       'https://jakadwangdu.github.io/Portfolio',
       'https://github.com/jakadwangdu',
@@ -31,8 +31,8 @@ export const FounderPage = () => {
     <div className="about-page">
       <SEO
         title="Shaurya Pratap Singh (Jakadwangdu) — Founder of LanceBuddy"
-        description="Shaurya Pratap Singh, publicly known as Jakadwangdu, is the founder of LanceBuddy — the freelancing platform for independent professionals to discover opportunities and grow their careers."
-        canonical="https://lancebuddy.in/founder"
+        description="Shaurya Pratap Singh, publicly known as Jakadwangdu, is the founder of LanceBuddy — the free local business lead finder and client acquisition platform."
+        canonical="https://www.lancebuddy.in/founder"
         keywords="Shaurya Pratap Singh, Jakadwangdu, LanceBuddy founder, Shaurya Pratap Singh LanceBuddy, Jakadwangdu LanceBuddy, founder of LanceBuddy, freelance platform founder"
         schema={personSchema}
       />

@@ -82,7 +82,7 @@ export const LandingPage = () => {
       <SEO
         title="LanceBuddy — Direct local client discovery"
         description="Verified businesses, real phone numbers and Maps listings. Your next client, found in seconds."
-        canonical="https://lancebuddy.in/"
+        canonical="https://www.lancebuddy.in/"
       />
 
       {/* Hero Section */}

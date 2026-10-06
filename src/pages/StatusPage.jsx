@@ -60,7 +60,7 @@ export const StatusPage = () => {
       <SEO
         title="System Status & Real-time Uptime | LanceBuddy"
         description="Monitor real-time system performance, API uptime, and service health across LanceBuddy infrastructure."
-        canonical="https://lancebuddy.in/status"
+        canonical="https://www.lancebuddy.in/status"
       />
 
       {/* Header */}

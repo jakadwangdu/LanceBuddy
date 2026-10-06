@@ -61,7 +61,7 @@ export const HelpPage = () => {
         title="Help Center & FAQs — LanceBuddy Freelancer Knowledge Base"
         description="Got questions about prospecting local clients, extracting leads, cold email templates, or pricing? Explore LanceBuddy's knowledge base and FAQs."
         keywords="lancebuddy help, freelance client prospecting guide, b2b leads faq, local lead generation help, cold email templates guide"
-        canonical="https://lancebuddy.in/help"
+        canonical="https://www.lancebuddy.in/help"
         schema={faqSchema}
       />
       <div className="page-header">

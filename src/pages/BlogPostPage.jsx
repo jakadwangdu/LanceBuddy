@@ -25,7 +25,7 @@ export const BlogPostPage = () => {
       <SEO
         title={`${article.title} | LanceBuddy`}
         description={article.excerpt}
-        canonical={`https://lancebuddy.in/blog/${article.slug}`}
+        canonical={`https://www.lancebuddy.in/blog/${article.slug}`}
         ogType="article"
         schema={{
           "@context": "https://schema.org",
@@ -42,12 +42,12 @@ export const BlogPostPage = () => {
             "name": "LanceBuddy",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://lancebuddy.in/Logo.png"
+              "url": "https://www.lancebuddy.in/Logo.png"
             }
           },
           "mainEntityOfPage": {
             "@type": "WebPage",
-            "@id": `https://lancebuddy.in/blog/${article.slug}`
+            "@id": `https://www.lancebuddy.in/blog/${article.slug}`
           }
         }}
       />

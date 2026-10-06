@@ -10,14 +10,14 @@ export const SEO = ({
   description,
   keywords,
   canonical,
-  ogImage = 'https://lancebuddy.in/Logo.png',
+  ogImage = 'https://www.lancebuddy.in/Logo.png',
   ogType = 'website',
   schema = null,
   noindex = false
 }) => {
   useEffect(() => {
     // 1. Update Document Title
-    const defaultTitle = 'LanceBuddy — Freelancing Platform for Independent Professionals';
+    const defaultTitle = 'LanceBuddy — Free Local Business Lead Finder for Freelancers & Agencies';
     document.title = title ? `${title}` : defaultTitle;
 
     // Helper to safely set or create meta tags
@@ -36,7 +36,7 @@ export const SEO = ({
     setMetaTag('name', 'robots', noindex ? 'noindex, nofollow' : 'index, follow');
 
     // 2. Primary Meta Tags
-    const defaultDesc = 'LanceBuddy is a freelancing platform that helps freelancers discover opportunities, manage freelance work, connect with clients, and grow their independent careers.';
+    const defaultDesc = 'LanceBuddy is a free local business lead finder and client acquisition tool for freelancers and agencies. Extract verified local clients, direct phone numbers, and Maps listings to grow your freelance business.';
     const finalDesc = description || defaultDesc;
     setMetaTag('name', 'description', finalDesc);
 
@@ -47,7 +47,7 @@ export const SEO = ({
     // 3. Canonical URL
     const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
     const cleanPath = pathname === '/' ? '/' : pathname.replace(/\/$/, '');
-    const finalCanonical = canonical || `https://lancebuddy.in${cleanPath}`;
+    const finalCanonical = canonical || `https://www.lancebuddy.in${cleanPath}`;
     let canonicalLink = document.querySelector('link[rel="canonical"]');
     if (!canonicalLink) {
       canonicalLink = document.createElement('link');

@@ -483,57 +483,10 @@ export const HomePage = () => {
   return (
     <div className="home-page">
       <SEO
-        title="LanceBuddy — Freelancing Platform for Independent Professionals"
-        description="LanceBuddy is a freelancing platform that helps freelancers discover opportunities, manage freelance work, connect with clients, and grow their independent careers."
-        keywords="LanceBuddy, freelance jobs, freelancing platform, freelance marketplace, freelance work, find freelance jobs, remote freelance jobs, freelance opportunities, hire freelancers, how to start freelancing, freelance jobs India, freelancing platform India, Shaurya Pratap Singh, Jakadwangdu"
-        canonical="https://lancebuddy.in/"
-        schema={{
-          '@context': 'https://schema.org',
-          '@graph': [
-            {
-              '@type': 'WebSite',
-              '@id': 'https://lancebuddy.in/#website',
-              'name': 'LanceBuddy',
-              'alternateName': 'lancebuddy.in',
-              'url': 'https://lancebuddy.in/'
-            },
-            {
-              '@type': 'Organization',
-              '@id': 'https://lancebuddy.in/#organization',
-              'name': 'LanceBuddy',
-              'url': 'https://lancebuddy.in/',
-              'logo': {
-                '@type': 'ImageObject',
-                'url': 'https://lancebuddy.in/Logo.png',
-                'width': 512,
-                'height': 512
-              },
-              'founder': {
-                '@type': 'Person',
-                '@id': 'https://lancebuddy.in/founder#person',
-                'name': 'Shaurya Pratap Singh',
-                'alternateName': 'Jakadwangdu',
-                'jobTitle': 'Founder',
-                'url': 'https://lancebuddy.in/founder',
-                'sameAs': [
-                  'https://jakadwangdu.github.io/Portfolio',
-                  'https://github.com/jakadwangdu',
-                  'https://linkedin.com/in/jakadwangdu',
-                  'https://www.instagram.com/shaurya__5656'
-                ]
-              }
-            },
-            {
-              '@type': 'WebApplication',
-              '@id': 'https://lancebuddy.in/#app',
-              'name': 'LanceBuddy',
-              'url': 'https://lancebuddy.in/',
-              'applicationCategory': 'BusinessApplication',
-              'operatingSystem': 'All modern web browsers',
-              'description': 'LanceBuddy is a freelancing platform that helps freelancers discover opportunities, manage freelance work, connect with clients, and grow their independent careers.'
-            }
-          ]
-        }}
+        title="LanceBuddy — Free Local Business Lead Finder for Freelancers &amp; Agencies"
+        description="LanceBuddy is a free local business lead finder and client acquisition tool for freelancers and agencies. Extract verified local clients, direct phone numbers, and Maps listings to grow your freelance business."
+        keywords="LanceBuddy, freelance lead finder, client acquisition tool, local business leads, b2b lead generation, freelance jobs, find freelance clients, cold outreach tool, freelance CRM, Shaurya Pratap Singh, Jakadwangdu"
+        canonical="https://www.lancebuddy.in/"
       />
       {/* Conditionally Render: Guest Landing Page vs Authenticated Workspace */}
       {!currentUser ? (

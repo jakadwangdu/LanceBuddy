@@ -9,7 +9,7 @@ export const AboutPage = () => {
       <SEO
         title="About LanceBuddy — Freelancing Platform for Independent Professionals"
         description="LanceBuddy was created by founder Shaurya Pratap Singh (Jakadwangdu) to solve the hardest part of freelancing: finding clients and growing independent careers without high marketplace fees."
-        canonical="https://lancebuddy.in/about"
+        canonical="https://www.lancebuddy.in/about"
         keywords="about lancebuddy, freelance lead generation story, client acquisition for solopreneurs, Shaurya Pratap Singh, Jakadwangdu"
       />
       <motion.div 

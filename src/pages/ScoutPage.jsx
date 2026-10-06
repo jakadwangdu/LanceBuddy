@@ -449,7 +449,7 @@ export const ScoutPage = ({ quota: propQuota, setQuota: propSetQuota }) => {
       <SEO
         title="LanceBuddy — Scout local markets"
         description="Pick an industry and a city. Leads land on the globe as they are found."
-        canonical="https://lancebuddy.in/scout"
+        canonical="https://www.lancebuddy.in/scout"
       />
 
       {/* 01 / Scout Workspace */}

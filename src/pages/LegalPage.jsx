@@ -76,7 +76,7 @@ export const LegalPage = () => {
       <SEO
         title={`${title} — LanceBuddy`}
         description={`Read LanceBuddy's ${title}. Understand our strict client-side data privacy, terms, and security architecture.`}
-        canonical={`https://lancebuddy.in${path}`}
+        canonical={`https://www.lancebuddy.in${path}`}
       />
       <div className="page-header">
         <h1>{title}</h1>
