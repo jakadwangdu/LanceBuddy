@@ -14,8 +14,18 @@
     <script>
       (function(){
         var r = document.documentElement, t = null;
-        try { t = localStorage.getItem('lb-theme'); } catch(e) {}
-        if (t === 'dark' || t === 'light') r.setAttribute('data-theme', t);
+        try { t = localStorage.getItem('lb-theme') || localStorage.getItem('lb_theme'); } catch(e) {}
+        if (t !== 'dark' && t !== 'light') {
+          t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+        }
+        r.setAttribute('data-theme', t);
+        if (t === 'dark') {
+          r.classList.add('dark');
+          r.classList.remove('light');
+        } else {
+          r.classList.add('light');
+          r.classList.remove('dark');
+        }
       })();
     </script>
 
@@ -156,11 +166,12 @@
         };
       })();
     </script>
-    <script type="module" crossorigin src="./assets/index-RZFFynyp.js"></script>
-    <link rel="modulepreload" crossorigin href="./assets/vendor-misc-DeBGxI1J.js">
-    <link rel="modulepreload" crossorigin href="./assets/vendor-framework-CM3K1KOW.js">
-    <link rel="modulepreload" crossorigin href="./assets/vendor-firebase-core-BHkjHWxG.js">
-    <link rel="stylesheet" crossorigin href="./assets/index-lYJ0j59s.css">
+    <script type="module" crossorigin src="./assets/index-XOubClbo.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/vendor-misc-QQsmfJW_.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-framework-pFZHlkSJ.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-firebase-core-AowwM-Ca.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-motion-B2l-eMc_.js">
+    <link rel="stylesheet" crossorigin href="./assets/index-CvQOMzD6.css">
   </head>
   <body>
     <div id="root"></div>
