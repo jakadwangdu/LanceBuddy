@@ -3926,10 +3926,6 @@ html.dark .founder-role {
   box-shadow: var(--shadow);
   overflow: hidden;
   box-sizing: border-box;
-  background-image: 
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 24px 24px;
 }
 
 @media (min-width: 640px) {

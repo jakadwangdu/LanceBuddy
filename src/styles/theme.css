@@ -250,11 +250,7 @@ button, [role="button"], .leads-btn, .city-pill, .tab-btn, .pricing-card, .nav-i
 }
 
 #grid-bg {
-  position: absolute;
-  inset: 0;
-  background-image: linear-gradient(to right, var(--grid) 1px, transparent 1px),
-                    linear-gradient(to bottom, var(--grid) 1px, transparent 1px);
-  background-size: 32px 32px;
+  display: none;
 }
 
 .orb {

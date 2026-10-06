@@ -140,8 +140,15 @@ export const HomePage = () => {
   const [supportMsg, setSupportMsg] = useState('');
   const [supportStatus, setSupportStatus] = useState('');
 
-  const { setSelectedCityIndex, triggerShock, addLeadDot, clearLeadDots } = useSite();
+  const { setSelectedCityIndex, triggerShock, addLeadDot, clearLeadDots, setIsWorkspace } = useSite();
   const [selectedCityIdx, setSelectedCityIdx] = useState(0);
+
+  // Sync workspace mode with SiteContext to align rail navigation and 3D globe camera poses
+  useEffect(() => {
+    if (typeof setIsWorkspace === 'function') {
+      setIsWorkspace(Boolean(currentUser));
+    }
+  }, [currentUser, setIsWorkspace]);
 
   // Scout controls state
   const [industryList, setIndustryList] = useState(DEFAULT_INDUSTRIES);
@@ -649,9 +656,28 @@ export const HomePage = () => {
             <div id="pricing" style={{ position: 'absolute', top: 0 }} />
             <div style={{ width: '100%' }}>
               <p className="k">05 / Pricing</p>
-              <h2 style={{ margin: '0 auto', maxWidth: '14ch' }} className="rv">
-                Free to start. {userCountry === 'IN' ? '₹179' : '$15'} a year to grow.
+              <h2 style={{ margin: '0 auto', maxWidth: '16ch' }} className="rv">
+                Free to start. {userCountry === 'IN' ? (billingCycle === 'yearly' ? '₹179' : '₹50') : (billingCycle === 'yearly' ? '$15' : '$5')} to grow.
               </h2>
+
+              {/* Interactive Plan Selector */}
+              <div className="rv" style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', margin: '1.4rem auto 0', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className={`chip ${billingCycle === 'quarterly' ? 'on' : ''}`}
+                  onClick={() => setBillingCycle('quarterly')}
+                >
+                  3 Months · {userCountry === 'IN' ? '₹50' : '$5'}
+                </button>
+                <button
+                  type="button"
+                  className={`chip ${billingCycle === 'yearly' ? 'on' : ''}`}
+                  onClick={() => setBillingCycle('yearly')}
+                >
+                  1 Year · {userCountry === 'IN' ? '₹179' : '$15'} (Save 40%)
+                </button>
+              </div>
+
               <div className="plans rv">
                 <div className="plan">
                   <div className="price">{userCountry === 'IN' ? '₹0' : '$0'} <small>for life</small></div>
@@ -666,16 +692,26 @@ export const HomePage = () => {
                   <Link className="btn ghost" to="/login?mode=signup">Get started free</Link>
                 </div>
                 <div className="plan pro">
-                  <div className="price">{userCountry === 'IN' ? '₹179' : '$15'} <small>per year</small></div>
+                  <div className="price">
+                    {userCountry === 'IN'
+                      ? (billingCycle === 'yearly' ? '₹179' : '₹50')
+                      : (billingCycle === 'yearly' ? '$15' : '$5')}
+                    <small>{billingCycle === 'yearly' ? 'per year · best value' : 'for 3 months'}</small>
+                  </div>
                   <ul className="f">
-                    <li>Unlimited scouting</li>
+                    <li>Unlimited scouting & leads</li>
                     <li>1-click CSV export</li>
                     <li>Full library of cold email templates</li>
-                    <li>Market dossier delivered to your inbox</li>
+                    <li>Market dossier delivered to inbox</li>
                     <li>Custom sector and niche generator</li>
                     <li>Priority developer support</li>
                   </ul>
-                  <Link className="btn" to="/login?redirect=%2Fcheckout%3Fplan%3Dyearly">Upgrade to Pro</Link>
+                  <Link
+                    className="btn"
+                    to={`/login?redirect=${encodeURIComponent(`/checkout?plan=${billingCycle}`)}`}
+                  >
+                    Upgrade to Pro ({billingCycle === 'yearly' ? (userCountry === 'IN' ? '₹179' : '$15') : (userCountry === 'IN' ? '₹50' : '$5')})
+                  </Link>
                 </div>
               </div>
             </div>
@@ -1258,10 +1294,29 @@ export const HomePage = () => {
           <section className="sc c" id="s3" data-n="04">
             <div id="pricing" style={{ position: 'absolute', top: 0 }} />
             <div style={{ width: '100%' }}>
-              <p className="k">Pricing</p>
-              <h2 className="rv" style={{ margin: '0 auto', maxWidth: '14ch' }}>
-                Free to start. {userCountry === 'IN' ? '₹179' : '$15'} a year to grow.
+              <p className="k">04 / Pricing</p>
+              <h2 className="rv" style={{ margin: '0 auto', maxWidth: '16ch' }}>
+                Free to start. {userCountry === 'IN' ? (billingCycle === 'yearly' ? '₹179' : '₹50') : (billingCycle === 'yearly' ? '$15' : '$5')} to grow.
               </h2>
+
+              {/* Interactive Plan Selector */}
+              <div className="rv" style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', margin: '1.4rem auto 0', flexWrap: 'wrap' }}>
+                <button
+                  type="button"
+                  className={`chip ${billingCycle === 'quarterly' ? 'on' : ''}`}
+                  onClick={() => setBillingCycle('quarterly')}
+                >
+                  3 Months · {userCountry === 'IN' ? '₹50' : '$5'}
+                </button>
+                <button
+                  type="button"
+                  className={`chip ${billingCycle === 'yearly' ? 'on' : ''}`}
+                  onClick={() => setBillingCycle('yearly')}
+                >
+                  1 Year · {userCountry === 'IN' ? '₹179' : '$15'} (Save 40%)
+                </button>
+              </div>
+
               <div className="plans rv">
                 <div className="plan">
                   <div className="price">
@@ -1275,29 +1330,38 @@ export const HomePage = () => {
                     <li>Private pipeline and notes</li>
                     <li className="no">CSV export and email templates</li>
                   </ul>
-                  <button className="btn ghost" type="button">
-                    {currentUser?.plan === 'paid-premium-plan' ? 'Active' : 'Current plan'}
+                  <button className="btn ghost" type="button" disabled>
+                    {currentUser?.plan === 'paid-premium-plan' ? 'Standard Tier' : 'Current active plan'}
                   </button>
                 </div>
                 <div className="plan pro">
                   <div className="price">
-                    {userCountry === 'IN' ? '₹179' : '$15'} <small>per year</small>
+                    {userCountry === 'IN'
+                      ? (billingCycle === 'yearly' ? '₹179' : '₹50')
+                      : (billingCycle === 'yearly' ? '$15' : '$5')}
+                    <small>{billingCycle === 'yearly' ? 'per year · best value' : 'for 3 months'}</small>
                   </div>
                   <ul className="f">
-                    <li>Unlimited scouting</li>
+                    <li>Unlimited scouting & leads</li>
                     <li>1-click CSV export</li>
                     <li>Full library of cold email templates</li>
-                    <li>Market dossier delivered to your inbox</li>
+                    <li>Market dossier delivered to inbox</li>
                     <li>Custom sector and niche generator</li>
                     <li>Priority developer support</li>
                   </ul>
-                  <button
-                    className="btn"
-                    type="button"
-                    onClick={() => handleUpgrade(12)}
-                  >
-                    {currentUser?.plan === 'paid-premium-plan' ? 'Pro Member' : 'Upgrade to Pro'}
-                  </button>
+                  {currentUser?.plan === 'paid-premium-plan' ? (
+                    <button className="btn" type="button" disabled>
+                      ✓ Pro Member Active
+                    </button>
+                  ) : (
+                    <button
+                      className="btn"
+                      type="button"
+                      onClick={() => handleUpgrade(billingCycle === 'quarterly' ? 3 : 12)}
+                    >
+                      Upgrade to Pro ({billingCycle === 'yearly' ? (userCountry === 'IN' ? '₹179' : '$15') : (userCountry === 'IN' ? '₹50' : '$5')})
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

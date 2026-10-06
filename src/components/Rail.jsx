@@ -23,8 +23,8 @@ const SCOUT_LINKS = [
 
 export const Rail = () => {
   const location = useLocation();
-  const { activeSection, setActiveSection } = useSite();
-  const isScout = location.pathname === '/scout';
+  const { activeSection, setActiveSection, isWorkspace } = useSite();
+  const isScout = location.pathname === '/scout' || isWorkspace;
   const links = isScout ? SCOUT_LINKS : LANDING_LINKS;
 
   const handleClick = (e, idx, href) => {

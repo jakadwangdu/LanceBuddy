@@ -77,10 +77,6 @@ export const App = () => {
       <ProgressBar />
       <Rail />
 
-      {/* Ambient Grid */}
-      <div id="ambient" aria-hidden="true">
-        <div id="grid-bg"></div>
-      </div>
 
       {/* Global Navbar */}
       <Navbar />
