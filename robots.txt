@@ -4,4 +4,4 @@ Disallow: /checkout
 Disallow: /login
 Disallow: /signup
 
-Sitemap: https://lancebuddy.in/sitemap.xml
+Sitemap: https://www.lancebuddy.in/sitemap.xml
