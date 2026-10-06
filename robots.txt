@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /checkout
 Disallow: /login
+Disallow: /signup
 
-Sitemap: https://www.lancebuddy.in/sitemap.xml
+Sitemap: https://lancebuddy.in/sitemap.xml

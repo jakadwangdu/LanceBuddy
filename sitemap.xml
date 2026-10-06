@@ -2,91 +2,96 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <!-- Core Application & Landing Pages -->
   <url>
-    <loc>https://www.lancebuddy.in/</loc>
+    <loc>https://lancebuddy.in/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/pricing</loc>
+    <loc>https://lancebuddy.in/founder</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://lancebuddy.in/pricing</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/about</loc>
+    <loc>https://lancebuddy.in/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/contact</loc>
+    <loc>https://lancebuddy.in/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/help</loc>
+    <loc>https://lancebuddy.in/help</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/status</loc>
+    <loc>https://lancebuddy.in/status</loc>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Knowledge Base & Blog Guides -->
   <url>
-    <loc>https://www.lancebuddy.in/blog</loc>
+    <loc>https://lancebuddy.in/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/blog/cold-email-templates-freelancers</loc>
+    <loc>https://lancebuddy.in/blog/cold-email-templates-freelancers</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/blog/local-lead-generation-freelancers</loc>
+    <loc>https://lancebuddy.in/blog/local-lead-generation-freelancers</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/blog/freelance-pricing-guide</loc>
+    <loc>https://lancebuddy.in/blog/freelance-pricing-guide</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/blog/upwork-alternatives-2026</loc>
+    <loc>https://lancebuddy.in/blog/upwork-alternatives-2026</loc>
     <changefreq>monthly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/blog/client-onboarding-checklist</loc>
+    <loc>https://lancebuddy.in/blog/client-onboarding-checklist</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/blog/linkedin-outreach-freelancers</loc>
+    <loc>https://lancebuddy.in/blog/linkedin-outreach-freelancers</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- Legal & Trust Pages -->
   <url>
-    <loc>https://www.lancebuddy.in/privacy-policy</loc>
+    <loc>https://lancebuddy.in/privacy-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/terms-of-service</loc>
+    <loc>https://lancebuddy.in/terms-of-service</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/cookie-policy</loc>
+    <loc>https://lancebuddy.in/cookie-policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
   <url>
-    <loc>https://www.lancebuddy.in/security</loc>
+    <loc>https://lancebuddy.in/security</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
