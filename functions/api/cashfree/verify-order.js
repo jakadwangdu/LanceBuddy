@@ -30,7 +30,7 @@ export async function onRequestPost(context) {
   };
 
   try {
-    const appId = (env.CASHFREE_APP_ID || '').trim();
+    const appId = (env.CASHFREE_APP_ID || '14508048da85d5fbb8055b003964080541').trim();
     const secretKey = (env.CASHFREE_SECRET_KEY || '').trim();
     const environment = (env.CASHFREE_ENV || 'production').trim().toLowerCase();
 

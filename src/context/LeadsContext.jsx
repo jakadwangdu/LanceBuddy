@@ -73,9 +73,17 @@ export const LeadsProvider = ({ children }) => {
     // Simulate scout latency for natural UX
     await new Promise(r => setTimeout(r, 600));
 
-    let generated = await fetchRealworldLeads(biz, loc);
+    let generated;
+    try {
+      generated = await fetchRealworldLeads(biz, loc);
+    } catch (fetchErr) {
+      setScoutMessage({ type: 'error', text: `⚠️ Scouting failed: ${fetchErr.message}. Please try again in a moment.` });
+      setIsScouting(false);
+      return;
+    }
+
     if (!generated || generated.length === 0) {
-      setScoutMessage({ type: 'warning', text: 'No real-world leads found for this query.' });
+      setScoutMessage({ type: 'warning', text: `No verified leads found for "${biz}" in "${loc}". Try a nearby city or different industry.` });
       generated = [];
     }
 
