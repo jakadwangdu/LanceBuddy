@@ -31,7 +31,7 @@ export const BlogPage = () => {
       <SEO
         title="Freelance Growth Blog — Lead Generation &amp; Client Acquisition Guides | LanceBuddy"
         description="Actionable guides, proven cold email templates, and lead generation workflows to help freelancers and digital agencies land high-paying clients."
-        canonical="https://www.lancebuddy.in/blog"
+        canonical="https://lancebuddy.in/blog"
         keywords="freelance blog, lead generation for freelancers, cold email templates, upwork alternatives, client acquisition guides"
       />
       <div className="page-header">

@@ -40,7 +40,7 @@ export const ContactPage = () => {
       <SEO
         title="Contact LanceBuddy — Support, Feedback &amp; Partnerships"
         description="Have questions about scouting local business leads or upgrading to LanceBuddy Pro? Reach out directly to the LanceBuddy team."
-        canonical="https://www.lancebuddy.in/contact"
+        canonical="https://lancebuddy.in/contact"
         keywords="contact lancebuddy, support, freelance lead tool help"
       />
       <motion.div 

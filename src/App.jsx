@@ -17,6 +17,7 @@ import { lazyWithRetry } from './utils/lazyWithRetry';
 
 const ScoutPage = lazyWithRetry(() => import('./pages/ScoutPage').then(m => ({ default: m.ScoutPage })));
 const AboutPage = lazyWithRetry(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })));
+const FounderPage = lazyWithRetry(() => import('./pages/FounderPage').then(m => ({ default: m.FounderPage })));
 const BlogPage = lazyWithRetry(() => import('./pages/BlogPage').then(m => ({ default: m.BlogPage })));
 const BlogPostPage = lazyWithRetry(() => import('./pages/BlogPostPage').then(m => ({ default: m.BlogPostPage })));
 const ContactPage = lazyWithRetry(() => import('./pages/ContactPage').then(m => ({ default: m.ContactPage })));
@@ -98,6 +99,7 @@ export const App = () => {
             <Route path="/faq" element={<HomePage />} />
             <Route path="/features" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/founder" element={<FounderPage />} />
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPostPage />} />
             <Route path="/contact" element={<ContactPage />} />

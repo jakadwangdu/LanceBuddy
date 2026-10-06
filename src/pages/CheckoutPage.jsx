@@ -225,7 +225,7 @@ export const CheckoutPage = () => {
         title="Checkout — Upgrade to LanceBuddy Pro"
         description="Upgrade to LanceBuddy Pro for unlimited scouting, CSV export, and email templates."
         noindex={true}
-        canonical="https://www.lancebuddy.in/checkout"
+        canonical="https://lancebuddy.in/checkout"
       />
       <div className="checkout-card">
         {/* Header */}

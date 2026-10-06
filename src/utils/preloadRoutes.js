@@ -3,6 +3,7 @@
  */
 const loaders = {
   '/about': () => import('../pages/AboutPage'),
+  '/founder': () => import('../pages/FounderPage'),
   '/blog': () => import('../pages/BlogPage'),
   '/contact': () => import('../pages/ContactPage'),
   '/help': () => import('../pages/HelpPage'),

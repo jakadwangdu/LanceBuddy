@@ -30,6 +30,7 @@ export const Footer = () => {
               <h3 className="footer-col-title">Resources</h3>
               <Link to="/blog" onMouseEnter={() => preloadRoute('/blog')}>Freelance Blog</Link>
               <Link to="/about" onMouseEnter={() => preloadRoute('/about')}>About Us</Link>
+              <Link to="/founder" onMouseEnter={() => preloadRoute('/founder')}>Founder</Link>
               <Link to="/help" onMouseEnter={() => preloadRoute('/help')}>Help & FAQs</Link>
               <Link to="/contact" onMouseEnter={() => preloadRoute('/contact')}>Support Contact</Link>
             </div>
@@ -47,14 +48,10 @@ export const Footer = () => {
         <div className="footer-bottom">
           <p>&copy; {new Date().getFullYear()} LanceBuddy. Built for independent professionals.</p>
           <p>
-            Maintained by{' '}
-            <a
-              href="https://jakadwangdu.github.io/Portfolio"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            Founded &amp; Maintained by{' '}
+            <Link to="/founder" onMouseEnter={() => preloadRoute('/founder')}>
               Shaurya Pratap Singh (Jakadwangdu)
-            </a>
+            </Link>
           </p>
         </div>
       </div>

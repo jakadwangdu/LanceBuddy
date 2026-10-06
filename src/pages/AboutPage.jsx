@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { SEO } from '../components/common/SEO';
 
@@ -6,10 +7,10 @@ export const AboutPage = () => {
   return (
     <div className="about-page">
       <SEO
-        title="About LanceBuddy — The Free B2B Client Engine for Freelancers"
-        description="LanceBuddy was created by a freelancer to solve the hardest part of freelancing: finding local business clients without paying 20% marketplace commissions or expensive monthly databases."
-        canonical="https://www.lancebuddy.in/about"
-        keywords="about lancebuddy, freelance lead generation story, client acquisition for solopreneurs, free b2b tools"
+        title="About LanceBuddy — Freelancing Platform for Independent Professionals"
+        description="LanceBuddy was created by founder Shaurya Pratap Singh (Jakadwangdu) to solve the hardest part of freelancing: finding clients and growing independent careers without high marketplace fees."
+        canonical="https://lancebuddy.in/about"
+        keywords="about lancebuddy, freelance lead generation story, client acquisition for solopreneurs, Shaurya Pratap Singh, Jakadwangdu"
       />
       <motion.div 
         className="page-header"
@@ -94,8 +95,11 @@ export const AboutPage = () => {
           <div className="founder-info">
             <h3>Shaurya Pratap Singh (Jakadwangdu)</h3>
             <div className="founder-role">Founder &amp; Developer</div>
-            <p style={{ margin: 0, fontSize: '14px', opacity: 0.85, lineHeight: 1.6 }}>
-              Freelance full-stack developer turned builder. I write code, design interfaces, and build tools that solve real problems for independent professionals.
+            <p style={{ margin: 0, fontSize: '14px', opacity: 0.88, lineHeight: 1.6 }}>
+              Freelance full-stack developer turned builder. I write code, design interfaces, and build tools that solve real problems for independent professionals. Learn more on the dedicated{' '}
+              <Link to="/founder" style={{ color: 'var(--ink)', textDecoration: 'underline', fontWeight: 600 }}>
+                Founder profile page
+              </Link>.
             </p>
             <div className="founder-links">
               <a

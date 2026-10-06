@@ -279,7 +279,7 @@ export const LoginPage = () => {
         title={mode === 'signup' ? 'Create an Account — LanceBuddy' : 'Sign In — LanceBuddy'}
         description="Sign in or create an account on LanceBuddy to manage your freelance leads and outreach pipeline."
         noindex={true}
-        canonical="https://www.lancebuddy.in/login"
+        canonical="https://lancebuddy.in/login"
       />
       <div className="auth-wrapper">
         <div className="auth-card">
