@@ -97,50 +97,55 @@ html, body {
    ========================================================================== */
 .nav-shell {
   position: sticky;
-  top: 0;
+  top: 12px;
   z-index: 500;
+  max-width: 1140px;
+  width: calc(100% - 32px);
+  margin: 10px auto 0;
   background: var(--nav-bg);
   backdrop-filter: blur(24px) saturate(160%);
   -webkit-backdrop-filter: blur(24px) saturate(160%);
-  border-bottom: 1px solid var(--border-soft);
-  box-shadow: var(--shadow-sm);
-  width: 100%;
-  transition: background 0.3s ease, border-color 0.3s ease;
+  border: 1px solid var(--border-soft);
+  border-radius: 9999px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media (max-width: 640px) {
+  .nav-shell {
+    top: 8px;
+    width: calc(100% - 16px);
+    margin: 8px auto 0;
+  }
 }
 
 .nav-container {
-  max-width: 1040px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 0 16px;
-  height: 64px;
+  padding: 0 10px 0 16px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
 
-@media (min-width: 640px) {
-  .nav-container {
-    padding: 0 24px;
-    height: 68px;
-  }
-}
-
 .nav-brand {
   display: flex;
   align-items: center;
   gap: 10px;
-  font-weight: 800;
-  font-size: clamp(16px, 4vw, 18.5px);
-  letter-spacing: -0.4px;
+  font-weight: 700;
+  font-size: clamp(16px, 3.5vw, 17.5px);
+  letter-spacing: -0.3px;
   flex-shrink: 0;
   color: var(--text);
+  text-decoration: none;
 }
 
 .nav-logo {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
   background: var(--ink);
   color: var(--on);
   border: 1px solid var(--line);
@@ -159,28 +164,38 @@ html, body {
   transform: scale(1.05);
 }
 
-@media (min-width: 640px) {
-  .nav-logo {
-    width: 36px;
-    height: 36px;
-    font-size: 13.5px;
-    border-radius: 11px;
-  }
+.nav-name {
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: -0.2px;
 }
 
+/* Center Desktop Navigation Links */
 .nav-links {
   display: flex;
   align-items: center;
   gap: 3px;
 }
 
+@media (max-width: 880px) {
+  .nav-links {
+    display: none;
+  }
+}
+
 .nav-link {
   font-size: 13.5px;
   font-weight: 500;
   color: var(--muted);
-  padding: 6px 13px;
-  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  border-radius: 9999px;
   white-space: nowrap;
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -190,17 +205,225 @@ html, body {
 }
 
 .nav-link.active {
-  color: var(--text);
-  background-color: var(--surface2);
+  color: var(--on);
+  background-color: var(--ink);
   font-weight: 600;
-  box-shadow: inset 0 0 0 1px var(--border-soft);
+  box-shadow: none;
 }
 
+/* More Dropdown */
+.nav-more-wrapper {
+  position: relative;
+}
+
+.nav-more-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  background-color: color-mix(in srgb, var(--ink) 4%, transparent);
+  color: var(--text);
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+}
+
+.nav-more-trigger.open,
+.nav-more-trigger:hover {
+  background-color: var(--surface2);
+  color: var(--text);
+}
+
+.nav-more-chevron {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-more-chevron.open {
+  transform: rotate(180deg);
+}
+
+.nav-more-dropdown {
+  position: absolute;
+  top: calc(100% + 14px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  background: var(--surface);
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  border: 1px solid var(--border-soft);
+  border-radius: 20px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
+  padding: 8px;
+  z-index: 600;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  animation: navFadeSlide 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes navFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0) scale(1);
+  }
+}
+
+.nav-more-item {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 9px 12px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--text);
+  transition: background-color 0.15s ease;
+}
+
+.nav-more-item:hover {
+  background-color: var(--surface2);
+}
+
+.nav-more-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: var(--surface);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 17px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.nav-more-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.nav-more-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.nav-more-desc {
+  font-size: 11.5px;
+  color: var(--muted);
+  line-height: 1.3;
+}
+
+/* Right Actions */
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   flex-shrink: 0;
+}
+
+/* Upgrade Button (Matching Mockup) */
+.nav-upgrade-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.nav-upgrade-btn:hover {
+  background: var(--ink);
+  color: var(--on);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.nav-upgrade-icon {
+  flex-shrink: 0;
+}
+
+/* User Profile Pill Button (Matching Mockup: [ (MV) MINI VLOG v ]) */
+.nav-profile-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 12px 3px 4px;
+  border-radius: 9999px;
+  border: 1px solid var(--border-soft);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-profile-pill:hover,
+.nav-profile-pill.active {
+  background: var(--surface2);
+  border-color: var(--border);
+}
+
+.nav-profile-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--ink);
+  color: var(--on);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  flex-shrink: 0;
+}
+
+.nav-profile-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: var(--text);
+  max-width: 110px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-profile-chevron {
+  font-size: 13px;
+  color: var(--muted);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.nav-profile-pill.active .nav-profile-chevron {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 520px) {
+  .nav-profile-name {
+    display: none;
+  }
+  .nav-profile-pill {
+    padding: 3px;
+  }
 }
 
 .nav-auth-buttons {
@@ -210,8 +433,8 @@ html, body {
 }
 
 .nav-signin-link {
-  padding: 7px 14px;
-  border-radius: var(--radius-full);
+  padding: 6px 14px;
+  border-radius: 9999px;
   font-size: 12.5px;
   font-weight: 600;
   border: 1px solid var(--border-soft);
@@ -220,13 +443,7 @@ html, body {
   box-shadow: var(--shadow-sm);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
-}
-
-@media (min-width: 640px) {
-  .nav-signin-link {
-    padding: 7px 16px;
-    font-size: 13px;
-  }
+  text-decoration: none;
 }
 
 .nav-signin-link:hover {
@@ -236,8 +453,8 @@ html, body {
 }
 
 .nav-signup-btn {
-  padding: 7px 14px;
-  border-radius: var(--radius-full);
+  padding: 6px 16px;
+  border-radius: 9999px;
   font-size: 12.5px;
   font-weight: 600;
   background: var(--btn);
@@ -246,13 +463,7 @@ html, body {
   box-shadow: var(--shadow-sm);
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
-}
-
-@media (min-width: 640px) {
-  .nav-signup-btn {
-    padding: 7px 18px;
-    font-size: 13px;
-  }
+  text-decoration: none;
 }
 
 .nav-signup-btn:hover {
@@ -261,7 +472,6 @@ html, body {
   transform: translateY(-1px);
 }
 
-/* Hide signup button on small mobile header to avoid cramped layout */
 @media (max-width: 480px) {
   .nav-signup-btn {
     display: none;
@@ -276,7 +486,7 @@ html, body {
   background: var(--surface);
   box-shadow: var(--shadow-sm);
   color: var(--text);
-  font-size: 16px;
+  font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -291,61 +501,14 @@ html, body {
   transform: rotate(15deg);
 }
 
-/* Profile Dropdown (Liquid Glass Popover) */
-.profile-menu-wrapper {
-  position: relative;
-}
-
-.profile-btn {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 5px 12px;
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-full);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@media (min-width: 640px) {
-  .profile-btn {
-    padding: 6px 14px;
-    gap: 8px;
-  }
-}
-
-.profile-btn:hover {
-  background: var(--surface2);
-  border-color: var(--border);
-}
-
-.profile-name {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--text);
-  max-width: 80px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-@media (min-width: 640px) {
-  .profile-name {
-    font-size: 13px;
-    max-width: 120px;
-  }
-}
-
-.profile-chevron {
-  font-size: 13px;
-  color: var(--muted);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.profile-btn.active .profile-chevron {
-  transform: rotate(180deg);
+/* Offset for sections so sticky pill navbar does not overlap headers */
+#pricing,
+#scout,
+#pipeline,
+#notes,
+#contact,
+#s0, #s1, #s2, #s3, #s4, #s5, #s6 {
+  scroll-margin-top: 85px;
 }
 
 .profile-dropdown {

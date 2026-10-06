@@ -3,24 +3,36 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { preloadRoute } from '../../utils/preloadRoutes';
+
 export const Navbar = () => {
   const { theme, toggleTheme } = useTheme();
   const { currentUser, logout } = useAuth();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const profileRef = useRef(null);
+  const moreRef = useRef(null);
 
-  // Close profile dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
         setProfileOpen(false);
       }
+      if (moreRef.current && !moreRef.current.contains(e.target)) {
+        setMoreOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Close dropdowns on location changes
+  useEffect(() => {
+    setProfileOpen(false);
+    setMoreOpen(false);
+  }, [location.pathname, location.hash]);
 
   const handleLogout = async () => {
     setProfileOpen(false);
@@ -28,13 +40,44 @@ export const Navbar = () => {
     navigate('/');
   };
 
+  const handleUpgradeClick = (e) => {
+    if (e) e.preventDefault();
+    setProfileOpen(false);
+    setMoreOpen(false);
+
+    const scrollToPricing = () => {
+      const el =
+        document.getElementById('pricing') ||
+        document.getElementById('s3') ||
+        document.getElementById('s5');
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return true;
+      }
+      return false;
+    };
+
+    if (location.pathname === '/') {
+      scrollToPricing();
+    } else {
+      navigate('/#pricing');
+      setTimeout(scrollToPricing, 120);
+      setTimeout(scrollToPricing, 350);
+      setTimeout(scrollToPricing, 700);
+    }
+  };
+
   const handleNavClick = (path, e) => {
+    setMoreOpen(false);
     if (path.startsWith('/#')) {
       const id = path.replace('/#', '');
       if (location.pathname === '/') {
-        const el = document.getElementById(id);
+        if (e) e.preventDefault();
+        let el = document.getElementById(id);
+        if (!el && (id === 'pricing' || id === 's5' || id === 's3')) {
+          el = document.getElementById('pricing') || document.getElementById('s3') || document.getElementById('s5');
+        }
         if (el) {
-          e.preventDefault();
           el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
@@ -44,44 +87,42 @@ export const Navbar = () => {
         '/scout': 'scout',
         '/pipeline': 'pipeline',
         '/notes': 'notes',
-        '/pricing': 's5',
+        '/pricing': 'pricing',
         '/contact': 'contact'
       };
       const targetId = sectionMap[path];
       if (targetId) {
-        const el = document.getElementById(targetId);
+        if (e) e.preventDefault();
+        let el = document.getElementById(targetId);
+        if (!el && targetId === 'pricing') {
+          el = document.getElementById('pricing') || document.getElementById('s3') || document.getElementById('s5');
+        }
         if (el) {
-          e.preventDefault();
           el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else if (path === '/') {
-          e.preventDefault();
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }
       }
     }
   };
 
-  const navLinks = !currentUser
-    ? [
-        { name: 'Find', path: '/#s1' },
-        { name: 'Verify', path: '/#s2' },
-        { name: 'Write', path: '/#s3' },
-        { name: 'Track', path: '/#s4' },
-        { name: 'Pricing', path: '/#s5' },
-        { name: 'Contact', path: '/#contact' },
-        { name: 'About', path: '/about' },
-        { name: 'Blog', path: '/blog' }
-      ]
-    : [
-        { name: 'Workspace', path: '/' },
-        { name: 'Scout Tool', path: '/scout' },
-        { name: 'Pipeline', path: '/pipeline' },
-        { name: 'Notes', path: '/notes' },
-        ...(currentUser?.plan !== 'paid-premium-plan' ? [{ name: 'Upgrade', path: '/#s5' }] : []),
-        { name: 'Contact', path: '/#contact' },
-        { name: 'About', path: '/about' },
-        { name: 'Blog', path: '/blog' }
-      ];
+  const getUserInitials = (user) => {
+    if (!user) return 'LB';
+    const name = (user.name || '').trim();
+    if (!name) {
+      const email = (user.email || '').trim();
+      return email ? email.slice(0, 2).toUpperCase() : 'U';
+    }
+    const parts = name.split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  };
+
+  const userInitials = getUserInitials(currentUser);
+  const userDisplayName = (currentUser?.name || currentUser?.email?.split('@')[0] || 'ACCOUNT').toUpperCase();
+  const isHome = location.pathname === '/';
 
   return (
     <header className="nav-shell">
@@ -91,10 +132,9 @@ export const Navbar = () => {
           to="/"
           className="nav-brand"
           onClick={(e) => {
-            if (location.pathname === '/') {
+            if (isHome) {
               e.preventDefault();
-              const el = document.getElementById('s0') || document.body;
-              el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }
           }}
         >
@@ -102,50 +142,224 @@ export const Navbar = () => {
           <span className="nav-name">LanceBuddy</span>
         </Link>
 
-        {/* Desktop Links */}
+        {/* Center Navigation Links */}
         <div className="nav-links">
-          {navLinks.map((item) => (
-            <Link
-              key={item.name}
-              to={item.path}
-              className={`nav-link ${location.pathname === item.path ? 'active' : ''}`}
-              onClick={(e) => handleNavClick(item.path, e)}
-              onMouseEnter={() => preloadRoute(item.path)}
-              onFocus={() => preloadRoute(item.path)}
+          {currentUser ? (
+            <>
+              <Link
+                to="/"
+                className={`nav-link ${isHome ? 'active' : ''}`}
+                onClick={(e) => {
+                  if (isHome) {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }}
+              >
+                Workspace
+              </Link>
+
+              <Link
+                to="/scout"
+                className={`nav-link ${location.pathname === '/scout' ? 'active' : ''}`}
+                onClick={(e) => handleNavClick('/scout', e)}
+                onMouseEnter={() => preloadRoute('/scout')}
+              >
+                Scout Tool
+              </Link>
+
+              <Link
+                to="/pipeline"
+                className={`nav-link ${location.pathname === '/pipeline' ? 'active' : ''}`}
+                onClick={(e) => handleNavClick('/pipeline', e)}
+                onMouseEnter={() => preloadRoute('/pipeline')}
+              >
+                Pipeline
+              </Link>
+
+              <Link
+                to="/notes"
+                className={`nav-link ${location.pathname === '/notes' ? 'active' : ''}`}
+                onClick={(e) => handleNavClick('/notes', e)}
+                onMouseEnter={() => preloadRoute('/notes')}
+              >
+                Notes
+              </Link>
+            </>
+          ) : (
+            <>
+              <a
+                href="/#s1"
+                className="nav-link"
+                onClick={(e) => handleNavClick('/#s1', e)}
+              >
+                Find
+              </a>
+              <a
+                href="/#s2"
+                className="nav-link"
+                onClick={(e) => handleNavClick('/#s2', e)}
+              >
+                Verify
+              </a>
+              <a
+                href="/#s3"
+                className="nav-link"
+                onClick={(e) => handleNavClick('/#s3', e)}
+              >
+                Write
+              </a>
+              <a
+                href="/#s4"
+                className="nav-link"
+                onClick={(e) => handleNavClick('/#s4', e)}
+              >
+                Track
+              </a>
+            </>
+          )}
+
+          {/* More Dropdown */}
+          <div className="nav-more-wrapper" ref={moreRef}>
+            <button
+              type="button"
+              className={`nav-link nav-more-trigger ${moreOpen ? 'open' : ''}`}
+              onClick={() => setMoreOpen(!moreOpen)}
+              aria-expanded={moreOpen}
+              aria-label="More options"
             >
-              {item.name}
-            </Link>
-          ))}
+              <span>More</span>
+              <svg
+                className={`nav-more-chevron ${moreOpen ? 'open' : ''}`}
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="6 9 12 15 18 9" />
+              </svg>
+            </button>
+
+            {moreOpen && (
+              <div className="nav-more-dropdown">
+                <Link
+                  to="/about"
+                  className="nav-more-item"
+                  onClick={() => setMoreOpen(false)}
+                  onMouseEnter={() => preloadRoute('/about')}
+                >
+                  <div className="nav-more-icon-box">
+                    <i className="ri-information-line"></i>
+                  </div>
+                  <div className="nav-more-text">
+                    <span className="nav-more-title">About</span>
+                    <span className="nav-more-desc">The story behind LanceBuddy</span>
+                  </div>
+                </Link>
+
+                <Link
+                  to="/blog"
+                  className="nav-more-item"
+                  onClick={() => setMoreOpen(false)}
+                  onMouseEnter={() => preloadRoute('/blog')}
+                >
+                  <div className="nav-more-icon-box">
+                    <i className="ri-bookmark-line"></i>
+                  </div>
+                  <div className="nav-more-text">
+                    <span className="nav-more-title">Blog</span>
+                    <span className="nav-more-desc">Guides on leads, outreach and pricing</span>
+                  </div>
+                </Link>
+
+                <a
+                  href="/#contact"
+                  className="nav-more-item"
+                  onClick={(e) => {
+                    setMoreOpen(false);
+                    handleNavClick('/#contact', e);
+                  }}
+                >
+                  <div className="nav-more-icon-box">
+                    <i className="ri-mail-line"></i>
+                  </div>
+                  <div className="nav-more-text">
+                    <span className="nav-more-title">Contact</span>
+                    <span className="nav-more-desc">Talk to the developer</span>
+                  </div>
+                </a>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right Actions */}
         <div className="nav-actions">
+          {/* Upgrade Button */}
+          {currentUser?.plan !== 'paid-premium-plan' && (
+            <button
+              type="button"
+              className="nav-upgrade-btn"
+              onClick={handleUpgradeClick}
+              title="Upgrade to LanceBuddy Premium"
+              aria-label="Upgrade to LanceBuddy Premium"
+            >
+              <svg
+                className="nav-upgrade-icon"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.3"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <line x1="12" y1="2" x2="12" y2="6" />
+                <line x1="12" y1="18" x2="12" y2="22" />
+                <line x1="4.93" y1="4.93" x2="7.76" y2="7.76" />
+                <line x1="16.24" y1="16.24" x2="19.07" y2="19.07" />
+                <line x1="2" y1="12" x2="6" y2="12" />
+                <line x1="18" y1="12" x2="22" y2="12" />
+                <line x1="4.93" y1="19.07" x2="7.76" y2="16.24" />
+                <line x1="16.24" y1="7.76" x2="19.07" y2="4.93" />
+              </svg>
+              <span>Upgrade</span>
+            </button>
+          )}
+
+          {/* User Profile or Sign In / Up */}
           {currentUser ? (
             <div className="profile-menu-wrapper" ref={profileRef}>
               <button
                 type="button"
-                className={`profile-btn ${profileOpen ? 'active' : ''}`}
+                className={`nav-profile-pill ${profileOpen ? 'active' : ''}`}
                 onClick={() => setProfileOpen(!profileOpen)}
                 aria-label="User Profile Menu"
+                aria-expanded={profileOpen}
               >
-                <i className="ri-user-3-line"></i>
-                <span className="profile-name" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
-                  {currentUser.name || 'Account'}
-                  {currentUser?.plan === 'paid-premium-plan' && (
-                    <i className="ri-vip-crown-2-fill" style={{ color: 'var(--ink)', fontSize: '0.82rem' }} title="Premium Member"></i>
-                  )}
+                <div className="nav-profile-avatar">
+                  {userInitials}
+                </div>
+                <span className="nav-profile-name">
+                  {userDisplayName}
                 </span>
-                <i className="ri-arrow-down-s-line profile-chevron"></i>
+                <i className="ri-arrow-down-s-line nav-profile-chevron"></i>
               </button>
 
               <div className={`profile-dropdown ${profileOpen ? 'open' : ''}`}>
                 <div className="profile-dropdown-header">
                   <div className="profile-avatar">
-                    {(currentUser.name ? currentUser.name[0] : 'U').toUpperCase()}
+                    {userInitials}
                   </div>
                   <div className="profile-info">
                     <span className="profile-display-name" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      {currentUser.name}
+                      {currentUser.name || 'User'}
                       {currentUser?.plan === 'paid-premium-plan' && (
                         <i className="ri-vip-crown-2-fill" style={{ color: 'var(--ink)', fontSize: '0.85rem' }} title="Premium Member"></i>
                       )}
@@ -189,24 +403,35 @@ export const Navbar = () => {
                 <div className="profile-dropdown-divider"></div>
 
                 {currentUser?.plan !== 'paid-premium-plan' && (
-                  <Link
-                    to="/#pricing"
+                  <button
+                    type="button"
                     className="profile-dropdown-item"
-                    onClick={(e) => {
-                      setProfileOpen(false);
-                      handleNavClick('/#pricing', e);
+                    onClick={handleUpgradeClick}
+                    style={{
+                      color: 'var(--ink)',
+                      fontWeight: 600,
+                      width: '100%',
+                      textAlign: 'left',
+                      background: 'none',
+                      border: 'none',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px'
                     }}
-                    style={{ color: 'var(--ink)', fontWeight: 600 }}
                   >
                     <i className="ri-vip-crown-line" style={{ color: 'var(--ink)' }}></i>
                     <span>Upgrade to Premium</span>
-                  </Link>
+                  </button>
                 )}
 
                 <Link
                   to="/#notes"
                   className="profile-dropdown-item"
-                  onClick={() => setProfileOpen(false)}
+                  onClick={(e) => {
+                    setProfileOpen(false);
+                    handleNavClick('/#notes', e);
+                  }}
                 >
                   <i className="ri-sticky-note-line"></i>
                   <span>Saved Notes</span>

@@ -44,11 +44,14 @@ function ScrollToTop() {
 
     if (targetId) {
       const timer = setTimeout(() => {
-        const el = document.getElementById(targetId);
+        let el = document.getElementById(targetId);
+        if (!el && (targetId === 'pricing' || targetId === 's5' || targetId === 's3')) {
+          el = document.getElementById('pricing') || document.getElementById('s3') || document.getElementById('s5');
+        }
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-      }, 100);
+      }, 120);
       return () => clearTimeout(timer);
     } else {
       window.scrollTo(0, 0);
