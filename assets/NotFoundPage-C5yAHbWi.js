@@ -1,0 +1,1 @@
+import{j as o}from"./vendor-framework-I3X6A9qB.js";import{ErrorPage as r}from"./ErrorPage-DTgPJCiM.js";import"./vendor-misc-QQsmfJW_.js";import"./index-BJnSn83u.js";import"./vendor-firebase-core-AowwM-Ca.js";import"./vendor-motion-Bx69pwkD.js";const n=()=>o.jsx(r,{code:404});export{n as NotFoundPage};
