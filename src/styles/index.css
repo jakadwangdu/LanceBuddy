@@ -115,7 +115,7 @@ html, body {
   .nav-shell {
     top: 8px;
     width: calc(100% - 16px);
-    margin: 8px auto 0;
+    margin: 6px auto 0;
   }
 }
 
@@ -130,6 +130,14 @@ html, body {
   gap: 12px;
 }
 
+@media (max-width: 640px) {
+  .nav-container {
+    height: 50px;
+    padding: 0 8px 0 12px;
+    gap: 6px;
+  }
+}
+
 .nav-brand {
   display: flex;
   align-items: center;
@@ -140,6 +148,12 @@ html, body {
   flex-shrink: 0;
   color: var(--text);
   text-decoration: none;
+}
+
+@media (max-width: 640px) {
+  .nav-brand {
+    gap: 7px;
+  }
 }
 
 .nav-logo {
@@ -160,6 +174,15 @@ html, body {
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+@media (max-width: 640px) {
+  .nav-logo {
+    width: 28px;
+    height: 28px;
+    border-radius: 7px;
+    font-size: 11.5px;
+  }
+}
+
 .nav-brand:hover .nav-logo {
   transform: scale(1.05);
 }
@@ -168,6 +191,18 @@ html, body {
   color: var(--text);
   font-weight: 700;
   letter-spacing: -0.2px;
+}
+
+@media (max-width: 640px) {
+  .nav-name {
+    font-size: 14.5px;
+  }
+}
+
+@media (max-width: 360px) {
+  .nav-name {
+    font-size: 13px;
+  }
 }
 
 /* Center Desktop Navigation Links */
@@ -331,6 +366,12 @@ html, body {
   flex-shrink: 0;
 }
 
+@media (max-width: 640px) {
+  .nav-actions {
+    gap: 5px;
+  }
+}
+
 /* Upgrade Button (Matching Mockup) */
 .nav-upgrade-btn {
   display: inline-flex;
@@ -358,6 +399,25 @@ html, body {
 
 .nav-upgrade-icon {
   flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .nav-upgrade-btn {
+    padding: 4px 10px;
+    font-size: 11.5px;
+    gap: 4px;
+    border-width: 1.2px;
+  }
+  .nav-upgrade-btn .nav-upgrade-icon {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 350px) {
+  .nav-upgrade-btn {
+    padding: 4px 7px;
+  }
 }
 
 /* User Profile Pill Button (Matching Mockup: [ (MV) MINI VLOG v ]) */
@@ -417,12 +477,21 @@ html, body {
   transform: rotate(180deg);
 }
 
-@media (max-width: 520px) {
-  .nav-profile-name {
-    display: none;
-  }
+@media (max-width: 768px) {
   .nav-profile-pill {
-    padding: 3px;
+    padding: 2px 7px 2px 3px;
+    gap: 4px;
+  }
+  .nav-profile-name {
+    display: none !important;
+  }
+  .nav-profile-avatar {
+    width: 26px;
+    height: 26px;
+    font-size: 10px;
+  }
+  .nav-profile-chevron {
+    font-size: 11px;
   }
 }
 
@@ -430,6 +499,12 @@ html, body {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+@media (max-width: 640px) {
+  .nav-auth-buttons {
+    gap: 4px;
+  }
 }
 
 .nav-signin-link {
@@ -446,10 +521,11 @@ html, body {
   text-decoration: none;
 }
 
-.nav-signin-link:hover {
-  background: var(--surface2);
-  border-color: var(--border);
-  color: var(--text);
+@media (max-width: 640px) {
+  .nav-signin-link {
+    padding: 4px 10px;
+    font-size: 12px;
+  }
 }
 
 .nav-signup-btn {
@@ -472,9 +548,9 @@ html, body {
   transform: translateY(-1px);
 }
 
-@media (max-width: 480px) {
+@media (max-width: 640px) {
   .nav-signup-btn {
-    display: none;
+    display: none !important;
   }
 }
 
@@ -493,6 +569,14 @@ html, body {
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  #theme-btn {
+    width: 29px;
+    height: 29px;
+    font-size: 13px;
+  }
 }
 
 #theme-btn:hover {
@@ -3441,7 +3525,7 @@ html.dark .founder-role {
 
 /* ==========================================================================
 /* ==========================================================================
-   THEMED MOBILE BOTTOM DOCK (NEO-BRUTALIST PILL ISLAND)
+   THEMED MOBILE BOTTOM DOCK (FLOATING PILL ISLAND)
    ========================================================================== */
 @media (min-width: 769px) {
   #mobile-dock,
@@ -3462,24 +3546,25 @@ html.dark .founder-role {
   #mobile-dock {
     display: inline-flex !important;
     position: fixed !important;
-    bottom: calc(14px + env(safe-area-inset-bottom, 0px)) !important;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
     width: auto !important;
     max-width: calc(100vw - 20px) !important;
     height: 52px !important;
-    background: var(--surface) !important;
-    border: 2px solid var(--border) !important;
+    background: var(--nav-bg) !important;
+    border: 1px solid var(--border-soft) !important;
     border-radius: 9999px !important;
-    box-shadow: 3px 3px 0px var(--border) !important;
-    backdrop-filter: blur(20px) !important;
-    -webkit-backdrop-filter: blur(20px) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+    backdrop-filter: blur(24px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
     z-index: 9999 !important;
     padding: 4px 6px !important;
     align-items: center !important;
     justify-content: center !important;
     gap: 3px !important;
     box-sizing: border-box !important;
+    transition: background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease !important;
   }
 
   .dock-item {
@@ -3493,26 +3578,30 @@ html.dark .founder-role {
     border-radius: 9999px !important;
     text-decoration: none !important;
     color: var(--muted) !important;
-    border: 1.5px solid transparent !important;
+    border: 1px solid transparent !important;
     background: transparent !important;
     cursor: pointer !important;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
     padding: 0 !important;
     box-sizing: border-box !important;
     user-select: none !important;
   }
 
+  .dock-item svg,
   .dock-item i {
-    font-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
     line-height: 1 !important;
     color: var(--muted) !important;
+    stroke: currentColor !important;
     transition: color 0.2s ease, transform 0.2s ease !important;
+    flex-shrink: 0 !important;
   }
 
   .dock-item span {
     display: none !important;
-    font-size: 12.5px !important;
-    font-weight: 800 !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
     letter-spacing: -0.2px !important;
     white-space: nowrap !important;
     margin-left: 6px !important;
@@ -3523,6 +3612,7 @@ html.dark .founder-role {
     background: var(--surface2) !important;
   }
 
+  .dock-item:not(.active):hover svg,
   .dock-item:not(.active):hover i {
     color: var(--text) !important;
     transform: scale(1.08) !important;
@@ -3532,25 +3622,26 @@ html.dark .founder-role {
   .dock-item.active {
     width: auto !important;
     min-width: unset !important;
-    padding: 0 14px 0 12px !important;
-    background: var(--btn) !important;
-    color: var(--btn-text) !important;
-    border: 1.5px solid var(--border) !important;
-    box-shadow: 1.5px 1.5px 0px var(--border) !important;
+    padding: 0 13px 0 11px !important;
+    background: var(--ink) !important;
+    color: var(--on) !important;
+    border: 1px solid var(--border-soft) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
   }
 
+  .dock-item.active svg,
   .dock-item.active i {
-    color: var(--btn-text) !important;
-    font-size: 18px !important;
+    color: var(--on) !important;
+    stroke: var(--on) !important;
   }
 
   .dock-item.active span {
     display: inline-block !important;
-    color: var(--btn-text) !important;
+    color: var(--on) !important;
   }
 
   .dock-item:active {
-    transform: scale(0.94) !important;
+    transform: scale(0.95) !important;
   }
 
   /* More Sheet Drawer */
@@ -3573,12 +3664,14 @@ html.dark .founder-role {
     left: 0 !important;
     right: 0 !important;
     background: var(--surface) !important;
+    backdrop-filter: blur(28px) saturate(170%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(170%) !important;
     color: var(--text) !important;
-    border-top: 2px solid var(--border) !important;
-    border-radius: 20px 20px 0 0 !important;
-    padding: 16px 18px 32px !important;
-    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.35) !important;
-    max-height: 80vh !important;
+    border-top: 1px solid var(--border-soft) !important;
+    border-radius: 24px 24px 0 0 !important;
+    padding: 16px 18px 36px !important;
+    box-shadow: 0 -12px 40px rgba(0, 0, 0, 0.25) !important;
+    max-height: 82vh !important;
     overflow-y: auto !important;
     animation: slideUpDock 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
@@ -3589,12 +3682,12 @@ html.dark .founder-role {
   }
 
   .more-sheet-handle {
-    width: 40px !important;
+    width: 36px !important;
     height: 4px !important;
-    background: var(--border) !important;
+    background: var(--text) !important;
     border-radius: 4px !important;
     margin: 0 auto 14px auto !important;
-    opacity: 0.4 !important;
+    opacity: 0.2 !important;
   }
 
   .more-sheet-header {
@@ -3603,42 +3696,43 @@ html.dark .founder-role {
     justify-content: space-between !important;
     margin-bottom: 14px !important;
     padding-bottom: 10px !important;
-    border-bottom: 1.5px solid var(--border) !important;
+    border-bottom: 1px solid var(--border-soft) !important;
   }
 
   .more-sheet-title {
-    font-size: 16px !important;
-    font-weight: 800 !important;
+    font-size: 15px !important;
+    font-weight: 750 !important;
     color: var(--text) !important;
   }
 
   .more-sheet-close {
-    width: 32px !important;
-    height: 32px !important;
-    border: 1.5px solid var(--border) !important;
-    background: var(--surface) !important;
+    width: 30px !important;
+    height: 30px !important;
+    border: 1px solid var(--border-soft) !important;
+    background: var(--surface2) !important;
     color: var(--text) !important;
-    border-radius: 8px !important;
-    box-shadow: 1.5px 1.5px 0px var(--border) !important;
+    border-radius: 50% !important;
+    box-shadow: none !important;
     cursor: pointer !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    font-size: 18px !important;
+    font-size: 16px !important;
     transition: transform 0.15s ease, background 0.15s ease !important;
   }
 
   .more-sheet-close:hover {
-    background: var(--surface2) !important;
+    background: var(--border-soft) !important;
   }
 
   .more-sheet-close:active {
     transform: scale(0.92) !important;
   }
 
+  .more-sheet-close svg,
   .more-sheet-close i {
     color: var(--text) !important;
-    font-size: 18px !important;
+    font-size: 16px !important;
     line-height: 1 !important;
   }
 

@@ -2,6 +2,16 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { preloadRoute } from '../../utils/preloadRoutes';
+import {
+  HugeHomeIcon,
+  HugeCompassIcon,
+  HugeNoteIcon,
+  HugeTerminalIcon,
+  HugeCrownIcon,
+  HugeLoginIcon,
+  HugeBookIcon,
+  HugeMoreIcon
+} from '../icons/HugeIcons';
 
 export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
   const location = useLocation();
@@ -16,12 +26,21 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
   const isDemoActive = currentHash.includes('demo');
   const isPricingActive = currentHash.includes('pricing');
   const isBlogActive = currentPath.startsWith('/blog');
-  const isHomeActive = !isScoutActive && !isNotesActive && !isDemoActive && !isPricingActive && !isBlogActive && (currentPath === '/' || currentPath === '');
+  const isHomeActive =
+    !isScoutActive &&
+    !isNotesActive &&
+    !isDemoActive &&
+    !isPricingActive &&
+    !isBlogActive &&
+    (currentPath === '/' || currentPath === '');
 
   const handleNav = (targetSection, targetPath = '/') => {
     if (targetSection) {
       if (location.pathname === '/' || location.pathname === `/${targetSection}`) {
-        const el = document.getElementById(targetSection);
+        let el = document.getElementById(targetSection);
+        if (!el && targetSection === 'pricing') {
+          el = document.getElementById('pricing') || document.getElementById('s3') || document.getElementById('s5');
+        }
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'start' });
           return;
@@ -43,13 +62,13 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
         onClick={() => handleNav(null, '/')}
         aria-label={currentUser ? 'Workspace' : 'Home'}
       >
-        <i className={isHomeActive && !isMoreOpen ? 'ri-home-5-fill' : 'ri-home-5-line'}></i>
+        <HugeHomeIcon size={20} active={isHomeActive && !isMoreOpen} />
         <span>{currentUser ? 'Workspace' : 'Home'}</span>
       </button>
 
       {currentUser ? (
         <>
-          {/* Scout */}
+          {/* Scout Tool */}
           <button
             type="button"
             className={`dock-item ${isScoutActive && !isMoreOpen ? 'active' : ''}`}
@@ -58,7 +77,7 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
             onMouseEnter={() => preloadRoute('/scout')}
             aria-label="Scout Tool"
           >
-            <i className={isScoutActive && !isMoreOpen ? 'ri-compass-3-fill' : 'ri-compass-3-line'}></i>
+            <HugeCompassIcon size={20} active={isScoutActive && !isMoreOpen} />
             <span>Scout</span>
           </button>
 
@@ -71,7 +90,7 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
             onMouseEnter={() => preloadRoute('/notes')}
             aria-label="Saved Notes"
           >
-            <i className={isNotesActive && !isMoreOpen ? 'ri-sticky-note-fill' : 'ri-sticky-note-line'}></i>
+            <HugeNoteIcon size={20} active={isNotesActive && !isMoreOpen} />
             <span>Notes</span>
           </button>
         </>
@@ -84,7 +103,7 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
             onClick={() => handleNav('demo', '/#demo')}
             aria-label="Live Demo"
           >
-            <i className={isDemoActive && !isMoreOpen ? 'ri-terminal-box-fill' : 'ri-terminal-box-line'}></i>
+            <HugeTerminalIcon size={20} active={isDemoActive && !isMoreOpen} />
             <span>Demo</span>
           </button>
 
@@ -97,7 +116,7 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
             onMouseEnter={() => preloadRoute('/pricing')}
             aria-label="Pricing Plans"
           >
-            <i className={isPricingActive && !isMoreOpen ? 'ri-vip-crown-2-fill' : 'ri-vip-crown-2-line'}></i>
+            <HugeCrownIcon size={20} active={isPricingActive && !isMoreOpen} />
             <span>Pricing</span>
           </button>
         </>
@@ -113,7 +132,7 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
           onMouseEnter={() => preloadRoute('/login')}
           aria-label="Sign In"
         >
-          <i className="ri-login-box-line"></i>
+          <HugeLoginIcon size={20} active={false} />
           <span>Sign In</span>
         </button>
       ) : (
@@ -125,7 +144,7 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
           onMouseEnter={() => preloadRoute('/blog')}
           aria-label="Blog"
         >
-          <i className={isBlogActive && !isMoreOpen ? 'ri-article-fill' : 'ri-article-line'}></i>
+          <HugeBookIcon size={20} active={isBlogActive && !isMoreOpen} />
           <span>Blog</span>
         </button>
       )}
@@ -138,7 +157,7 @@ export const MobileDock = ({ onOpenMoreSheet, isMoreOpen }) => {
         aria-label="More Menu"
         id="dock-more-btn"
       >
-        <i className={isMoreOpen ? 'ri-more-fill' : 'ri-more-line'}></i>
+        <HugeMoreIcon size={20} active={isMoreOpen} />
         <span>More</span>
       </button>
     </nav>

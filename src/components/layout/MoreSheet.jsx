@@ -2,6 +2,8 @@ import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 
+import { HugeCloseIcon } from '../icons/HugeIcons';
+
 export const MoreSheet = ({ isOpen, onClose }) => {
   const { currentUser, logout } = useAuth();
   const location = useLocation();
@@ -38,7 +40,7 @@ export const MoreSheet = ({ isOpen, onClose }) => {
             onClick={onClose}
             aria-label="Close menu"
           >
-            <i className="ri-close-line"></i>
+            <HugeCloseIcon size={18} />
           </button>
         </div>
 
